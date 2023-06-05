@@ -1,5 +1,5 @@
-from expression import ExprLeaf, VariableIndexExpression
-from utils import ExpressionPrinter
+from .expression import ExprLeaf, VariableIndexExpression
+from .utils import ExpressionPrinter
 
 # todo: error checking
 # todo: augment printing 

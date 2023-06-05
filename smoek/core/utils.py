@@ -1,4 +1,4 @@
-from expression import ExprLeaf, BinaryExprNode
+from .expression import ExprLeaf, BinaryExprNode
 
 class ExpressionPrinter:
     def __init__(self):

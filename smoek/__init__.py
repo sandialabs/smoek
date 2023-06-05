@@ -1,0 +1,2 @@
+# smoek
+import smoek.core
