@@ -7,19 +7,19 @@ class ExprNode(object):
         return multiplication_expr_node(self, right)
 
     def __le__(self, right):
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), 'le')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), '<=')
 
     def __ge__(self, right):
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), 'ge')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), '>=')
 
     def __eq__(self, right):
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), 'eq')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), '==')
 
 class ExprLeaf(ExprNode):
     def __init__(self):
         pass
 
-    def tostring(self):
+    def to_string(self):
         raise NotImplementedError('Derived classes must implement this')
 
 class BinaryExprNode(ExprNode):
@@ -41,19 +41,33 @@ class NumberWrapper(ExprLeaf):
     def __init__(self, value):
         self._value = value
 
-    def tostring(self):
+    def to_string(self):
         return '{}'.format(self._value)
 
 class VariableIndexExpression(ExprLeaf):
     def __init__(self, var, indices):
         self._var = var
+        if type(indices) is not tuple:
+            indices = (indices,)
         self._indices = indices
-        # todo: error checking
+        self._value = var._value
 
-    def tostring(self):
-        assert self._indices is not None
-        indstr = ','.join(ind.tostring() for ind in self._indices)
-        return f'{self._var.tostring()}[{indstr}]'
+    @property
+    def name(self):
+        assert self._var.name is not None, "No name specified for this variable"
+        indstr = ','.join(ind.to_string() if isinstance(ind, ExprLeaf) else str(ind) for ind in self._indices)
+        return f"{self._var.name}[{indstr}]"
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
+        self._value = v
+
+    def to_string(self):
+        return self.name
 
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):

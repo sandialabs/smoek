@@ -34,3 +34,27 @@ class ExpressionPrinter:
             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.operation())
         else:
             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.tostring())
+
+
+class ExpressionToList:
+    def expression_to_list(self, expr):
+        return self._depth_first_walk(expr, [])
+
+    def _depth_first_walk(self, expr, _list):
+        if isinstance(expr, ExprLeaf):
+            _list.append( self._visit(expr) )
+        else:
+            _list.append( self._visit(expr) )
+            _list.append( self._depth_first_walk(expr.left()) )
+            _list.append( self._depth_first_walk(expr.right()) )
+        return _list
+            
+    def _visit(self, expr):
+        if isinstance(expr, BinaryExprNode):
+            return expr.operation()
+        else:
+            return expr.tostring()
+
+def to_list(expr):
+    return ExpressionToList().expression_to_list(expr)
+
