@@ -1,10 +1,19 @@
+import smoek.core.utils
+
+
 # todo: error checking
 class ExprNode(object):
     def __add__(self, right):
-        return addition_expr_node(self, right)
+        return addition_expr_node(self, _wrap_expression_if_needed(right))
+
+    def __radd__(self, left):
+        return addition_expr_node(_wrap_expression_if_needed(left), self)
 
     def __mul__(self, right):
-        return multiplication_expr_node(self, right)
+        return multiplication_expr_node(self, _wrap_expression_if_needed(right))
+
+    def __rmul__(self, left):
+        return multiplication_expr_node(_wrap_expression_if_needed(left), self)
 
     def __le__(self, right):
         return BinaryExprNode(self, _wrap_expression_if_needed(right), '<=')
@@ -14,6 +23,9 @@ class ExprNode(object):
 
     def __eq__(self, right):
         return BinaryExprNode(self, _wrap_expression_if_needed(right), '==')
+
+    def to_list(self):
+        return smoek.core.utils.to_list(self)
 
 class ExprLeaf(ExprNode):
     def __init__(self):
@@ -72,12 +84,12 @@ class VariableIndexExpression(ExprLeaf):
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):
         isinstance(expr, float) or isinstance(expr, int)
-        return Number(expr)
+        return NumberWrapper(expr)
     return expr
 
 def addition_expr_node(left, right):
-    return BinaryExprNode(left, _wrap_expression_if_needed(right), '+')
+    return BinaryExprNode(left, right, '+')
 
 def multiplication_expr_node(left, right):
-    return BinaryExprNode(left, _wrap_expression_if_needed(right), '*')
+    return BinaryExprNode(left, right, '*')
 

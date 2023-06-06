@@ -1,4 +1,4 @@
-from .expression import ExprLeaf, BinaryExprNode
+import smoek.core.expression
 
 class ExpressionPrinter:
     def __init__(self):
@@ -20,7 +20,7 @@ class ExpressionPrinter:
         print(self.expression_to_string(expr))
         
     def _depth_first_walk(self, expr):
-        if isinstance(expr, ExprLeaf):
+        if isinstance(expr, smoek.core.expression.ExprLeaf):
             self._visit(expr)
         else:
             self._visit(expr)
@@ -30,30 +30,27 @@ class ExpressionPrinter:
             self._depth -= 1
             
     def _visit(self, expr):
-        if isinstance(expr, BinaryExprNode):
+        if isinstance(expr, smoek.core.expression.BinaryExprNode):
             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.operation())
         else:
-            self._ret += '\n{}{}'.format(' '*self._depth*3, expr.tostring())
+            self._ret += '\n{}{}'.format(' '*self._depth*3, expr.to_string())
 
 
 class ExpressionToList:
     def expression_to_list(self, expr):
-        return self._depth_first_walk(expr, [])
+        return self._depth_first_walk(expr)
 
-    def _depth_first_walk(self, expr, _list):
-        if isinstance(expr, ExprLeaf):
-            _list.append( self._visit(expr) )
+    def _depth_first_walk(self, expr):
+        if isinstance(expr, smoek.core.expression.ExprLeaf):
+            return self._visit(expr)
         else:
-            _list.append( self._visit(expr) )
-            _list.append( self._depth_first_walk(expr.left()) )
-            _list.append( self._depth_first_walk(expr.right()) )
-        return _list
+            return [ self._visit(expr),  self._depth_first_walk(expr.left()), self._depth_first_walk(expr.right()) ]
             
     def _visit(self, expr):
-        if isinstance(expr, BinaryExprNode):
+        if isinstance(expr, smoek.core.expression.BinaryExprNode):
             return expr.operation()
         else:
-            return expr.tostring()
+            return expr.to_string()
 
 def to_list(expr):
     return ExpressionToList().expression_to_list(expr)

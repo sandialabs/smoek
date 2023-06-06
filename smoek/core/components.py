@@ -1,5 +1,5 @@
 from .expression import ExprLeaf, VariableIndexExpression
-from .utils import ExpressionPrinter, to_list
+from .utils import ExpressionPrinter
 
 # todo: error checking
 # todo: augment printing 
@@ -59,9 +59,6 @@ class IndexableComponent(ExprLeaf):
         else:
             return f'{self._name}, {self._forall.to_string()}'
 
-    def to_list(self):
-        return to_list(self)
-
 class IndexedVariable(IndexableComponent):
     def __init__(self, name=None):
         super().__init__(name)
@@ -86,7 +83,7 @@ class IndexedVariable(IndexableComponent):
 
     @property
     def value(self):
-        raise RuntimeError("Cannot get the value of an indexed variable without specifying the index")
+        return self._value
 
     @value.setter
     def value(self, v):
@@ -116,6 +113,9 @@ class SingleVariable(ExprLeaf):
     @value.setter
     def value(self, v):
         self._value = v
+
+    def to_string(self):
+        return self.name
 
 def variable(index=None, *, name=None, value=None):
     if index is None:
