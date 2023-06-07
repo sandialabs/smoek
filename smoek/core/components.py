@@ -1,3 +1,5 @@
+import math
+
 from .expression import ExprLeaf, VariableIndexExpression
 from .utils import ExpressionPrinter
 
@@ -62,7 +64,7 @@ class IndexableComponent(ExprLeaf):
 class IndexedVariable(IndexableComponent):
     def __init__(self, name=None):
         super().__init__(name)
-        self._value = None
+        self._value = math.nan
                 
     @property
     def name(self):
@@ -95,7 +97,7 @@ class SingleVariable(ExprLeaf):
     def __init__(self, name=None):
         super().__init__()
         self._name = name
-        self._value = None
+        self._value = math.nan
 
     @property
     def name(self):

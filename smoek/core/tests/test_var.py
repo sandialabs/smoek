@@ -1,5 +1,6 @@
-from smoek.core import variable
+import math
 import pytest
+from smoek.core import variable
 
 #
 # Single variables
@@ -17,6 +18,10 @@ def test_single_var_value():
     assert v.value == 2
     v.value = 3
     assert v.value == 3
+
+def test_single_var_default_value():
+    v = variable()
+    assert math.isnan(v.value)
 
 #
 # Indexed variables
@@ -73,4 +78,8 @@ def test_indexed_var_value():
     assert v.value == 2
     assert v[0].value == 2
     assert v[1].value == 2
+
+def test_indexed_var_default_value():
+    v = variable(3)
+    assert math.isnan(v[0].value)
 
