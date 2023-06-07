@@ -56,6 +56,31 @@ class NumberWrapper(ExprLeaf):
     def to_string(self):
         return '{}'.format(self._value)
 
+class SetIndexExpression(ExprLeaf):
+    def __init__(self, _set, indices):
+        self._set = _set
+        if type(indices) is not tuple:
+            indices = (indices,)
+        self._indices = indices
+        self._elements = _set._elements      # TODO: copy here
+
+    @property
+    def name(self):
+        assert self._set.name is not None, "No name specified for this variable"
+        indstr = ','.join(ind.to_string() if isinstance(ind, ExprLeaf) else str(ind) for ind in self._indices)
+        return f"{self._set.name}[{indstr}]"
+
+    @property
+    def elements(self):
+        return self._elements
+
+    @elements.setter
+    def elements(self, v):
+        self._elements = v
+
+    def to_string(self):
+        return self.name
+
 class VariableIndexExpression(ExprLeaf):
     def __init__(self, var, indices):
         self._var = var

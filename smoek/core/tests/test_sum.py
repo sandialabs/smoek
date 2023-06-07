@@ -171,7 +171,7 @@ def test_sum_nested():
     #
     assert e.to_list() == ["+", ["+", "b", "c"], ["*", "a", "5"]]
 
-def test_trivialSum():
+def test_sum_trivial():
     #
     # Check that adding zero doesn't change the expression
     #
