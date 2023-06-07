@@ -28,6 +28,10 @@ def test_sum_simple():
     e = a+b
     assert e.to_list() == ["+", "a", "b"]
 
+    e = a
+    e += b
+    assert e.to_list() == ["+", "a", "b"]
+
 def test_sum_const():
     a = variable(name="a")
 
