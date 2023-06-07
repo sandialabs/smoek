@@ -105,10 +105,10 @@ def index_set(*args):
             # TODO: Configure the index dimensions "args[0]"
             return IndexedSet()
     else:
-        # index_set(2, 'x') or index_set([2,3], 'x')
+        # index_set('x', 2) or index_set('x', [2,3])
         assert len(args) == 2, "The index_set() function only takes two arguments"
-        # TODO: Configure the index dimensions "args[0]"
-        return IndexedSet(name=args[1])
+        # TODO: Configure the index dimensions "args[1]"
+        return IndexedSet(name=args[0])
 
 ##
 ##
@@ -256,12 +256,12 @@ def forall(index, In=None):
     return ForAllObject().forall(index, In=In)
 
 if __name__ == '__main__':
-    i = Index('i')
-    j = Index('j')
-    A = Set('A')
-    x = Variable('x')
+    i = index('i')
+    j = index('j')
+    A = index_set('A')
+    x = variable('x')
     f = forall(i, In=A).forall(j, In=A)
-    y = Variable('y').forall(i, In=A).forall(j, In=A)
+    y = variable('y').forall(i, In=A).forall(j, In=A)
     print(y.to_string())
 
     c = Constraint('c', expr=x <= y[i,j]).forall(i, In=A).forall(j, In=A)

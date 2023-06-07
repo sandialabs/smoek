@@ -48,7 +48,7 @@ def test_indexed_set_name():
     #
     # Creating an array of sets with a name
     #
-    s = index_set(5, "y")
+    s = index_set("y", 5)
     assert s.name == "y"
     assert s[0].name == "y[0]"
 
