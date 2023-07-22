@@ -1,27 +1,35 @@
 import re
 import pytest
-from smoek.core import variable, parameter
+from smoek.core import variable, index, index_set, forall
 
 
-def test_sum_error1():
+def test_sum_errors():
+    # unknown types
     class TMP(object):
         pass
 
     a = variable(name="a")
-    TMP() + a
-    with pytest.raises(TypeError, match=re.escape("unsupported operand type(s) for +: 'TMP' and 'SingleVariable'")):
+    with pytest.raises(TypeError) as excinfo:
         TMP() + a
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    with pytest.raises(TypeError) as excinfo:
+        a + TMP()
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
 
-def test_sum_error2():
-    #
-    # ERROR HERE?
-    #
-    v = variable(10)
+    # IndexedVariable with no index
+    # TODO: We should have special error for this case - it is likely common
+    i = index('i')
+    I = index_set('I')
+    v = variable(forall=forall(i, In=I))
     s = variable()
+    with pytest.raises(TypeError) as excinfo:
+        foo = v + s
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    with pytest.raises(TypeError) as excinfo:
+        foo = s + v
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
 
-    v + s
-
-def test_sum_simple():
+def test_sum_variables():
     a = variable(name="a")
     b = variable(name="b")
 

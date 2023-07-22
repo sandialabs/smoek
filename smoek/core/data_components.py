@@ -1,7 +1,7 @@
-from .components import IndexableComponent
+from .components import IndexedComponent
 
 
-class Parameter(IndexableComponent):
+class Parameter(IndexedComponent):
     def __init__(self, name=None):
         super().__init__(name)
 

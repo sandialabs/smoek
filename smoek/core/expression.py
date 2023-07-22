@@ -4,16 +4,46 @@ import smoek.core.utils
 # todo: error checking
 class ExprNode(object):
     def __add__(self, right):
-        return addition_expr_node(self, _wrap_expression_if_needed(right))
+        right = _wrap_expression_if_needed(right)
+        
+        # don't do the addition if right is zero
+        if isinstance(right, NumberWrapper) and right._value == 0:
+            return self
+
+        return BinaryExprNode(self, right, '+')
 
     def __radd__(self, left):
-        return addition_expr_node(_wrap_expression_if_needed(left), self)
+        left = _wrap_expression_if_needed(left)
+
+        # don't do the addition if right is zero
+        if isinstance(left, NumberWrapper) and left._value == 0:
+            return self
+
+        return BinaryExprNode(left, self, '+')
 
     def __mul__(self, right):
-        return multiplication_expr_node(self, _wrap_expression_if_needed(right))
+        right = _wrap_expression_if_needed(right)
+        
+        # don't do the multiplication if right is zero
+        if isinstance(right, NumberWrapper):
+            if right._value == 0:
+                return right
+            elif right._value == 1:
+                return self
+            
+        return BinaryExprNode(self, right, '*')
 
     def __rmul__(self, left):
-        return multiplication_expr_node(_wrap_expression_if_needed(left), self)
+        left = _wrap_expression_if_needed(left)
+
+        # don't do the addition if right is zero
+        if isinstance(left, NumberWrapper):
+            if left._value == 0:
+                return left
+            elif left._value == 1:
+                return self
+        
+        return BinaryExprNode(left, self, '*')
 
     def __le__(self, right):
         return BinaryExprNode(self, _wrap_expression_if_needed(right), '<=')
@@ -36,6 +66,8 @@ class ExprLeaf(ExprNode):
 
 class BinaryExprNode(ExprNode):
     def __init__(self, left, right, operation):
+        assert isinstance(left, ExprNode)
+        assert isinstance(right, ExprNode)
         self._left = left
         self._right = right
         self._operation = operation
@@ -81,40 +113,13 @@ class SetIndexExpression(ExprLeaf):
     def to_string(self):
         return self.name
 
-class VariableIndexExpression(ExprLeaf):
-    def __init__(self, var, indices):
-        self._var = var
-        if type(indices) is not tuple:
-            indices = (indices,)
-        self._indices = indices
-        self._value = var._value
-
-    @property
-    def name(self):
-        assert self._var.name is not None, "No name specified for this variable"
-        indstr = ','.join(ind.to_string() if isinstance(ind, ExprLeaf) else str(ind) for ind in self._indices)
-        return f"{self._var.name}[{indstr}]"
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, v):
-        self._value = v
-
-    def to_string(self):
-        return self.name
 
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):
-        isinstance(expr, float) or isinstance(expr, int)
-        return NumberWrapper(expr)
+        if isinstance(expr, float) or isinstance(expr, float) or isinstance(expr, int):
+            return NumberWrapper(expr)
+        else:
+            raise TypeError(f"unsupported operand type(s) in expression {expr} of type {type(expr)}")
+
     return expr
-
-def addition_expr_node(left, right):
-    return BinaryExprNode(left, right, '+')
-
-def multiplication_expr_node(left, right):
-    return BinaryExprNode(left, right, '*')
 

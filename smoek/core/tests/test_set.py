@@ -1,86 +1,74 @@
 import math
 import pytest
-from smoek.core import index_set
-
+from smoek.core import index, index_set, forall
+from smoek.core.components import ComponentIndicesNode
+from smoek.core.set_components import Index, ScalarSet, IndexedSet
 #
-# Single index set
+# Scalar index set
 #
+def test_index_function():
+    i = index()
+    assert type(i) == Index
 
-def test_single_set_name():
+def test_index_set_function():
+    I = index_set()
+    assert type(I) == ScalarSet
+
+    i = index('i')
+    I = index_set('I')
+    f = forall(i, In=I)
+
+    II = index_set('II', forall=f)
+    assert type(II) == IndexedSet
+    
+def test_index():
+    i = index()
+    with pytest.raises(AssertionError, match="No name specified for this component"):
+        i.name
+    i.name = 'i'
+    assert i.name == 'i'
+
+    i = index('i')
+    assert i.name == 'i'
+
+    # test to_string
+    assert str(i) == 'i'
+
+
+def test_scalar_set():
     s = index_set()
-    with pytest.raises(AssertionError, match="No name specified for this set"):
+    with pytest.raises(AssertionError, match="No name specified for this component"):
         s.name
     s.name = "A"
     assert s.name == "A"
 
-def test_single_set_elements():
-    s = index_set()
-    assert s.elements == []
-    s.elements = [7,9,11]
-    assert s.elements == [7,9,11]
+    s = index_set('A')
+    assert s.name == "A"
 
-def test_single_set_default_elements():
-    s = index_set()
-    assert s.elements == []
+    # test to_string
+    assert str(s) == 'A'
 
-#
-# Indexed sets
-#
+def test_indexed_set():
+    i = index('i')
+    I = index_set('I')
+    f = forall(i, In=I)
 
-def test_indexed_set_name():
-    #
-    # Creating an array of index sets
-    #
-    s = index_set(5)
-    #
-    # No name was specified for the array
-    #
-    with pytest.raises(AssertionError, match="No name specified for this set"):
+    s = index_set(forall=f)
+    assert s._forall is f
+    si = s[i]
+    assert type(si) is ComponentIndicesNode
+    assert si._component is s
+    assert si._indices is i
+
+    with pytest.raises(AssertionError, match="No name specified for this component"):
         s.name
-    with pytest.raises(AssertionError, match="No name specified for this set"):
-        s[0].name
-    #
-    # Specify the name for the array
-    #
-    s.name = "x"
-    assert s.name == "x"
-    assert s[0].name == "x[0]"
-    #
-    # Creating an array of sets with a name
-    #
-    s = index_set("y", 5)
-    assert s.name == "y"
-    assert s[0].name == "y[0]"
+    s.name = "A"
+    assert s.name == "A"
 
-def test_indexed_set_elements():
-    #
-    # Creating an array of sets
-    #
-    s = index_set(5)
-    s.elements = [1,3,5]
-    assert s.elements == [1,3,5]
-    #
-    # The elements of s[0] and s[1] are set with the initial elements
-    #
-    assert s[0].elements == [1,3,5]
-    assert s[1].elements == [1,3,5]
-    #
-    # We reset the elements of s[0]
-    #
-    s[0].elements = [7,9,11]
-    assert s.elements == [1,3,5]
-    assert s[0].elements == [7,9,11]
-    assert s[1].elements == [1,3,5]
-    #
-    # We specify the elements for an array of sets.  We do *not* treat this as a concrete model.  Rather, we set
-    #       the elements of all of the indexed sets that have already been referenced.
-    #
-    s.elements = [13,15,17]
-    assert s.elements == [13,15,17]
-    assert s[0].elements == [13,15,17]
-    assert s[1].elements == [13,15,17]
 
-def test_indexed_set_default_elements():
-    s = index_set(3)
-    assert s[0].elements == []
+    s = index_set('A')
+    assert s.name == "A"
 
+    # test to_string
+    assert str(s) == 'A'
+    

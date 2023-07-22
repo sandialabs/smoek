@@ -1,26 +1,33 @@
 import re
 import pytest
-from smoek.core import variable, parameter
+from smoek.core import variable, parameter, index, index_set, forall
 
 
-def test_mul_error1():
+def test_mul_errors():
+    # unknown types
     class TMP(object):
         pass
 
     a = variable(name="a")
-    with pytest.raises(TypeError, match=re.escape("unsupported operand type(s) for *: 'TMP' and 'SingleVariable'")):
-        TMP() * a
+    with pytest.raises(TypeError) as excinfo:
+        TMP()*a
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    with pytest.raises(TypeError) as excinfo:
+        a*TMP()
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
 
-def test_mul_error2():
-    #
-    # ERROR HERE?
-    #
-    v = variable(10)
+    i = index('i')
+    I = index_set('I')
+    v = variable(forall=forall(i, In=I))
     s = variable()
+    with pytest.raises(TypeError) as excinfo:
+        foo = v*s
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    with pytest.raises(TypeError) as excinfo:
+        foo = s*v
+    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
 
-    v * s
-
-def test_mul_simple():
+def test_mul_variables():
     a = variable(name="a")
     b = variable(name="b")
 
@@ -181,10 +188,10 @@ def test_mul_trivial_0():
     assert e.to_list() == "0"
 
     e = a * 0.0
-    assert e.to_list() == "0"
+    assert e.to_list() == "0.0"
 
     e = 0.0 * a
-    assert e.to_list() == "0"
+    assert e.to_list() == "0.0"
 
     e = a
     e *= 0
@@ -192,7 +199,7 @@ def test_mul_trivial_0():
 
     e = a
     e *= 0.0
-    assert e.to_list() == "0"
+    assert e.to_list() == "0.0"
 
     #
     # Multiplying by zero gives zero

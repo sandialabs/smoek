@@ -1,108 +1,59 @@
-import math
-
+from .components import NamedComponent, ScalarComponent, IndexedComponent
 from .expression import SetIndexExpression
 
 ##
 ## INDEX
 ##
 
-class Index(object):
+class Index(NamedComponent):
     def __init__(self, name=None):
-        self._name = name
-
-    def to_string(self):
-        return self._name
+        super().__init__(name)
 
 def index(name=None):
     return Index(name)
+
 
 ##
 ## SET
 ##
 
-class Set(object):
+# TODO : should this be "ScalarSet"?
+class ScalarSet(ScalarComponent):
     def __init__(self, name=None):
-        self._name = name
-        self._elements = []
+        super().__init__(name)
 
-    @property
-    def name(self):
-        assert self._name is not None, "No name specified for this set"
-        return self._name
+class IndexedSet(IndexedComponent):
+    def __init__(self, name=None, forall=None):
+        super().__init__(name=name, forall=forall)
 
-    @name.setter
-    def name(self, v):
-        self._name = v
+# TODO: This name is clumsy, but "set" is a reserved word?
+def index_set(name=None, forall=None):
+    if forall is None:
+        return ScalarSet(name=name)
+    return IndexedSet(name=name, forall=forall)
 
-    @property
-    def elements(self):
-        return self._elements
 
-    @elements.setter
-    def elements(self, v):
-        self._elements = v
+class IndexSetPair(object):
+    def __init__(self, index, index_set):
+        self._index = index
+        self._index_set = index_set
 
+class ForAllObject(object):
+    def __init__(self):
+        self._index_set_pairs = list()
+        self._filter_expressions = list()
+
+    def forall(self, index, In=None):
+        self._index_set_pairs.append(IndexSetPair(index, In))
+        return self
+    
+    def suchthat(self, expr):
+        self._filter_expressions.append(expr)
+        return self
+    
     def to_string(self):
-        return self._name
+        ret = 'forall ' + ', '.join([f'{isp._index.to_string()} in {isp._index_set.to_string()}' for isp in self._index_set_pairs])
+        return ret
 
-#
-# WEH: How specify a 1-d, or n-d array?
-#
-class IndexedSet(object):
-    def __init__(self, name=None):
-        self._name = name
-        self._used_indices = {}
-        self._elements = []
-
-    def to_string(self):
-        return self._name
-
-    @property
-    def name(self):
-        assert self._name is not None, "No name specified for this set"
-        return self._name
-
-    @name.setter
-    def name(self, v):
-        self._name = v
-
-    def __getitem__(self, indices):
-        tmp = self._used_indices.get(indices, None)
-        if tmp is not None:
-            return tmp
-        tmp = SetIndexExpression(self, indices)
-        self._used_indices[indices] = tmp
-        return tmp
-
-    @property
-    def elements(self):
-        return self._elements
-
-    @elements.setter
-    def elements(self, v):
-        self._elements = v
-        for _set in self._used_indices.values():
-            _set._elements = v
-
-def index_set(*args):
-    if len(args) == 0:
-        # index_set()
-        return Set()
-
-    elif len(args) == 1:
-        if args[0] == 1:
-            # index_set(1)
-            return Set()
-        elif type(args[0]) == str:
-            # index_set('x')
-            return Set(name=args[0])
-        else:
-            # index_set(2) or index_set([2,3])
-            # TODO: Configure the index dimensions "args[0]"
-            return IndexedSet()
-    else:
-        # index_set('x', 2) or index_set('x', [2,3])
-        assert len(args) == 2, "The index_set() function only takes two arguments"
-        # TODO: Configure the index dimensions "args[1]"
-        return IndexedSet(name=args[0])
-
+def forall(index, In=None):
+    return ForAllObject().forall(index, In=In)
