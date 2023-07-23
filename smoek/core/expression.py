@@ -72,46 +72,25 @@ class BinaryExprNode(ExprNode):
         self._right = right
         self._operation = operation
 
+    @property
     def left(self):
         return self._left
 
+    @property
     def right(self):
         return self._right
 
+    @property
     def operation(self):
         return self._operation
-        
+
+
 class NumberWrapper(ExprLeaf):
     def __init__(self, value):
         self._value = value
 
     def to_string(self):
         return '{}'.format(self._value)
-
-class SetIndexExpression(ExprLeaf):
-    def __init__(self, _set, indices):
-        self._set = _set
-        if type(indices) is not tuple:
-            indices = (indices,)
-        self._indices = indices
-        self._elements = _set._elements      # TODO: copy here
-
-    @property
-    def name(self):
-        assert self._set.name is not None, "No name specified for this variable"
-        indstr = ','.join(ind.to_string() if isinstance(ind, ExprLeaf) else str(ind) for ind in self._indices)
-        return f"{self._set.name}[{indstr}]"
-
-    @property
-    def elements(self):
-        return self._elements
-
-    @elements.setter
-    def elements(self, v):
-        self._elements = v
-
-    def to_string(self):
-        return self.name
 
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):

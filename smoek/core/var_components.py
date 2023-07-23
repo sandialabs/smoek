@@ -8,8 +8,8 @@ class Domain(Enum):
     Binary = 2
                 
 class ScalarVariable(ScalarComponent, ExprLeaf):
-    def __init__(self, name=None, domain=None):
-        super().__init__(name)
+    def __init__(self, name=None, domain=None, doc=None):
+        super().__init__(name=name, doc=doc)
         if domain is not None:
             assert isinstance(domain, Domain)
         self._domain = domain
@@ -24,22 +24,22 @@ class ScalarVariable(ScalarComponent, ExprLeaf):
 # Todo: think about having a single object that has a forall
 # or doesn't have a forall to differentiate scalar vs indexed?
 class IndexedVariable(IndexedComponent):
-    def __init__(self, name=None, domain=None, forall=None):
-        super().__init__(name, forall)
+    def __init__(self, name=None, domain=None, forall=None, doc=None):
+        super().__init__(name=name, forall=forall, doc=doc)
         self._domain = domain
 
     @property
     def domain(self):
         return self._domain
 
-def variable(name=None, domain=None, forall=None):
+def variable(name=None, domain=None, forall=None, doc=None):
     if forall is None:
-        return ScalarVariable(name, domain=domain)
-    return IndexedVariable(name=name, domain=domain, forall=forall)
+        return ScalarVariable(name=name, domain=domain, doc=doc)
+    return IndexedVariable(name=name, domain=domain, forall=forall, doc=doc)
 
 
-def binary_variable(name=None, forall=None):
-    return variable(name=name, domain=Domain.Binary, forall=forall)
+def binary_variable(name=None, forall=None, doc=None):
+    return variable(name=name, domain=Domain.Binary, forall=forall, doc=doc)
 
 # def variable(index=None, *, name=None, value=None):
 #     if index is None:

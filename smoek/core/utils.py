@@ -1,5 +1,40 @@
 import smoek.core.expression
 
+class BottomUpDepthFirstExpressionWalker(object):
+    def __init__(self):
+        self._depth = 0
+
+    def _walk(self, expr):
+        assert self._depth == 0
+        self._depth_first_walk(expr)
+        assert self._depth == 0
+        
+    def _depth_first_walk(self, expr):
+        assert expr is not None
+        # print(f'In _depth_first_walk with {expr}')
+        if isinstance(expr, smoek.core.expression.ExprLeaf):
+            self._visit(expr)
+        elif isinstance(expr, smoek.core.expression.BinaryExprNode):
+            # print(f'...operation is {expr._operation}')
+            self._depth += 1
+            # print(f'descending left of {expr}')
+            self._depth_first_walk(expr.left)
+            # print(f'descending right of {expr}')
+            self._depth_first_walk(expr.right)
+            self._depth -= 1
+            self._visit(expr)
+        elif isinstance(expr, smoek.core.functions.SumExprNode):
+            self._depth += 1
+            self._depth_first_walk(expr._expr)
+            self._depth -= 1
+            self._visit(expr)
+        else:
+            raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in BottomUpDepthFirstExpressionWalker')
+
+    def _visit(self, expr):
+        raise NotImplementedError('BottomUpDepthFirstExpressionWalker._visit needs to be implemented by the derived class')
+
+
 class ExpressionPrinter:
     def __init__(self):
         self._depth = 0
@@ -25,13 +60,13 @@ class ExpressionPrinter:
         else:
             self._visit(expr)
             self._depth += 1
-            self._depth_first_walk(expr.left())
-            self._depth_first_walk(expr.right())
+            self._depth_first_walk(expr.left)
+            self._depth_first_walk(expr.right)
             self._depth -= 1
             
     def _visit(self, expr):
         if isinstance(expr, smoek.core.expression.BinaryExprNode):
-            self._ret += '\n{}{}'.format(' '*self._depth*3, expr.operation())
+            self._ret += '\n{}{}'.format(' '*self._depth*3, expr.operation)
         else:
             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.to_string())
 
@@ -44,11 +79,11 @@ class ExpressionToList:
         if isinstance(expr, smoek.core.expression.ExprLeaf):
             return self._visit(expr)
         else:
-            return [ self._visit(expr),  self._depth_first_walk(expr.left()), self._depth_first_walk(expr.right()) ]
+            return [ self._visit(expr),  self._depth_first_walk(expr.left), self._depth_first_walk(expr.right) ]
             
     def _visit(self, expr):
         if isinstance(expr, smoek.core.expression.BinaryExprNode):
-            return expr.operation()
+            return expr.operation
         else:
             return expr.to_string()
 
