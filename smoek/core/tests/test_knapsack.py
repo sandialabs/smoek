@@ -21,7 +21,7 @@ def test_knapsack():
         )
 
     l = LatexWriter()
-    l.write_model('foo.tex', A, v, w, w_max, x, c, o)
+    l.write_model('./tex/knapsack.tex', A, v, w, w_max, x, c, o)
 
 if __name__ == '__main__':
     test_knapsack()
