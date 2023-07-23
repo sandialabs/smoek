@@ -1,16 +1,16 @@
-from .components import IndexedComponent
+from .components import ScalarComponent, IndexedComponent
+from .expression import ExprLeaf
 
-
-class Parameter(IndexedComponent):
+class ScalarParameter(ScalarComponent, ExprLeaf):
     def __init__(self, name=None):
         super().__init__(name)
 
-    def value(self, v):
-        self._value = v
-
-def parameter(index=None, name=None, value=None):
-    p = Parameter(name=name)
-    if value is not None:
-        p.value(value)
-    return p
+class IndexedParameter(IndexedComponent):
+    def __init__(self, name=None, forall=None):
+        super().__init__(name, forall)
+    
+def parameter(name=None, forall=None):
+    if forall is None:
+        return ScalarParameter(name)
+    return IndexedParameter(name=name, forall=forall)
 

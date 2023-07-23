@@ -80,7 +80,7 @@ class BinaryExprNode(ExprNode):
 
     def operation(self):
         return self._operation
-
+        
 class NumberWrapper(ExprLeaf):
     def __init__(self, value):
         self._value = value
@@ -112,7 +112,6 @@ class SetIndexExpression(ExprLeaf):
 
     def to_string(self):
         return self.name
-
 
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):

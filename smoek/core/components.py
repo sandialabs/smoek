@@ -1,9 +1,12 @@
-from .expression import ExprLeaf
+from .expression import ExprLeaf, ExprNode
 from .utils import ExpressionPrinter
 
 # todo: error checking
 # todo: augment printing 
-   
+
+# TODO: change these classes so that all components are the same
+# and the presence of forall indicates that they are indexed
+
 class NamedComponent(object):
     def __init__(self, name=None):
         self._name = name
@@ -34,6 +37,7 @@ class IndexedComponent(NamedComponent):
         self._forall = forall
         
     def forall(self, index, In):
+        from core.set_components import ForAllObject
         if self._forall is None:
             self._forall = ForAllObject()
         self._forall.forall(index, In=In)
@@ -62,10 +66,18 @@ class ComponentIndicesNode(ExprLeaf):
     def indices(self):
         return self._indices
 
-# TODO: Move this
-class Constraint(IndexedComponent):
-    def __init__(self, name=None):
+class ScalarExpression(ScalarComponent):
+    def __init__(self, name, expr):
         super().__init__(name)
+        assert expr is not None
+        assert isinstance(expr, ExprNode)
+        self._expr = expr
+        
+class IndexedExpression(IndexedComponent):
+    def __init__(self, name, expr, forall):
+        super().__init__(name, forall)
+        assert expr is not None
+        assert isinstance(expr, ExprNode)
         self._expr = expr
 
     def expr(self, _expr):
@@ -76,6 +88,33 @@ class Constraint(IndexedComponent):
         ret += ExpressionPrinter().expression_to_string(self._expr)
         return ret
 
+class ScalarConstraint(ScalarExpression):
+    def __init__(self, name, expr):
+        super().__init__(name, expr)
+
+class IndexedConstraint(IndexedExpression):
+    def __init__(self, name, expr, forall):
+        super().__init__(name, expr, forall)
+
+class ScalarObjective(ScalarExpression):
+    def __init__(self, name, expr):
+        super().__init__(name, expr)
+
+class IndexedObjective(IndexedExpression):
+    def __init__(self, name, expr, forall):
+        super().__init__(name, expr, forall)
+
+def constraint(name=None, expr=None, forall=None):
+    assert expr is not None
+    if forall is None:
+        return ScalarConstraint(name, expr)
+    return IndexedConstraint(name, expr, forall)
+
+def objective(name=None, expr=None, forall=None):
+    assert expr is not None
+    if forall is None:
+        return ScalarObjective(name, expr)
+    return IndexedObjective(name, expr, forall)
 
 # if __name__ == '__main__':
 #     i = index('i')
