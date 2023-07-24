@@ -1,26 +1,27 @@
-from smoek.core import index, set, parameter, forall, \
-    variable, binary_variable, smoek_sum, constraint, objective
+import smoek.core as smc
+#from smoek.core import index, set, parameter, forall, \
+#    variable, binary_variable, smoek_sum, constraint, objective
 from smoek.io.tex import LatexWriter
 
 def test_knapsack():
-    i = index('i')
-    A = set('A', doc=r'set of all items')
-    v = parameter('v', forall(i, In=A), doc=r'value of item $i$')
-    w = parameter('w', forall(i, In=A), doc=r'weight of item $i$')
-    w_max = parameter(r'\bar w', doc=r'maximum weight')
-    x = binary_variable('x', forall(i, In=A), doc='indicator variable for item selection')
+    i = smc.index('i')
+    A = smc.set('A', doc=r'set of all items')
+    v = smc.parameter('v', doc=r'value of item $i$').forall(i, In=A)
+    w = smc.parameter('w', doc=r'weight of item $i$').forall(i, In=A)
+    w_max = smc.parameter(r'\bar w', doc=r'maximum weight')
+    x = smc.binary_variable('x', doc='indicator variable for item selection').forall(i, In=A)
 
-    c = constraint(
+    c = smc.constraint(
         name='max_w_con',
-        expr=smoek_sum(w[i]*x[i], forall(i, In=A)) <=  w_max,
+        expr=smc.smoek_sum(w[i]*x[i]).forall(i, In=A) <=  w_max,
         doc=r'weight limit'
-        )
+    )
 
-    o = objective(
+    o = smc.objective(
         name='obj',
-        expr=smoek_sum(v[i]*x[i], forall(i, In=A)),
+        expr=smc.smoek_sum(v[i]*x[i]).forall(i, In=A),
         doc='maximize value objective'
-        )
+    )
 
     l = LatexWriter()
     l.write_model('./tex/knapsack.tex', A, v, w, w_max, x, c, o)

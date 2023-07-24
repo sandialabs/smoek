@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+\section{Symbols}
+\begin{table}
+\begin{tabular}{c|p{4in}}
+  Symbol & Description \\
+  \hline \hline
+  $A$ & set of all items\\ 
+$v_{i}$ & value of item $i$\\ 
+$w_{i}$ & weight of item $i$\\ 
+$\bar w$ & maximum weight\\ 
+$x_{i}$ & indicator variable for item selection\\ 
+
+\hline \hline
+\end{tabular}
+\end{table}
+\section{Constraints}
+\begin{align}
+((\sum_{i \in S} (w_{i}  x_{i})) \le \bar w)
+\end{align}
+\begin{align}
+(\sum_{i \in S} (v_{i}  x_{i}))
+\end{align}
+
+\end{document}

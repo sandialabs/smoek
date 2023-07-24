@@ -1,6 +1,14 @@
-from .components import ScalarComponent, IndexedComponent
+from .components import ModelingComponent
 from .expression import ExprLeaf
 
+class Parameter(ModelingComponent, ExprLeaf):
+    def __init__(self, name=None, doc=None):
+        super().__init__(name=name, doc=doc)
+
+def parameter(name=None, doc=None):
+    return Parameter(name=name, doc=doc)
+
+"""
 class ScalarParameter(ScalarComponent, ExprLeaf):
     def __init__(self, name=None, doc=None):
         super().__init__(name=name, doc=doc)
@@ -13,4 +21,4 @@ def parameter(name=None, forall=None, doc=None):
     if forall is None:
         return ScalarParameter(name=name, doc=doc)
     return IndexedParameter(name=name, forall=forall, doc=doc)
-
+"""

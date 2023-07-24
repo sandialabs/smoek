@@ -3,13 +3,13 @@ import sympy as sp
 
 from jinja2 import Environment, FileSystemLoader
 
-from smoek.core.set_components import ScalarSet, IndexedSet
-from smoek.core.var_components import ScalarVariable, IndexedVariable
-from smoek.core.components import ScalarExpression, IndexedExpression
-from smoek.core.components import ScalarConstraint, IndexedConstraint
-from smoek.core.components import ScalarObjective, IndexedObjective
+# TODO: remove the reliance on types
+from smoek.core.set_components import Set # ScalarSet, IndexedSet
+from smoek.core.var_components import Variable # ScalarVariable, IndexedVariable
+from smoek.core.expr_components import Expression, Constraint, Objective # ScalarExpression, IndexedExpression
 from smoek.core.components import ComponentIndicesNode
-from smoek.core.data_components import ScalarParameter, IndexedParameter
+from smoek.core.data_components import Parameter # ScalarParameter, IndexedParameter
+
 from smoek.core.expression import ExprLeaf, BinaryExprNode
 from smoek.core.utils import BottomUpDepthFirstExpressionWalker
 from smoek.core.functions import SumExprNode
@@ -30,18 +30,20 @@ class LatexWriter(object):
         symbstr = ''
         constr = ''
         for c in args:
-            if isinstance(c, ScalarSet) or isinstance(c, ScalarVariable) or isinstance(c, ScalarParameter): 
-                symbstr += f'${c.name}$ & {c.doc}\\\\ \n'
-            elif isinstance(c, IndexedSet) or isinstance(c, IndexedVariable) or isinstance(c, IndexedParameter):
-                indices = list(idx.name for idx in c._forall.indices_list())
-                indices = ','.join(indices)
-                symbstr += f'${c.name}_{{{indices}}}$ & {c.doc}\\\\ \n'
-            elif isinstance(c, ScalarExpression):
-                expr = _latex_expression(c.expr)
-                constr += f'\\begin{{align}}\n{expr}\n\\end{{align}}\n'
-            elif isinstance(c, IndexedExpression):
-                expr = _latex_expression(c.expr)
-                constr += f'\\begin{{align}}\n{expr} \;\; \forall i \in S\n\\end{{align}}\n'
+            if isinstance(c, Set) or isinstance(c, Variable) or isinstance(c, Parameter):
+                if c.is_scalar():
+                    symbstr += f'${c.name}$ & {c.doc}\\\\ \n'
+                else:
+                    indices = list(idx.name for idx in c._forall.indices_list())
+                    indices = ','.join(indices)
+                    symbstr += f'${c.name}_{{{indices}}}$ & {c.doc}\\\\ \n'
+            elif isinstance(c, Expression):
+                if c.is_scalar():
+                    expr = _latex_expression(c.expr)
+                    constr += f'\\begin{{align}}\n{expr}\n\\end{{align}}\n'
+                else:
+                    expr = _latex_expression(c.expr)
+                    constr += f'\\begin{{align}}\n{expr} \;\; \forall i \in S\n\\end{{align}}\n'
             else:
                 raise NotImplementedError(f'Unknown expression {expr} of type {type(expr)} in LatexWriter')
 
