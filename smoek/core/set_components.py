@@ -14,18 +14,3 @@ class Set(ModelingComponent):
 def set(name=None, doc=None):
     return Set(name=name, doc=doc)
 
-"""
-# TODO : should this be "ScalarSet"?
-class ScalarSet(ScalarComponent):
-    def __init__(self, name=None, doc=None):
-        super().__init__(name=name, doc=doc)
-
-class IndexedSet(IndexedComponent):
-    def __init__(self, name=None, forall=None, doc=None):
-        super().__init__(name=name, forall=forall, doc=doc)
-
-def _set(name=None, forall=None, doc=None):
-    if forall is None:
-        return ScalarSet(name=name)
-    return IndexedSet(name=name, forall=forall)
-"""

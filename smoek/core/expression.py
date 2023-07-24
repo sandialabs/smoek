@@ -1,6 +1,5 @@
 import smoek.core.utils
 
-
 # todo: error checking
 class ExprNode(object):
     def __add__(self, right):
@@ -83,7 +82,6 @@ class BinaryExprNode(ExprNode):
     @property
     def operation(self):
         return self._operation
-
 
 class NumberWrapper(ExprLeaf):
     def __init__(self, value):
