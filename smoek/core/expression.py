@@ -87,6 +87,10 @@ class NumberWrapper(ExprLeaf):
     def __init__(self, value):
         self._value = value
 
+    @property
+    def value(self):
+        return self._value
+
     def to_string(self):
         return '{}'.format(self._value)
 
