@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 
 # TODO: remove the reliance on types
 from smoek.core.set_components import Set # ScalarSet, IndexedSet
-from smoek.core.var_components import Variable # ScalarVariable, IndexedVariable
+from smoek.core.var_components import ScalarVariable # ScalarVariable, IndexedVariable
 from smoek.core.expr_components import Expression, Constraint, Objective # ScalarExpression, IndexedExpression
 from smoek.core.components import ComponentIndicesNode
 from smoek.core.data_components import Parameter # ScalarParameter, IndexedParameter
@@ -30,7 +30,7 @@ class LatexWriter(object):
         symbstr = ''
         constr = ''
         for c in args:
-            if isinstance(c, Set) or isinstance(c, Variable) or isinstance(c, Parameter):
+            if isinstance(c, Set) or isinstance(c, ScalarVariable) or isinstance(c, Parameter):
                 if c.is_scalar():
                     symbstr += f'${c.name}$ & {c.doc}\\\\ \n'
                 else:

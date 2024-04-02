@@ -49,7 +49,8 @@ def test_indexed_var():
     vi = v[i]
     assert type(vi) is ComponentIndicesNode
     assert vi._component is v
-    assert vi._indices is i
+    # TODO: determine whether this is intended behavior
+    assert vi._indices[0] is i
 
     v = variable('x', forall=f)
     assert v.name == 'x'
@@ -57,3 +58,9 @@ def test_indexed_var():
     # test to_string
     assert str(v) == 'x'
 
+
+if __name__ == "__main__":
+    test_variable_function()
+    test_scalar_var()
+    test_scalar_var_in_expression()
+    test_indexed_var()

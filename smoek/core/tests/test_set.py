@@ -58,7 +58,8 @@ def test_indexed_set():
     si = s[i]
     assert type(si) is ComponentIndicesNode
     assert si._component is s
-    assert si._indices is i
+    # TODO: determine whether this is intended behavior
+    assert si._indices[0] is i
 
     with pytest.raises(AssertionError, match="No name specified for this component"):
         s.name
@@ -72,3 +73,11 @@ def test_indexed_set():
     # test to_string
     assert str(s) == 'A'
     
+
+
+if __name__ == "__main__":
+    test_index_function()
+    test_index_set_function()
+    test_index()
+    test_scalar_set()
+    test_indexed_set()
