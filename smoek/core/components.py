@@ -1,5 +1,4 @@
-from .expression import ExprLeaf, ExprNode
-from .utils import ExpressionPrinter
+from .expr_components import ComponentIndicesNode
 
 # todo: error checking
 # todo: augment printing 
@@ -40,7 +39,7 @@ class ForAllObject(object):
         return list(isp.set for isp in self._index_set_pairs)
         
     def to_string(self):
-        ret = 'forall ' + ', '.join([f'{isp._index.to_string()} in {isp._index_set.to_string()}' for isp in self._index_set_pairs])
+        ret = 'forall ' + ', '.join([f'{isp.index.to_string()} in {isp.set.name}' for isp in self._index_set_pairs])
         return ret
 
 def forall(index, In=None):
@@ -74,21 +73,6 @@ class NamedComponent(object):
             return 'Unnamed Component'
         return self._name
 
-class ComponentIndicesNode(ExprLeaf):
-    def __init__(self, component, indices):
-        self._component = component
-        if type(indices) is tuple:
-            self._indices = indices
-        else:
-            self._indices = (indices,)
-
-    @property
-    def component(self):
-        return self._component
-    
-    @property
-    def indices(self):
-        return self._indices
 
 class ModelingComponent(NamedComponent):
     def __init__(self, name=None, doc=None):
@@ -103,13 +87,22 @@ class ModelingComponent(NamedComponent):
             self._forall = ForAllObject()
         self._forall.forall(index, In=In)
         return self
+    
+    def suchthat(self, expr):
+        assert self._forall is not None
+        self._forall.suchthat(expr)
+        return self
 
     def __getitem__(self, indices):
         # TODO: proper error message
         assert self._forall is not None
         return ComponentIndicesNode(self, indices)
 
+    # TODO: Decide whether to_string method should be in ModelingCoponent classes,
+    # or in a ComponentPrinter class which is specific to output format.
+    # Could also use Mixins to add to_string method to ModelingComponents.
     def to_string(self):
+        #raise NotImplementedError('Derived classes must implement this')
         if self._forall is None:
             return f'{self._name}'
         else:

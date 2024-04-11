@@ -1,11 +1,30 @@
-from .components import ModelingComponent, NamedComponent, ComponentIndicesNode
+from .components import ModelingComponent, NamedComponent
+from .expr_components import ExprLeaf
 
-class Index(NamedComponent):
+
+# should we include attribute for dimension of index?
+# can indices be ExprLeafs (e.g. for construction of filter expressions based on value)?
+# would imply all indices are numeric - may be a sensible restriction
+class Index(NamedComponent, ExprLeaf):
     def __init__(self, name=None):
         super().__init__(name=name)
 
+    def to_string(self):
+        return str(self)
+
+# class NumericIndex(Index, ExprLeaf):
+#     def __init__(self, name=None):
+#         super().__init__(name=name)
+
 def index(name=None):
     return Index(name)
+
+
+# Conceptually it might make sense to pass index to set constructor,
+#i.e. 
+# i = index()
+# I = set()
+# s = set(i).forall(i, in = I)
 
 class Set(ModelingComponent):
     def __init__(self, name=None, doc=None):
@@ -14,6 +33,9 @@ class Set(ModelingComponent):
 def set(name=None, doc=None):
     return Set(name=name, doc=doc)
 
+
+# I don't think we need to differentiate between ScalarSet and IndexedSet
+# Calling set().forall(...) will automatically create an indexed set
 class ScalarSet(Set):
     def __init__(self, name=None, doc=None):
         super().__init__(name=name, doc=doc)
@@ -23,8 +45,9 @@ class IndexedSet(Set):
         super().__init__(name=name, doc=doc)
         self._forall = forall
 
-    def __getitem__(self, indices):
-        return ComponentIndicesNode(self, indices)
+    # Is already implemented in ModelingComponent
+    # def __getitem__(self, indices):
+    #     return ComponentIndicesNode(self, indices)
 
 def index_set(name=None, forall=None, doc=None):
     if forall is None:
