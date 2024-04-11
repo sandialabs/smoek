@@ -1,5 +1,5 @@
 from .components import ModelingComponent
-from .expression import ExprLeaf
+from .expr_components import ExprLeaf
 
 class Parameter(ModelingComponent, ExprLeaf):
     def __init__(self, name=None, doc=None):

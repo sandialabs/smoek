@@ -1,6 +1,7 @@
 import re
 import pytest
 from smoek.core import variable, parameter, index, index_set, forall
+from smoek.core.utils import expr_to_list
 
 
 def test_mul_errors():
@@ -32,26 +33,26 @@ def test_mul_variables():
     b = variable(name="b")
 
     e = a*b
-    assert e.to_list() == ["*", "a", "b"]
+    assert expr_to_list(e) == ["*", "a", "b"]
 
     e = a
     e *= b
-    assert e.to_list() == ["*", "a", "b"]
+    assert expr_to_list(e) == ["*", "a", "b"]
 
 def test_mul_const():
     a = variable(name="a")
 
     e = 5*a
-    assert e.to_list() == ["*", "5", "a"]
+    assert expr_to_list(e) == ["*", "5", "a"]
 
     e = a*5
-    assert e.to_list() == ["*", "a", "5"]
+    assert expr_to_list(e) == ["*", "a", "5"]
 
     e = 5.0*a
-    assert e.to_list() == ["*", "5.0", "a"]
+    assert expr_to_list(e) == ["*", "5.0", "a"]
 
     e = a*5.0
-    assert e.to_list() == ["*", "a", "5.0"]
+    assert expr_to_list(e)== ["*", "a", "5.0"]
 
 def test_mul_nested():
     a = variable(name="a")
@@ -67,7 +68,7 @@ def test_mul_nested():
     e1 = a * b
     e = e1 * 5
     #
-    assert e.to_list() == ["*", ["*", "a", "b"], "5"]
+    assert expr_to_list(e) == ["*", ["*", "a", "b"], "5"]
 
     #       *
     #      / \
@@ -77,7 +78,7 @@ def test_mul_nested():
     e1 = a * b
     e = 5 * e1
     #
-    assert e.to_list() == ["*", "5", ["*", "a", "b"]]
+    assert expr_to_list(e) == ["*", "5", ["*", "a", "b"]]
 
     #           *
     #          / \
@@ -87,7 +88,7 @@ def test_mul_nested():
     e1 = a * b
     e = e1 * c
     #
-    assert e.to_list() == ["*", ["*", "a", "b"], "c"]
+    assert expr_to_list(e) == ["*", ["*", "a", "b"], "c"]
 
     #       *
     #      / \
@@ -97,7 +98,7 @@ def test_mul_nested():
     e1 = a * b
     e = c * e1
     #
-    assert e.to_list() == ["*", "c", ["*", "a", "b"]]
+    assert expr_to_list(e) == ["*", "c", ["*", "a", "b"]]
 
     #            *
     #          /   \
@@ -108,7 +109,7 @@ def test_mul_nested():
     e2 = c * d
     e = e1 * e2
     #
-    assert e.to_list() == ["*", ["*", "a", "b"], ["*", "c", "d"]]
+    assert expr_to_list(e) == ["*", ["*", "a", "b"], ["*", "c", "d"]]
 
     #
     # Check the structure of nested products
@@ -124,7 +125,7 @@ def test_mul_nested():
     e2 = c + e1
     e3 = e1 + d
     e = e2 * e3
-    assert e.to_list() == ["*", ["+", "c", ["+", "a", "b"]], ["+", ["+", "a", "b"], "d"]]
+    assert expr_to_list(e) == ["*", ["+", "c", ["+", "a", "b"]], ["+", ["+", "a", "b"], "d"]]
 
     #
     # Check the structure of nested products
@@ -140,7 +141,7 @@ def test_mul_nested():
     e2 = c * e1
     e3 = e1 * d
     e = e2 * e3
-    assert e.to_list() == ["*", ["*", "c", ["+", "a", "b"]], ["*", ["+", "a", "b"], "d"]]
+    assert expr_to_list(e) == ["*", ["*", "c", ["+", "a", "b"]], ["*", ["+", "a", "b"], "d"]]
 
 def test_mul_trivial_1():
     #
@@ -149,31 +150,31 @@ def test_mul_trivial_1():
     a = variable(name="a")
 
     e = a * 1
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = 1 * a
-    assert e.to_list() == "a"
+    assert expr_to_list(e)== "a"
 
     e = a * 1.0
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = 1.0 * a
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = a
     e *= 1
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = a
     e *= 1.0
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     #
     # Multiplying by one will not change the expression
     #
     e = a + a
     f = e * 1
-    assert f.to_list() == ["+", "a", "a"]
+    assert expr_to_list(e) == ["+", "a", "a"]
 
 def test_mul_trivial_0():
     #
@@ -182,29 +183,37 @@ def test_mul_trivial_0():
     a = variable(name="a")
 
     e = a * 0
-    assert e.to_list() == "0"
+    assert expr_to_list(e) == "0"
 
     e = 0 * a
-    assert e.to_list() == "0"
+    assert expr_to_list(e) == "0"
 
     e = a * 0.0
-    assert e.to_list() == "0.0"
+    assert expr_to_list(e) == "0.0"
 
     e = 0.0 * a
-    assert e.to_list() == "0.0"
+    assert expr_to_list(e) == "0.0"
 
     e = a
     e *= 0
-    assert e.to_list() == "0"
+    assert expr_to_list(e) == "0"
 
     e = a
     e *= 0.0
-    assert e.to_list() == "0.0"
+    assert expr_to_list(e) == "0.0"
 
     #
     # Multiplying by zero gives zero
     #
     e = a + a
     f = e * 0
-    assert f.to_list() == "0"
+    assert expr_to_list(f) == "0"
 
+
+if __name__ == "__main__":
+    test_mul_errors()
+    test_mul_variables()
+    test_mul_const()
+    test_mul_nested()
+    test_mul_trivial_1()
+    test_mul_trivial_0()

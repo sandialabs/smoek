@@ -1,11 +1,14 @@
 from enum import Enum
-from .components import ModelingComponent, NamedComponent, ComponentIndicesNode
-from .expression import ExprLeaf
+from .components import ModelingComponent
+from .expr_components import ExprLeaf, ComponentIndicesNode
 
 class Domain(Enum):
     Reals = 1
     Binary = 2
 
+# TODO: I don't think we need to differentiate between ScalarVariable and IndexedVariable
+# Calling variable().forall(...) will automatically create an indexed variable
+# However, scalar vars need to inherit Expr Leaf while indexed need __getitem__ method
 class ScalarVariable(ModelingComponent, ExprLeaf):
     def __init__(self, name=None, domain=None, doc=None):
         super().__init__(name, doc)
@@ -13,7 +16,7 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
             assert isinstance(domain, Domain)
         self._domain = domain
 
-def variable(name=None, domain=None, doc=None, forall=None):
+def variable(name=None, domain=Domain.Reals, doc=None, forall=None):
     if forall is None:
         return ScalarVariable(name=name, domain=domain, doc=doc)
     else:

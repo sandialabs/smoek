@@ -1,8 +1,8 @@
 import math
 import pytest
-from smoek.core import index, index_set, forall
+from smoek.core import index, index_set, forall, set
 from smoek.core.components import ComponentIndicesNode
-from smoek.core.set_components import Index, ScalarSet, IndexedSet
+from smoek.core.set_components import Index, ScalarSet, IndexedSet, Set
 #
 # Scalar index set
 #
@@ -72,7 +72,18 @@ def test_indexed_set():
 
     # test to_string
     assert str(s) == 'A'
-    
+
+def test_multi_indexed_set():
+    i = index('i')
+    I = index_set('I')
+    j = index('j')
+    J = index_set('J')
+    s = set().forall(i, In=I).forall(j, In=J)
+    sij = s[i, j]
+    assert type(sij) is ComponentIndicesNode
+    assert sij._component is s
+    assert sij._indices[0] is i
+    assert sij._indices[1] is j
 
 
 if __name__ == "__main__":
@@ -81,3 +92,4 @@ if __name__ == "__main__":
     test_index()
     test_scalar_set()
     test_indexed_set()
+    test_multi_indexed_set()

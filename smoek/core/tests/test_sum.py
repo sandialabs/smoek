@@ -1,6 +1,7 @@
 import re
 import pytest
 from smoek.core import variable, index, index_set, forall
+from smoek.core.utils import expr_to_list
 
 
 def test_sum_errors():
@@ -34,26 +35,26 @@ def test_sum_variables():
     b = variable(name="b")
 
     e = a+b
-    assert e.to_list() == ["+", "a", "b"]
+    assert expr_to_list(e) == ["+", "a", "b"]
 
     e = a
     e += b
-    assert e.to_list() == ["+", "a", "b"]
+    assert expr_to_list(e) == ["+", "a", "b"]
 
 def test_sum_const():
     a = variable(name="a")
 
     e = 5+a
-    assert e.to_list() == ["+", "5", "a"]
+    assert expr_to_list(e) == ["+", "5", "a"]
 
     e = a+5
-    assert e.to_list() == ["+", "a", "5"]
+    assert expr_to_list(e) == ["+", "a", "5"]
 
     e = 5.0+a
-    assert e.to_list() == ["+", "5.0", "a"]
+    assert expr_to_list(e) == ["+", "5.0", "a"]
 
     e = a+5.0
-    assert e.to_list() == ["+", "a", "5.0"]
+    assert expr_to_list(e) == ["+", "a", "5.0"]
 
 def test_sum_nested():
     a = variable(name="a")
@@ -69,7 +70,7 @@ def test_sum_nested():
     e1 = a + b
     e = e1 + 5
     #
-    assert e.to_list() == ["+", ["+", "a", "b"], "5"]
+    assert expr_to_list(e) == ["+", ["+", "a", "b"], "5"]
 
     #       +
     #      / \
@@ -79,7 +80,7 @@ def test_sum_nested():
     e1 = a + b
     e = 5 + e1
     #
-    assert e.to_list() == ["+", "5", ["+", "a", "b"]]
+    assert expr_to_list(e) == ["+", "5", ["+", "a", "b"]]
 
     #           +
     #          / \
@@ -89,7 +90,7 @@ def test_sum_nested():
     e1 = a + b
     e = e1 + c
     #
-    assert e.to_list() == ["+", ["+", "a", "b"], "c"]
+    assert expr_to_list(e) == ["+", ["+", "a", "b"], "c"]
 
     #       +
     #      / \
@@ -99,7 +100,7 @@ def test_sum_nested():
     e1 = a + b
     e = c + e1
     #
-    assert e.to_list() == ["+", "c", ["+", "a", "b"]]
+    assert expr_to_list(e) == ["+", "c", ["+", "a", "b"]]
 
     #            +
     #          /   \
@@ -110,7 +111,7 @@ def test_sum_nested():
     e2 = c + d
     e = e1 + e2
     #
-    assert e.to_list() == ["+", ["+", "a", "b"], ["+", "c", "d"]]
+    assert expr_to_list(e) == ["+", ["+", "a", "b"], ["+", "c", "d"]]
 
     #           +
     #          / \
@@ -122,7 +123,7 @@ def test_sum_nested():
     e1 = a + b
     e = 2 * e1 + c
     #
-    assert e.to_list() == ["+", ["*", "2", ["+", "a", "b"]], "c"]
+    assert expr_to_list(e) == ["+", ["*", "2", ["+", "a", "b"]], "c"]
 
     #         *
     #        / \
@@ -136,7 +137,7 @@ def test_sum_nested():
     e1 = a + b
     e = 3 * (2 * e1 + c)
     #
-    assert e.to_list() == ["*", "3", ["+", ["*", "2", ["+", "a", "b"]], "c"]]
+    assert expr_to_list(e) == ["*", "3", ["+", ["*", "2", ["+", "a", "b"]], "c"]]
 
     #       +
     #      / \
@@ -146,7 +147,7 @@ def test_sum_nested():
     e1 = a * 5
     e = e1 + b
     #
-    assert e.to_list() == ["+", ["*", "a", "5"], "b"]
+    assert expr_to_list(e) == ["+", ["*", "a", "5"], "b"]
 
     #       +
     #      / \
@@ -156,7 +157,7 @@ def test_sum_nested():
     e1 = a * 5
     e = b + e1
     #
-    assert e.to_list() == ["+", "b", ["*", "a", "5"]]
+    assert expr_to_list(e) == ["+", "b", ["*", "a", "5"]]
 
     #            +
     #          /   \
@@ -167,7 +168,7 @@ def test_sum_nested():
     e2 = b + c
     e = e1 + e2
     #
-    assert e.to_list() == ["+", ["*", "a", "5"], ["+", "b", "c"]]
+    assert expr_to_list(e) == ["+", ["*", "a", "5"], ["+", "b", "c"]]
 
     #            +
     #          /   \
@@ -177,7 +178,7 @@ def test_sum_nested():
     e2 = b + c
     e = e2 + e1
     #
-    assert e.to_list() == ["+", ["+", "b", "c"], ["*", "a", "5"]]
+    assert expr_to_list(e) == ["+", ["+", "b", "c"], ["*", "a", "5"]]
 
 def test_sum_trivial():
     #
@@ -186,29 +187,29 @@ def test_sum_trivial():
     a = variable(name="a")
 
     e = a + 0
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = 0 + a
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = a + 0.0
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = 0.0 + a
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = a
     e += 0
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     e = a
     e += 0.0
-    assert e.to_list() == "a"
+    assert expr_to_list(e) == "a"
 
     #
     # Adding zero to a sum will not change the sum
     #
     e = a + a
     f = e + 0
-    assert f.to_list() == ["+", "a", "a"]
+    assert expr_to_list(f) == ["+", "a", "a"]
 
