@@ -12,10 +12,9 @@ from smoek.core.model_components import Model
 from smoek.core.var_components import ScalarVariable, IndexedVariable, Domain
 
 
-class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker):
+class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
-        self._stack = []
         self._allowed_math_functions = ['sin', 'cos', 'tan', 'log', 'exp']
         self._binary_op_lookup = {
             '+': '+',
@@ -82,7 +81,8 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker):
             raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in ExpressionToLatexStringWalker')
         
 def expression_to_latex_string(expr):
-    return ExpressionToLatexStringWalker().expression_to_latex_string(expr)
+    #return ExpressionToLatexStringWalker().expression_to_latex_string(expr)
+    return ExpressionToLatexStringWalker().walk(expr)
 
 
 def variable_to_latex_string(var):

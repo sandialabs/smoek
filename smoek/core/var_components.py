@@ -14,6 +14,8 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         super().__init__(name, doc)
         if domain is not None:
             assert isinstance(domain, Domain)
+        else:
+            domain = Domain.Reals
         self._domain = domain
 
 def variable(name=None, domain=Domain.Reals, doc=None, forall=None):

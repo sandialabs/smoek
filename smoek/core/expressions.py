@@ -11,6 +11,8 @@ class Expression(ModelingComponent, ExprNode):
     def expr(self):
         return self._expr
     
+    # TODO: Indexed Expressions are not well-defined yet
+    # TODO: Move all writer functions into separate class
     def to_string(self):
         return self.name + ' : ' + self._expr.to_string()
     

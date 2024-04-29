@@ -137,7 +137,8 @@ class BinaryExprNode(ExprNode):
     
 class UnaryExprNode(ExprNode):
     def __init__(self, expr, operation):
-        assert isinstance(expr, ExprNode)
+        expr = _wrap_expression_if_needed(expr)
+        assert isinstance(expr, ExprNode), f'expression is not an instance of ExprNode: {type(expr)}'
         self._arg = expr
         self._operation = operation
 

@@ -27,8 +27,18 @@ def index(name=None):
 # s = set(i).forall(i, in = I)
 
 class Set(ModelingComponent):
-    def __init__(self, name=None, doc=None):
+    def __init__(self, name=None, data = None, size = None, doc=None):
         super().__init__(name=name, doc=doc)
+        self._data = data
+        self._size = size
+
+    @property
+    def data(self):
+        return self._data
+    
+    @property
+    def size(self):
+        return self._size
 
 def set(name=None, doc=None):
     return Set(name=name, doc=doc)

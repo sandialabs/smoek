@@ -48,6 +48,9 @@ def forall(index, In=None):
 
 class NamedComponent(object):
     def __init__(self, name=None, doc=None):
+        # TODO: add rules for supplied names, i.e. no spaces, no special characters
+        # and some exclusion for defult names, e.g. no '_' as first character.
+        # also list of forbidden names, e.g. 'forall', 'in', 'suchthat'
         self._name = name
         self._doc = doc
 

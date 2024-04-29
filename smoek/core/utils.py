@@ -1,54 +1,67 @@
 import smoek.core.expr_components
+from smoek.core.expr_components import ExprNode
 import smoek.core.functions
 
-class BottomUpDepthFirstExpressionWalker(object):
+from typing import TypeVar, Generic, List
+
+
+T = TypeVar('T')
+class BottomUpDepthFirstExpressionWalker(Generic[T]):
     def __init__(self):
         self._depth = 0
+        self._stack: List[T] = []
 
-    def _walk(self, expr):
+    def _walk(self, expr: ExprNode, **kwargs):
         assert self._depth == 0
-        self._depth_first_walk(expr)
+        self._depth_first_walk(expr, *kwargs)
         assert self._depth == 0
         
-    def _depth_first_walk(self, expr):
+    def _depth_first_walk(self, expr: ExprNode, **kwargs):
         assert expr is not None
         if isinstance(expr, smoek.core.expr_components.ExprLeaf):
-            self._visit(expr)
+            self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.expr_components.BinaryExprNode):
             self._depth += 1
-            self._depth_first_walk(expr.left)
-            self._depth_first_walk(expr.right)
+            self._depth_first_walk(expr.left, *kwargs)
+            self._depth_first_walk(expr.right, *kwargs)
             self._depth -= 1
-            self._visit(expr)
+            self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.functions.UnaryExprNode):
             self._depth += 1
-            self._depth_first_walk(expr.arg)
+            self._depth_first_walk(expr.arg, *kwargs)
             self._depth -= 1
-            self._visit(expr)
+            self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.functions.SumExprNode):
             self._depth += 1
-            self._depth_first_walk(expr._expr)
+            self._depth_first_walk(expr._expr, *kwargs)
             self._depth -= 1
-            self._visit(expr)
+            self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.functions.ProdExprNode):
             self._depth += 1
-            self._depth_first_walk(expr._expr)
+            self._depth_first_walk(expr._expr, *kwargs)
             self._depth -= 1
-            self._visit(expr)
+            self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.expressions.Expression):
             self._depth += 1
-            self._depth_first_walk(expr.expr)
+            self._depth_first_walk(expr.expr, *kwargs)
             self._depth -= 1
-            self._visit(expr)
+            self._visit(expr, *kwargs)
         else:
             raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in BottomUpDepthFirstExpressionWalker')
 
-    def _visit(self, expr):
+    def _visit(self, expr: ExprNode, **kwargs):
         raise NotImplementedError('BottomUpDepthFirstExpressionWalker._visit needs to be implemented by the derived class')
+    
+    def walk(self, expr, **kwargs) -> T:
+        assert self._stack == []
+        self._walk(expr, *kwargs)
+        ret = self._stack.pop()
+        assert self._stack == []
+        return ret
 
 
 
-class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker):
+class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
         self._stack = []
@@ -90,7 +103,7 @@ class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker):
         
 
 
-class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker):
+class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
     def __init__(self):
         super().__init__()
         self._stack = []
@@ -139,7 +152,21 @@ def expr_to_string(expr):
 
 
 
+class ExpressionDepthWalker(BottomUpDepthFirstExpressionWalker):
 
+    def __init__(self):
+        super().__init__()
+        self._max_depth = 0
+
+    def _visit(self, expr):
+        if self._depth > self._max_depth:
+            self._max_depth = self._depth
+
+
+def get_expression_depth(expr):
+    walker = ExpressionDepthWalker()
+    walker._walk(expr)
+    return walker._max_depth
 
 # class ExpressionPrinter:
 #     def __init__(self):
