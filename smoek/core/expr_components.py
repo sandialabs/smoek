@@ -1,3 +1,31 @@
+from enum import StrEnum
+
+class ExpressionType(StrEnum):
+    add = '+'
+    sub = '-'
+    neg = 'neg'
+    mul = '*'
+    div = '/'
+    pow = '**'
+    sum = 'sum'
+    prod = 'prod'
+    log = 'log'
+    exp = 'expr'
+    sin = 'sin'
+    cos = 'cos'
+    tan = 'tan'
+    asin = 'asin'
+    acos = 'acos'
+    atan = 'atan'
+    variable = 'variable'
+    parameter = 'parameter'
+    constant = 'constant'
+    leq = '<='
+    eq = '=='
+    geq = '>='
+    indexed_component = 'indexed_component'
+
+
 # todo: error checking
 class ExprNode(object):
     def __add__(self, right):
@@ -7,7 +35,7 @@ class ExprNode(object):
         if isinstance(right, NumberWrapper) and right._value == 0:
             return self
 
-        return BinaryExprNode(self, right, '+')
+        return BinaryExprNode(self, right, ExpressionType.add)
 
     def __radd__(self, left):
         left = _wrap_expression_if_needed(left)
@@ -16,7 +44,7 @@ class ExprNode(object):
         if isinstance(left, NumberWrapper) and left._value == 0:
             return self
 
-        return BinaryExprNode(left, self, '+')
+        return BinaryExprNode(left, self, ExpressionType.add)
 
     def __mul__(self, right):
         right = _wrap_expression_if_needed(right)
@@ -28,7 +56,7 @@ class ExprNode(object):
             elif right._value == 1:
                 return self
             
-        return BinaryExprNode(self, right, '*')
+        return BinaryExprNode(self, right, ExpressionType.mul)
 
     def __rmul__(self, left):
         left = _wrap_expression_if_needed(left)
@@ -40,7 +68,7 @@ class ExprNode(object):
             elif left._value == 1:
                 return self
         
-        return BinaryExprNode(left, self, '*')
+        return BinaryExprNode(left, self, ExpressionType.mul)
     
     def __sub__(self, right):
         right = _wrap_expression_if_needed(right)
@@ -49,7 +77,7 @@ class ExprNode(object):
         if isinstance(right, NumberWrapper) and right._value == 0:
             return self
 
-        return BinaryExprNode(self, right, '-')
+        return BinaryExprNode(self, right, ExpressionType.sub)
     
     def __rsub__(self, left):
         left = _wrap_expression_if_needed(left)
@@ -58,7 +86,10 @@ class ExprNode(object):
         if isinstance(left, NumberWrapper) and left._value == 0:
             return self
 
-        return BinaryExprNode(left, self, '-')
+        return BinaryExprNode(left, self, ExpressionType.sub)
+    
+    def __neg__(self):
+        return UnaryExprNode(self, ExpressionType.neg)
     
     def __truediv__(self, right):
         right = _wrap_expression_if_needed(right)
@@ -70,7 +101,7 @@ class ExprNode(object):
             elif right._value == 1:
                 return self
             
-        return BinaryExprNode(self, right, '/')
+        return BinaryExprNode(self, right, ExpressionType.div)
     
     def __rtruediv__(self, left):
         left = _wrap_expression_if_needed(left)
@@ -79,16 +110,16 @@ class ExprNode(object):
         if isinstance(left, NumberWrapper) and left._value == 0:
             return NumberWrapper(0)
 
-        return BinaryExprNode(left, self, '/')
+        return BinaryExprNode(left, self, ExpressionType.div)
 
     def __le__(self, right):
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), '<=')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), ExpressionType.leq)
 
     def __ge__(self, right):
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), '>=')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), ExpressionType.geq)
 
     def __eq__(self, right):
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), '==')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), ExpressionType.eq)
     
     def __pow__(self, right):
         right = _wrap_expression_if_needed(right)
@@ -100,7 +131,24 @@ class ExprNode(object):
             elif right._value == 1:
                 return self
             
-        return BinaryExprNode(self, _wrap_expression_if_needed(right), '**')
+        return BinaryExprNode(self, _wrap_expression_if_needed(right), ExpressionType.pow)
+
+    def is_leaf(self):
+        return False
+
+    def args(self):
+        raise NotImplementedError('Should be implemented by derived classes')
+    
+    def etype(self):
+        raise NotImplementedError('Should be implemented by derived classes')
+
+    def __str__(self) -> str:
+        from .utils import expr_to_string
+        return expr_to_string(self)
+
+    def __repr__(self) -> str:
+        from .utils import expr_to_string
+        return expr_to_string(self)
 
     # def to_list(self):
     #     return smoek.core.utils.to_list(self)
@@ -115,6 +163,12 @@ class ExprLeaf(ExprNode):
     def to_string(self):
         raise NotImplementedError('Derived classes must implement this')
 
+    def is_leaf(self):
+        return True
+    
+    def args(self):
+        return tuple()
+
 class BinaryExprNode(ExprNode):
     def __init__(self, left, right, operation):
         assert isinstance(left, ExprNode)
@@ -122,6 +176,9 @@ class BinaryExprNode(ExprNode):
         self._left = left
         self._right = right
         self._operation = operation
+
+    def etype(self):
+        return self._operation
 
     @property
     def left(self):
@@ -135,12 +192,18 @@ class BinaryExprNode(ExprNode):
     def operation(self):
         return self._operation
     
+    def args(self):
+        return (self.left, self.right)
+    
 class UnaryExprNode(ExprNode):
     def __init__(self, expr, operation):
         expr = _wrap_expression_if_needed(expr)
         assert isinstance(expr, ExprNode), f'expression is not an instance of ExprNode: {type(expr)}'
         self._arg = expr
         self._operation = operation
+
+    def etype(self):
+        return self._operation
 
     @property
     def arg(self):
@@ -149,6 +212,9 @@ class UnaryExprNode(ExprNode):
     @property
     def operation(self):
         return self._operation
+    
+    def args(self):
+        return (self.arg,)
     
     # def to_string(self):
     #     return '{}({})'.format(self._operation, self._arg.to_string())
@@ -163,6 +229,9 @@ class NumberWrapper(ExprLeaf):
 
     def to_string(self):
         return '{}'.format(self._value)
+
+    def etype(self):
+        return ExpressionType.constant
 
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):
@@ -180,6 +249,9 @@ class ComponentIndicesNode(ExprLeaf):
             self._indices = indices
         else:
             self._indices = (indices,)
+
+    def etype(self):
+        return ExpressionType.indexed_component
 
     @property
     def component(self):

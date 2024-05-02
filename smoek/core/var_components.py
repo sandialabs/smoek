@@ -1,6 +1,7 @@
 from enum import Enum
-from .components import ModelingComponent
-from .expr_components import ExprLeaf, ComponentIndicesNode
+from .components import ModelingComponent, ForAllObject
+from .expr_components import ExprLeaf, ComponentIndicesNode, ExpressionType
+from pyomo.common.collections import ComponentMap
 
 class Domain(Enum):
     Reals = 1
@@ -17,6 +18,14 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         else:
             domain = Domain.Reals
         self._domain = domain
+
+    def etype(self):
+        return ExpressionType.variable
+        
+    def forall(self, index, In):
+        res = IndexedVariable(forall=ForAllObject().forall(index, In), name=self.name, domain=self._domain, doc=self._doc)
+        return res
+    
 
 def variable(name=None, domain=Domain.Reals, doc=None, forall=None):
     if forall is None:
@@ -39,6 +48,12 @@ class IndexedVariable(ModelingComponent):
             assert isinstance(domain, Domain)
         self._domain = domain
         self._forall = forall
+        self._component_indices = ComponentMap()
+
+    def etype(self):
+        return ExpressionType.variable
 
     def __getitem__(self, indices):
-        return ComponentIndicesNode(self, indices)
+        if indices not in self._component_indices:
+            self._component_indices[indices] = ComponentIndicesNode(self, indices)
+        return self._component_indices[indices]
