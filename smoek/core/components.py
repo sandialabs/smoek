@@ -1,10 +1,11 @@
 from .expr_components import ComponentIndicesNode
 
 # todo: error checking
-# todo: augment printing 
+# todo: augment printing
 
 # TODO: change these classes so that all components are the same
 # and the presence of forall indicates that they are indexed
+
 
 class IndexSetPair(object):
     def __init__(self, index, index_set):
@@ -19,6 +20,7 @@ class IndexSetPair(object):
     def set(self):
         return self._set
 
+
 class ForAllObject(object):
     def __init__(self):
         self._index_set_pairs = list()
@@ -27,7 +29,7 @@ class ForAllObject(object):
     def forall(self, index, In=None):
         self._index_set_pairs.append(IndexSetPair(index, In))
         return self
-    
+
     def suchthat(self, expr):
         self._filter_expressions.append(expr)
         return self
@@ -37,10 +39,16 @@ class ForAllObject(object):
 
     def sets_list(self):
         return list(isp.set for isp in self._index_set_pairs)
-        
+
     def to_string(self):
-        ret = 'forall ' + ', '.join([f'{isp.index.to_string()} in {isp.set.name}' for isp in self._index_set_pairs])
+        ret = "forall " + ", ".join(
+            [
+                f"{isp.index.to_string()} in {isp.set.name}"
+                for isp in self._index_set_pairs
+            ]
+        )
         return ret
+
 
 def forall(index, In=None):
     return ForAllObject().forall(index, In=In)
@@ -73,7 +81,7 @@ class NamedComponent(object):
 
     def __str__(self):
         if self._name is None:
-            return 'UnnamedComponent'
+            return "UnnamedComponent"
         return self._name
 
 
@@ -84,16 +92,16 @@ class ModelingComponent(NamedComponent):
 
     def is_scalar(self):
         return self._forall is None
-        
+
     def is_indexed(self):
         return self._forall is not None
-        
+
     def forall(self, index, In):
         if self._forall is None:
             self._forall = ForAllObject()
         self._forall.forall(index, In=In)
         return self
-    
+
     def suchthat(self, expr):
         # TODO: proper error message
         assert self._forall is not None
@@ -110,8 +118,8 @@ class ModelingComponent(NamedComponent):
     # Could also use Mixins to add to_string method to ModelingComponents.
     # WEH: Alternatively, this could be an external function and not a method
     def to_string(self):
-        #raise NotImplementedError('Derived classes must implement this')
+        # raise NotImplementedError('Derived classes must implement this')
         if self._forall is None:
-            return f'{self._name}'
+            return f"{self._name}"
         else:
-            return f'{self._name}, {self._forall.to_string()}'
+            return f"{self._name}, {self._forall.to_string()}"

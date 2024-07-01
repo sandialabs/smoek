@@ -11,48 +11,51 @@ def test_mul_errors():
 
     a = variable(name="a")
     with pytest.raises(TypeError) as excinfo:
-        TMP()*a
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+        TMP() * a
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
     with pytest.raises(TypeError) as excinfo:
-        a*TMP()
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+        a * TMP()
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
 
-    i = index('i')
-    I = index_set('I')
+    i = index("i")
+    I = index_set("I")
     v = variable(forall=forall(i, In=I))
     s = variable()
     with pytest.raises(TypeError) as excinfo:
-        foo = v*s
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+        foo = v * s
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
     with pytest.raises(TypeError) as excinfo:
-        foo = s*v
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+        foo = s * v
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
+
 
 def test_mul_variables():
     a = variable(name="a")
     b = variable(name="b")
 
-    e = a*b
+    e = a * b
     assert expr_to_list(e) == ["*", "a", "b"]
 
     e = a
     e *= b
     assert expr_to_list(e) == ["*", "a", "b"]
 
+
 def test_mul_const():
     a = variable(name="a")
 
-    e = 5*a
+    e = 5 * a
     assert expr_to_list(e) == ["*", "5", "a"]
 
-    e = a*5
+    e = a * 5
     assert expr_to_list(e) == ["*", "a", "5"]
 
-    e = 5.0*a
+    e = 5.0 * a
     assert expr_to_list(e) == ["*", "5.0", "a"]
 
-    e = a*5.0
-    assert expr_to_list(e)== ["*", "a", "5.0"]
+    e = a * 5.0
+    assert expr_to_list(e) == ["*", "a", "5.0"]
+
 
 def test_mul_nested():
     a = variable(name="a")
@@ -125,7 +128,11 @@ def test_mul_nested():
     e2 = c + e1
     e3 = e1 + d
     e = e2 * e3
-    assert expr_to_list(e) == ["*", ["+", "c", ["+", "a", "b"]], ["+", ["+", "a", "b"], "d"]]
+    assert expr_to_list(e) == [
+        "*",
+        ["+", "c", ["+", "a", "b"]],
+        ["+", ["+", "a", "b"], "d"],
+    ]
 
     #
     # Check the structure of nested products
@@ -141,7 +148,12 @@ def test_mul_nested():
     e2 = c * e1
     e3 = e1 * d
     e = e2 * e3
-    assert expr_to_list(e) == ["*", ["*", "c", ["+", "a", "b"]], ["*", ["+", "a", "b"], "d"]]
+    assert expr_to_list(e) == [
+        "*",
+        ["*", "c", ["+", "a", "b"]],
+        ["*", ["+", "a", "b"], "d"],
+    ]
+
 
 def test_mul_trivial_1():
     #
@@ -153,7 +165,7 @@ def test_mul_trivial_1():
     assert expr_to_list(e) == "a"
 
     e = 1 * a
-    assert expr_to_list(e)== "a"
+    assert expr_to_list(e) == "a"
 
     e = a * 1.0
     assert expr_to_list(e) == "a"
@@ -175,6 +187,7 @@ def test_mul_trivial_1():
     e = a + a
     f = e * 1
     assert expr_to_list(e) == ["+", "a", "a"]
+
 
 def test_mul_trivial_0():
     #
@@ -209,11 +222,3 @@ def test_mul_trivial_0():
     f = e * 0
     assert expr_to_list(f) == "0"
 
-
-if __name__ == "__main__":
-    test_mul_errors()
-    test_mul_variables()
-    test_mul_const()
-    test_mul_nested()
-    test_mul_trivial_1()
-    test_mul_trivial_0()

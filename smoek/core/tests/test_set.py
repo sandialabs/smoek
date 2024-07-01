@@ -1,8 +1,10 @@
-import math
 import pytest
+import math
 from smoek.core import index, index_set, forall, set
 from smoek.core.components import ComponentIndicesNode
 from smoek.core.set_components import Index, ScalarSet, IndexedSet, Set
+
+
 #
 # Scalar index set
 #
@@ -10,29 +12,30 @@ def test_index_function():
     i = index()
     assert type(i) == Index
 
+
 def test_index_set_function():
     I = index_set()
     assert type(I) == ScalarSet
 
-    i = index('i')
-    I = index_set('I')
+    i = index("i")
+    I = index_set("I")
     f = forall(i, In=I)
-
-    II = index_set('II', forall=f)
+    II = index_set("II", forall=f)
     assert type(II) == IndexedSet
-    
+
+
 def test_index():
     i = index()
     with pytest.raises(AssertionError, match="No name specified for this component"):
         i.name
-    i.name = 'i'
-    assert i.name == 'i'
+    i.name = "i"
+    assert i.name == "i"
 
-    i = index('i')
-    assert i.name == 'i'
+    i = index("i")
+    assert i.name == "i"
 
     # test to_string
-    assert str(i) == 'i'
+    assert str(i) == "i"
 
 
 def test_scalar_set():
@@ -42,19 +45,20 @@ def test_scalar_set():
     s.name = "A"
     assert s.name == "A"
 
-    s = index_set('A')
+    s = index_set("A")
     assert s.name == "A"
 
     # test to_string
-    assert str(s) == 'A'
+    assert str(s) == "A"
+
 
 def test_indexed_set():
-    i = index('i')
-    I = index_set('I')
+    i = index("i")
+    I = index_set("I")
     f = forall(i, In=I)
-
     s = index_set(forall=f)
     assert s._forall is f
+
     si = s[i]
     assert type(si) is ComponentIndicesNode
     assert si._component is s
@@ -66,30 +70,21 @@ def test_indexed_set():
     s.name = "A"
     assert s.name == "A"
 
-
-    s = index_set('A')
+    s = index_set("A")
     assert s.name == "A"
 
     # test to_string
-    assert str(s) == 'A'
+    assert str(s) == "A"
+
 
 def test_multi_indexed_set():
-    i = index('i')
-    I = index_set('I')
-    j = index('j')
-    J = index_set('J')
+    i = index("i")
+    I = index_set("I")
+    j = index("j")
+    J = index_set("J")
     s = set().forall(i, In=I).forall(j, In=J)
     sij = s[i, j]
     assert type(sij) is ComponentIndicesNode
     assert sij._component is s
     assert sij._indices[0] is i
     assert sij._indices[1] is j
-
-
-if __name__ == "__main__":
-    test_index_function()
-    test_index_set_function()
-    test_index()
-    test_scalar_set()
-    test_indexed_set()
-    test_multi_indexed_set()

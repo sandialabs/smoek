@@ -1,20 +1,22 @@
-import math
 import pytest
+import math
 from smoek.core import variable, forall, index, index_set
 from smoek.core.components import ComponentIndicesNode
 from smoek.core.var_components import IndexedVariable, ScalarVariable
+
 
 def test_variable_function():
     v = variable()
     assert type(v) is ScalarVariable
 
-    i = index('i')
-    I = index_set('I')
+    i = index("i")
+    I = index_set("I")
     f = forall(i, In=I)
 
     v = variable(forall=f)
     assert type(v) is IndexedVariable
-    
+
+
 def test_scalar_var():
     # test name
     v = variable()
@@ -23,21 +25,24 @@ def test_scalar_var():
     v.name = "x"
     assert v.name == "x"
 
-    v = variable('x')
-    assert v.name == 'x'
+    v = variable("x")
+    assert v.name == "x"
 
     # test to_string
-    assert str(v) == 'x'
+    assert str(v) == "x"
 
-@pytest.mark.skip('TODO: finish this one')
+
+# WEH - What is this test for?
+@pytest.mark.skip("TODO: finish this one")
 def test_scalar_var_in_expression():
     pass
 
+
 def test_indexed_var():
-    i = index('i')
-    I = index_set('I')
+    i = index("i")
+    I = index_set("I")
     f = forall(i, In=I)
-    
+
     # test name
     v = variable(forall=f)
     with pytest.raises(AssertionError, match="No name specified for this component"):
@@ -52,15 +57,8 @@ def test_indexed_var():
     # TODO: determine whether this is intended behavior
     assert vi._indices[0] is i
 
-    v = variable('x', forall=f)
-    assert v.name == 'x'
+    v = variable("x", forall=f)
+    assert v.name == "x"
 
     # test to_string
-    assert str(v) == 'x'
-
-
-if __name__ == "__main__":
-    test_variable_function()
-    test_scalar_var()
-    test_scalar_var_in_expression()
-    test_indexed_var()
+    assert str(v) == "x"

@@ -1,5 +1,5 @@
-import re
 import pytest
+import re
 from smoek.core import variable, index, index_set, forall
 from smoek.core.utils import expr_to_list
 
@@ -12,49 +12,52 @@ def test_sum_errors():
     a = variable(name="a")
     with pytest.raises(TypeError) as excinfo:
         TMP() + a
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
     with pytest.raises(TypeError) as excinfo:
         a + TMP()
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
 
     # IndexedVariable with no index
     # TODO: We should have special error for this case - it is likely common
-    i = index('i')
-    I = index_set('I')
+    i = index("i")
+    I = index_set("I")
     v = variable(forall=forall(i, In=I))
     s = variable()
     with pytest.raises(TypeError) as excinfo:
         foo = v + s
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
     with pytest.raises(TypeError) as excinfo:
         foo = s + v
-    assert str(excinfo.value).startswith('unsupported operand type(s) in expression')
+    assert str(excinfo.value).startswith("unsupported operand type(s) in expression")
+
 
 def test_sum_variables():
     a = variable(name="a")
     b = variable(name="b")
 
-    e = a+b
+    e = a + b
     assert expr_to_list(e) == ["+", "a", "b"]
 
     e = a
     e += b
     assert expr_to_list(e) == ["+", "a", "b"]
 
+
 def test_sum_const():
     a = variable(name="a")
 
-    e = 5+a
+    e = 5 + a
     assert expr_to_list(e) == ["+", "5", "a"]
 
-    e = a+5
+    e = a + 5
     assert expr_to_list(e) == ["+", "a", "5"]
 
-    e = 5.0+a
+    e = 5.0 + a
     assert expr_to_list(e) == ["+", "5.0", "a"]
 
-    e = a+5.0
+    e = a + 5.0
     assert expr_to_list(e) == ["+", "a", "5.0"]
+
 
 def test_sum_nested():
     a = variable(name="a")
@@ -179,6 +182,7 @@ def test_sum_nested():
     e = e2 + e1
     #
     assert expr_to_list(e) == ["+", ["+", "b", "c"], ["*", "a", "5"]]
+
 
 def test_sum_trivial():
     #

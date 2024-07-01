@@ -14,13 +14,13 @@ class Constraint(ModelingComponent):
         if self._forall is None:
             return None
         return self._forall.indices_list()
-    
+
     def forall(self, index, In):
         # TODO: assert index are present in ComponentIndicesNode in self._expr
         return super().forall(index, In)
-    
+
     def to_string(self):
-        return f'{super().to_string()} : {expr_to_string(self._expr)}'
+        return f"{super().to_string()} : {expr_to_string(self._expr)}"
 
 
 def constraint(expr=None, name=None, doc=None):

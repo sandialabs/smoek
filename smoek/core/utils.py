@@ -33,7 +33,9 @@ class Walker(ABC):
             self.exit_node(node)
 
 
-T = TypeVar('T')
+T = TypeVar("T")
+
+
 class BottomUpDepthFirstExpressionWalker(Generic[T]):
     def __init__(self):
         self._depth = 0
@@ -43,7 +45,7 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
         assert self._depth == 0
         self._depth_first_walk(expr, *kwargs)
         assert self._depth == 0
-        
+
     def _depth_first_walk(self, expr: ExprNode, **kwargs):
         assert expr is not None
         if isinstance(expr, smoek.core.expr_components.ExprLeaf):
@@ -75,18 +77,21 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
             self._depth -= 1
             self._visit(expr, *kwargs)
         else:
-            raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in BottomUpDepthFirstExpressionWalker')
+            raise NotImplementedError(
+                f"Expression node {expr} of type {type(expr)} not supported in BottomUpDepthFirstExpressionWalker"
+            )
 
     def _visit(self, expr: ExprNode, **kwargs):
-        raise NotImplementedError('BottomUpDepthFirstExpressionWalker._visit needs to be implemented by the derived class')
-    
+        raise NotImplementedError(
+            "BottomUpDepthFirstExpressionWalker._visit needs to be implemented by the derived class"
+        )
+
     def walk(self, expr, **kwargs) -> T:
         assert self._stack == []
         self._walk(expr, *kwargs)
         ret = self._stack.pop()
         assert self._stack == []
         return ret
-
 
 
 class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -105,30 +110,31 @@ class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker[str]):
         if isinstance(expr, smoek.core.expr_components.BinaryExprNode):
             right = self._stack.pop()
             left = self._stack.pop()
-            ret = f'{left} {expr.operation} {right}'
+            ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.functions.UnaryExprNode):
             arg = self._stack.pop()
-            ret = f'{expr.operation}({arg})'
+            ret = f"{expr.operation}({arg})"
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.expr_components.ExprLeaf):
-            ret = f'{expr.to_string()}'
+            ret = f"{expr.to_string()}"
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.functions.SumExprNode):
             body = self._stack.pop()
-            ret = f'sum({expr._forall.to_string()}, {body})'
+            ret = f"sum({expr._forall.to_string()}, {body})"
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.functions.ProdExprNode):
             body = self._stack.pop()
-            ret = f'prod({expr._forall.to_string()}, {body})'
+            ret = f"prod({expr._forall.to_string()}, {body})"
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.expressions.Expression):
             body = self._stack.pop()
-            ret = f'({body})'
+            ret = f"({body})"
             self._stack.append(ret)
         else:
-            raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in ExpressionToStringWalker')
-        
+            raise NotImplementedError(
+                f"Expression node {expr} of type {type(expr)} not supported in ExpressionToStringWalker"
+            )
 
 
 class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
@@ -158,26 +164,28 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.functions.SumExprNode):
             body = self._stack.pop()
-            ret = ['sum', expr._forall.to_string(), body]
+            ret = ["sum", expr._forall.to_string(), body]
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.functions.ProdExprNode):
             body = self._stack.pop()
-            ret = ['prod', expr._forall.to_string(), body]
+            ret = ["prod", expr._forall.to_string(), body]
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.expressions.Expression):
             body = self._stack.pop()
             ret = [body]
             self._stack.append(ret)
         else:
-            raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in ExpressionToListWalker')
+            raise NotImplementedError(
+                f"Expression node {expr} of type {type(expr)} not supported in ExpressionToListWalker"
+            )
 
 
 def expr_to_list(expr):
     return ExpressionToListWalker().expression_to_list(expr)
 
+
 def expr_to_string(expr):
     return ExpressionToStringWalker().expression_to_string(expr)
-
 
 
 class ExpressionDepthWalker(BottomUpDepthFirstExpressionWalker):
@@ -196,6 +204,7 @@ def get_expression_depth(expr):
     walker._walk(expr)
     return walker._max_depth
 
+
 # class ExpressionPrinter:
 #     def __init__(self):
 #         self._depth = 0
@@ -203,7 +212,7 @@ def get_expression_depth(expr):
 #     def expression_to_string(self, expr):
 #         assert self._depth == 0
 #         self._ret = ''
-        
+
 #         self._depth_first_walk(expr)
 #         assert self._depth == 0
 
@@ -214,7 +223,7 @@ def get_expression_depth(expr):
 
 #     def print_expression(self, expr):
 #         print(self.expression_to_string(expr))
-        
+
 #     def _depth_first_walk(self, expr):
 #         if isinstance(expr, smoek.core.expr_components.ExprLeaf):
 #             self._visit(expr)
@@ -224,7 +233,7 @@ def get_expression_depth(expr):
 #             self._depth_first_walk(expr.left)
 #             self._depth_first_walk(expr.right)
 #             self._depth -= 1
-            
+
 #     def _visit(self, expr):
 #         if isinstance(expr, smoek.core.expr_components.BinaryExprNode):
 #             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.operation)
@@ -246,7 +255,7 @@ def get_expression_depth(expr):
 #         elif isinstance(expr, smoek.core.functions.SumExprNode):
 #             return f'sum({self._depth_first_walk(expr._expr)}, {expr._forall.to_string()})'
 #         # TODO: case for Expression object
-            
+
 #     def _visit(self, expr):
 #         if isinstance(expr, smoek.core.expr_components.BinaryExprNode) or isinstance(expr, smoek.core.functions.UnaryExprNode):
 #             return expr.operation
@@ -266,10 +275,9 @@ def get_expression_depth(expr):
 #             return [self._visit(expr), self._depth_first_walk(expr.arg)]
 #         elif isinstance(expr, smoek.core.functions.SumExprNode):
 #             return [f'sum({expr._forall.to_string()})', self._depth_first_walk(expr._expr)]
-            
+
 #     def _visit(self, expr):
 #         if isinstance(expr, smoek.core.expr_components.BinaryExprNode) or isinstance(expr, smoek.core.functions.UnaryExprNode):
 #             return expr.operation
 #         elif isinstance(expr, smoek.core.expr_components.ExprLeaf):
 #             return expr.to_string()
-        
