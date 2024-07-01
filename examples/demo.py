@@ -1,4 +1,4 @@
-import smoek.core as smk
+import smoek as smk
 import numpy as np
 from smoek.io.tex import expression_to_latex_string, LatexWriter
 
@@ -6,13 +6,13 @@ from smoek.io.tex import expression_to_latex_string, LatexWriter
 i = smk.index('i')
 j = smk.index('j')
 
-# index sets, contents/constructiuon not defined
+# index sets, contents/construction not defined
 # should there be a data attribute?
-I = smk.set('I')
-J = smk.set('J')
+I = smk.index_set('I')
+J = smk.index_set('J')
 
 # indexed sets, contents/constructiuon not defined
-S = smk.set('S').forall(i, In=I).suchthat(i >= 0)
+S = smk.index_set('S').forall(i, In=I).suchthat(i >= 0)
 
 
 M = smk.parameter('M').forall(i, In=I).forall(j, In=J)
@@ -33,21 +33,21 @@ c3 = smk.constraint(expr = smk.sin(3) / smk.sum(v[i]**2 + x[j]**2).forall(i, In=
 print(c1.to_string())
 print(c2.to_string())
 print(c3.to_string())
-print(smk.utils.expr_to_string(c1._expr))
-print(smk.utils.expr_to_string(c2._expr))
-print(smk.utils.expr_to_string(c3._expr))
+print(smk.expr_to_string(c1._expr))
+print(smk.expr_to_string(c2._expr))
+print(smk.expr_to_string(c3._expr))
 
 print(expression_to_latex_string(c1._expr))
 print(expression_to_latex_string(c2._expr))
 print(expression_to_latex_string(c3._expr))
 
-# print(smk.utils.expr_to_list(c1._expr))
-# print(smk.utils.expr_to_list(c2._expr))
-# print(smk.utils.expr_to_list(c3._expr))
+# print(smk.expr_to_list(c1._expr))
+# print(smk.expr_to_list(c2._expr))
+# print(smk.expr_to_list(c3._expr))
 
 #ex1 = smk.expression(name='ex1', expr=v[i]**3 + smk.sin(x[i] + 4)).forall(i, In=I)
 # ex2 = smk.expression(name='ex2', expr=3 * ex1)
-# print(smk.utils.expr_to_string(ex2))
+# print(smk.expr_to_string(ex2))
 
 m = smk.model(minimize = smk.sum(v[i]**2 + x[j]**2).forall(i, In=I).forall(j, In=J),
               #minimize = ex1[i],
@@ -55,7 +55,7 @@ m = smk.model(minimize = smk.sum(v[i]**2 + x[j]**2).forall(i, In=I).forall(j, In
               variables=[v, x, z],
               name='m')
 
-LatexWriter()._write_model(m, 'examples/tex/model.tex')
+LatexWriter().write_model(m, 'model.tex')
 
 
 

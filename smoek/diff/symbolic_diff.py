@@ -1,7 +1,7 @@
-from .utils import Walker
-from .expr_components import ExprNode, ExpressionType
 from pyomo.common.collections import ComponentMap
-from .functions import log, exp, sin, cos, tan
+from smoek.core.expr.nodes import ExprNode, ExpressionType
+from smoek.core.expr.functions import log, exp, sin, cos, tan
+from smoek.core.utils import Walker
 
 
 def diff_add(node, der_map):
