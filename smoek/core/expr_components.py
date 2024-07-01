@@ -1,3 +1,5 @@
+# TODO: error checking
+
 from enum import StrEnum
 
 class ExpressionType(StrEnum):
@@ -23,10 +25,9 @@ class ExpressionType(StrEnum):
     leq = '<='
     eq = '=='
     geq = '>='
-    indexed_component = 'indexed_component'
+    indexed_component = 'indexed_component' # WEH: This is really a reference to an element in a indexed component, right?
 
 
-# todo: error checking
 class ExprNode(object):
     def __add__(self, right):
         right = _wrap_expression_if_needed(right)
@@ -242,6 +243,9 @@ def _wrap_expression_if_needed(expr):
 
     return expr
 
+#
+# WEH - This class name is not obvious.  Maybe something like IndexedComponentRefNode?
+#
 class ComponentIndicesNode(ExprLeaf):
     def __init__(self, component, indices):
         self._component = component
