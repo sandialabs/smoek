@@ -80,8 +80,8 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
         else:
             raise NotImplementedError(f'Expression node {expr} of type {type(expr)} not supported in ExpressionToLatexStringWalker')
         
+
 def expression_to_latex_string(expr):
-    #return ExpressionToLatexStringWalker().expression_to_latex_string(expr)
     return ExpressionToLatexStringWalker().walk(expr)
 
 
@@ -100,6 +100,29 @@ def variable_to_latex_string(var):
         set_str = " \\times ".join([s.name for s in var._forall.sets_list()])
         return f'{var.name} \\in {dom_str}^{{|{set_str}|}}'
 
+
+def model_to_latex_string(model):
+    writer = LatexWriter()
+    lines = [
+            f'\\begin{{subequations}}',
+            f'\\begin{{align}}',
+            f'& \\text{{min}} && {writer._expr_writer.expression_to_latex_string(model.objective)} &&& \\\\']
+
+    constr = model.constraints[0]
+    lines.append( f'& \\text{{s.t.}} &&{writer._expr_writer.expression_to_latex_string(constr._expr)}, &&& {writer._expr_writer.                                   forall_object_to_latex_string(constr._forall) if constr._forall else ""}' )
+    for constr in model.constraints[1:]:
+        lines.append('\\')
+        lines.append( f'& && {writer._expr_writer.expression_to_latex_string(constr._expr)}, &&& {writer._expr_writer.forall_object_to_latex_string(constr.        _forall) if constr._forall else ""}' )
+
+    lines.append('\\\\')
+    lines.append( "&&&" + ",".join([ f'{variable_to_latex_string(c)}' for c in model.variables ]) + "&&&" )
+
+    lines.append( f'\\end{{align}}' )
+    lines.append( f'\\end{{subequations}}' )
+
+    return "\n".join(lines)
+
+
 class LatexWriter(object):
 
     def __init__(self):
@@ -109,25 +132,7 @@ class LatexWriter(object):
         with open(fname, 'w') as fd:
             fd.writelines([f'\\documentclass{{article}}\n', f'\\usepackage{{amsmath}}\n', '\\usepackage{{amsfonts}}', f'\\begin{{document}}\n'])
 
-            fd.write(f'\\begin{{subequations}}\n')
-            fd.write(f'\\begin{{align}}\n')
-
-            fd.write(f'& \\text{{min}} && {self._expr_writer.expression_to_latex_string(model.objective)} &&& \\\\ \n')
-            constr = model.constraints[0]
-            fd.write(f'& \\text{{s.t.}} &&{self._expr_writer.expression_to_latex_string(constr._expr)}, &&& {self._expr_writer.forall_object_to_latex_string(constr._forall) if constr._forall else ""}')
-
-            for constr in model.constraints[1:]:
-                fd.write('\\\\ \n')
-                fd.write(f'& && {self._expr_writer.expression_to_latex_string(constr._expr)}, &&& {self._expr_writer.forall_object_to_latex_string(constr._forall) if constr._forall else ""}')
-            
-            fd.write('\\\\ \n')
-            fd.write('& && ')
-            for c in model.variables[:-1]:
-                fd.write(f'{variable_to_latex_string(c)}, ')
-            fd.write(f'{variable_to_latex_string(model.variables[-1])} &&&\n')
-
-            fd.write(f'\\end{{align}}\n')
-            fd.write(f'\\end{{subequations}}\n')
+            fd.write(f'{model_to_latex_string(model)}')
 
             fd.writelines([f'\\end{{document}}'])
             

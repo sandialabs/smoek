@@ -1,5 +1,5 @@
 import smoek as smk
-from smoek.io.tex import LatexWriter
+from smoek.io.tex import model_to_latex_string, LatexWriter
 from pathlib import Path
 currdir = str(Path(__file__).parent.absolute())
 
@@ -24,6 +24,13 @@ def test_knapsack():
     )
 
     M = smk.model(o, [c], [x], "knapsack", "test_knapsack()")
-    l = LatexWriter()
-    l.write_model(M, currdir + '/tex/knapsack.tex')
+    l = model_to_latex_string(M)
+    assert l == """\\begin{subequations}
+\\begin{align}
+& \\text{min} && (\\sum_{\\forall_{(i) \\in A}} ({v_{i}} \\cdot {x_{i}})) &&& \\\\
+& \\text{s.t.} &&{\\sum_{\\forall_{(i) \\in A}} ({w_{i}} \\cdot {x_{i}})} \\leq {\\bar w}, &&& 
+\\\\
+&&&x \\in \\{0, 1\\}^{|A|}&&&
+\\end{align}
+\\end{subequations}"""
 
