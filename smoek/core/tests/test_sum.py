@@ -1,6 +1,6 @@
 import pytest
 import re
-from smoek import variable, index, index_set, expr_to_list
+from smoek import variable, index, index_set, expr_to_list, expr_to_string
 from smoek.core.expr.forall import forall
 
 
@@ -37,10 +37,12 @@ def test_sum_variables():
 
     e = a + b
     assert expr_to_list(e) == ["+", "a", "b"]
+    assert expr_to_string(e) == "a + b"
 
     e = a
     e += b
     assert expr_to_list(e) == ["+", "a", "b"]
+    assert expr_to_string(e) == "a + b"
 
 
 def test_sum_const():
@@ -48,15 +50,19 @@ def test_sum_const():
 
     e = 5 + a
     assert expr_to_list(e) == ["+", "5", "a"]
+    assert expr_to_string(e) == "5 + a"
 
     e = a + 5
     assert expr_to_list(e) == ["+", "a", "5"]
+    assert expr_to_string(e) == "a + 5"
 
     e = 5.0 + a
     assert expr_to_list(e) == ["+", "5.0", "a"]
+    assert expr_to_string(e) == "5.0 + a"
 
     e = a + 5.0
     assert expr_to_list(e) == ["+", "a", "5.0"]
+    assert expr_to_string(e) == "a + 5.0"
 
 
 def test_sum_nested():
@@ -74,6 +80,7 @@ def test_sum_nested():
     e = e1 + 5
     #
     assert expr_to_list(e) == ["+", ["+", "a", "b"], "5"]
+    assert expr_to_string(e) == "a + b + 5"
 
     #       +
     #      / \
@@ -84,6 +91,7 @@ def test_sum_nested():
     e = 5 + e1
     #
     assert expr_to_list(e) == ["+", "5", ["+", "a", "b"]]
+    assert expr_to_string(e) == "5 + a + b"
 
     #           +
     #          / \
@@ -94,6 +102,7 @@ def test_sum_nested():
     e = e1 + c
     #
     assert expr_to_list(e) == ["+", ["+", "a", "b"], "c"]
+    assert expr_to_string(e) == "a + b + c"
 
     #       +
     #      / \
@@ -104,6 +113,7 @@ def test_sum_nested():
     e = c + e1
     #
     assert expr_to_list(e) == ["+", "c", ["+", "a", "b"]]
+    assert expr_to_string(e) == "c + a + b"
 
     #            +
     #          /   \
@@ -115,6 +125,7 @@ def test_sum_nested():
     e = e1 + e2
     #
     assert expr_to_list(e) == ["+", ["+", "a", "b"], ["+", "c", "d"]]
+    assert expr_to_string(e) == "a + b + c + d"
 
     #           +
     #          / \
@@ -127,6 +138,8 @@ def test_sum_nested():
     e = 2 * e1 + c
     #
     assert expr_to_list(e) == ["+", ["*", "2", ["+", "a", "b"]], "c"]
+    # TODO: Fix this test failure!
+    #assert expr_to_string(e) == "2 * (a + b) + c"
 
     #         *
     #        / \

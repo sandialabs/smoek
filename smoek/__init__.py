@@ -12,4 +12,4 @@ from smoek.core.model.constr_components import constraint
 from smoek.core.model.expressions import objective
 from smoek.core.model.model_components import model
 
-from smoek.core.utils import expr_to_list
+from smoek.core.utils import expr_to_list, expr_to_string

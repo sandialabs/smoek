@@ -54,23 +54,17 @@ class ModelingComponent(NamedComponent):
         return self
 
     def suchthat(self, expr):
-        # TODO: proper error message
         assert self._forall is not None
         self._forall.suchthat(expr)
         return self
 
     def __getitem__(self, indices):
-        # TODO: proper error message
         assert self._forall is not None
         return ComponentIndicesNode(self, indices)
 
-    # TODO: Decide whether to_string method should be in ModelingComponent classes,
-    # or in a ComponentPrinter class which is specific to output format.
-    # Could also use Mixins to add to_string method to ModelingComponents.
-    # WEH: Alternatively, this could be an external function and not a method
     def to_string(self):
-        # raise NotImplementedError('Derived classes must implement this')
         if self._forall is None:
             return f"{self._name}"
         else:
             return f"{self._name}, {self._forall.to_string()}"
+

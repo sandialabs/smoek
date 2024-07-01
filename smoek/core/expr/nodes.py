@@ -227,9 +227,6 @@ class UnaryExprNode(ExprNode):
     def args(self):
         return (self.arg,)
 
-    # def to_string(self):
-    #     return '{}({})'.format(self._operation, self._arg.to_string())
-
 
 class NumberWrapper(ExprLeaf):
     def __init__(self, value):
@@ -282,3 +279,4 @@ class ComponentIndicesNode(ExprLeaf):
 
     def to_string(self):
         return f'{self._component.name}[{", ".join([index.to_string() for index in self._indices])}]'
+
