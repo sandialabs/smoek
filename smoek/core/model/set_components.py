@@ -1,5 +1,5 @@
+from smoek.core.expr.nodes import ExprLeaf
 from .components import ModelingComponent, NamedComponent
-from .expr_components import ExprLeaf
 
 
 # should we include attribute for dimension of index?
@@ -44,8 +44,11 @@ class Set(ModelingComponent):
         return self._size
 
 
-def set(name=None, doc=None):
-    return Set(name=name, doc=doc)
+#
+# WEH - This seems redundant with index_set().  Using index_set() for now.
+#
+#def set(name=None, doc=None):
+#    return Set(name=name, doc=doc)
 
 
 # I don't think we need to differentiate between ScalarSet and IndexedSet

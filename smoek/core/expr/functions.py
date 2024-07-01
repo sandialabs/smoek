@@ -1,5 +1,5 @@
-from smoek.core.expr_components import ExprNode, UnaryExprNode
-from smoek.core.components import ForAllObject
+from smoek.core.expr.nodes import ExprNode, UnaryExprNode
+from smoek.core.expr.forall import ForAllObject
 
 
 class SumExprNode(ExprNode):

@@ -1,9 +1,9 @@
 from typing import List, Dict
-from smoek.core.var_components import ScalarVariable, IndexedVariable
-from smoek.core.constr_components import Constraint
+from .var_components import ScalarVariable, IndexedVariable
+from .constr_components import Constraint
 
 
-class Model:
+class Model(object):
     def __init__(self, objective, constraints, variables, name="model", doc=""):
         self.objective = objective
         self.constraints: List[Constraint] = constraints

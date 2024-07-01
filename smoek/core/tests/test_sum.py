@@ -1,7 +1,7 @@
 import pytest
 import re
-from smoek.core import variable, index, index_set, forall
-from smoek.core.utils import expr_to_list
+from smoek import variable, index, index_set, expr_to_list
+from smoek.core.expr.forall import forall
 
 
 def test_sum_errors():

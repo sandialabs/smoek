@@ -1,8 +1,9 @@
 import pytest
 import math
-from smoek.core import index, index_set, forall, set
-from smoek.core.components import ComponentIndicesNode
-from smoek.core.set_components import Index, ScalarSet, IndexedSet, Set
+from smoek import index, index_set
+from smoek.core.expr.forall import forall
+from smoek.core.expr.nodes import ComponentIndicesNode
+from smoek.core.model.set_components import Index, ScalarSet, IndexedSet, Set
 
 
 #
@@ -82,7 +83,7 @@ def test_multi_indexed_set():
     I = index_set("I")
     j = index("j")
     J = index_set("J")
-    s = set().forall(i, In=I).forall(j, In=J)
+    s = index_set().forall(i, In=I).forall(j, In=J)
     sij = s[i, j]
     assert type(sij) is ComponentIndicesNode
     assert sij._component is s

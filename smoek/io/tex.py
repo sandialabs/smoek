@@ -4,12 +4,12 @@ import os
 # from jinja2 import Environment, FileSystemLoader
 
 # TODO: remove the reliance on types
-from smoek.core.expr_components import ExprLeaf, BinaryExprNode, ComponentIndicesNode, UnaryExprNode
-from smoek.core.expressions import Expression
-from smoek.core.functions import SumExprNode, ProdExprNode
+from smoek.core.expr.nodes import ExprLeaf, BinaryExprNode, ComponentIndicesNode, UnaryExprNode
+from smoek.core.expr.functions import SumExprNode, ProdExprNode
+from smoek.core.model.expressions import Expression
+from smoek.core.model.model_components import Model
+from smoek.core.model.var_components import ScalarVariable, IndexedVariable, Domain
 from smoek.core.utils import BottomUpDepthFirstExpressionWalker
-from smoek.core.model_components import Model
-from smoek.core.var_components import ScalarVariable, IndexedVariable, Domain
 
 
 class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -105,7 +105,7 @@ class LatexWriter(object):
     def __init__(self):
         self._expr_writer = ExpressionToLatexStringWalker()
 
-    def _write_model(self, model, fname):
+    def write_model(self, model, fname):
         with open(fname, 'w') as fd:
             fd.writelines([f'\\documentclass{{article}}\n', f'\\usepackage{{amsmath}}\n', '\\usepackage{{amsfonts}}', f'\\begin{{document}}\n'])
 

@@ -1,7 +1,8 @@
-from enum import Enum
-from .components import ModelingComponent, ForAllObject
-from .expr_components import ExprLeaf, ComponentIndicesNode, ExpressionType
 from pyomo.common.collections import ComponentMap
+from enum import Enum
+from smoek.core.expr.forall import ForAllObject
+from smoek.core.expr.nodes import ExprLeaf, ComponentIndicesNode, ExpressionType
+from .components import ModelingComponent
 
 
 class Domain(Enum):

@@ -1,6 +1,5 @@
+from smoek.core.expr.nodes import ExprNode
 from .components import ModelingComponent
-from .expr_components import ExprNode
-from .utils import expr_to_string
 
 
 class Constraint(ModelingComponent):
@@ -20,6 +19,7 @@ class Constraint(ModelingComponent):
         return super().forall(index, In)
 
     def to_string(self):
+        from smoek.core.utils import expr_to_string
         return f"{super().to_string()} : {expr_to_string(self._expr)}"
 
 

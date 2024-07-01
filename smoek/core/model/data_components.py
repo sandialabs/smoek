@@ -1,5 +1,5 @@
+from smoek.core.expr.nodes import ExprLeaf
 from .components import ModelingComponent
-from .expr_components import ExprLeaf
 
 
 class Parameter(ModelingComponent, ExprLeaf):

@@ -1,7 +1,7 @@
 import re
 import pytest
-from smoek.core import variable, parameter, index, index_set, forall
-from smoek.core.utils import expr_to_list
+from smoek import variable, parameter, index, index_set, expr_to_list
+from smoek.core.expr.forall import forall
 
 
 def test_mul_errors():

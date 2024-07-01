@@ -1,8 +1,9 @@
-import smoek.core.expr_components
-from smoek.core.expr_components import ExprNode
-import smoek.core.functions
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, List
+import smoek.core.expr.nodes
+from smoek.core.expr.nodes import ExprNode
+import smoek.core.expr.functions
+import smoek.core.model.expressions
 
 
 native_types = {float, int}
@@ -48,30 +49,30 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
 
     def _depth_first_walk(self, expr: ExprNode, **kwargs):
         assert expr is not None
-        if isinstance(expr, smoek.core.expr_components.ExprLeaf):
+        if isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             self._visit(expr, *kwargs)
-        elif isinstance(expr, smoek.core.expr_components.BinaryExprNode):
+        elif isinstance(expr, smoek.core.expr.nodes.BinaryExprNode):
             self._depth += 1
             self._depth_first_walk(expr.left, *kwargs)
             self._depth_first_walk(expr.right, *kwargs)
             self._depth -= 1
             self._visit(expr, *kwargs)
-        elif isinstance(expr, smoek.core.functions.UnaryExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             self._depth += 1
             self._depth_first_walk(expr.arg, *kwargs)
             self._depth -= 1
             self._visit(expr, *kwargs)
-        elif isinstance(expr, smoek.core.functions.SumExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.SumExprNode):
             self._depth += 1
             self._depth_first_walk(expr._expr, *kwargs)
             self._depth -= 1
             self._visit(expr, *kwargs)
-        elif isinstance(expr, smoek.core.functions.ProdExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
             self._depth += 1
             self._depth_first_walk(expr._expr, *kwargs)
             self._depth -= 1
             self._visit(expr, *kwargs)
-        elif isinstance(expr, smoek.core.expressions.Expression):
+        elif isinstance(expr, smoek.core.model.expressions.Expression):
             self._depth += 1
             self._depth_first_walk(expr.expr, *kwargs)
             self._depth -= 1
@@ -107,23 +108,23 @@ class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker[str]):
         return ret
 
     def _visit(self, expr):
-        if isinstance(expr, smoek.core.expr_components.BinaryExprNode):
+        if isinstance(expr, smoek.core.expr.nodes.BinaryExprNode):
             right = self._stack.pop()
             left = self._stack.pop()
             ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.functions.UnaryExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()
             ret = f"{expr.operation}({arg})"
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.expr_components.ExprLeaf):
+        elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             ret = f"{expr.to_string()}"
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.functions.SumExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.SumExprNode):
             body = self._stack.pop()
             ret = f"sum({expr._forall.to_string()}, {body})"
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.functions.ProdExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
             body = self._stack.pop()
             ret = f"prod({expr._forall.to_string()}, {body})"
             self._stack.append(ret)
@@ -150,23 +151,23 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
         return ret
 
     def _visit(self, expr):
-        if isinstance(expr, smoek.core.expr_components.BinaryExprNode):
+        if isinstance(expr, smoek.core.expr.nodes.BinaryExprNode):
             right = self._stack.pop()
             left = self._stack.pop()
             ret = [expr.operation, left, right]
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.functions.UnaryExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()
             ret = [expr.operation, arg]
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.expr_components.ExprLeaf):
+        elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             ret = expr.to_string()
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.functions.SumExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.SumExprNode):
             body = self._stack.pop()
             ret = ["sum", expr._forall.to_string(), body]
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.functions.ProdExprNode):
+        elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
             body = self._stack.pop()
             ret = ["prod", expr._forall.to_string(), body]
             self._stack.append(ret)
@@ -204,80 +205,3 @@ def get_expression_depth(expr):
     walker._walk(expr)
     return walker._max_depth
 
-
-# class ExpressionPrinter:
-#     def __init__(self):
-#         self._depth = 0
-
-#     def expression_to_string(self, expr):
-#         assert self._depth == 0
-#         self._ret = ''
-
-#         self._depth_first_walk(expr)
-#         assert self._depth == 0
-
-#         self._ret += '\n'
-#         ret = self._ret
-#         self._ret = None
-#         return ret
-
-#     def print_expression(self, expr):
-#         print(self.expression_to_string(expr))
-
-#     def _depth_first_walk(self, expr):
-#         if isinstance(expr, smoek.core.expr_components.ExprLeaf):
-#             self._visit(expr)
-#         else:
-#             self._visit(expr)
-#             self._depth += 1
-#             self._depth_first_walk(expr.left)
-#             self._depth_first_walk(expr.right)
-#             self._depth -= 1
-
-#     def _visit(self, expr):
-#         if isinstance(expr, smoek.core.expr_components.BinaryExprNode):
-#             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.operation)
-#         else:
-#             self._ret += '\n{}{}'.format(' '*self._depth*3, expr.to_string())
-
-# class ExpressionToString:
-#     def expression_to_string(self, expr):
-#         return self._depth_first_walk(expr)
-
-#     def _depth_first_walk(self, expr):
-#         # TODO: deal with parentheses
-#         if isinstance(expr, smoek.core.expr_components.ExprLeaf):
-#             return f'{self._visit(expr)}'
-#         elif isinstance(expr, smoek.core.expr_components.BinaryExprNode):
-#             return  f'({self._depth_first_walk(expr.left)} {self._visit(expr)} {self._depth_first_walk(expr.right)})'
-#         elif isinstance(expr, smoek.core.functions.UnaryExprNode):
-#             return f'{self._visit(expr)}({self._depth_first_walk(expr.arg)})'
-#         elif isinstance(expr, smoek.core.functions.SumExprNode):
-#             return f'sum({self._depth_first_walk(expr._expr)}, {expr._forall.to_string()})'
-#         # TODO: case for Expression object
-
-#     def _visit(self, expr):
-#         if isinstance(expr, smoek.core.expr_components.BinaryExprNode) or isinstance(expr, smoek.core.functions.UnaryExprNode):
-#             return expr.operation
-#         elif isinstance(expr, smoek.core.expr_components.ExprLeaf):
-#             return expr.to_string()
-
-# class ExpressionToList:
-#     def expression_to_list(self, expr):
-#         return self._depth_first_walk(expr)
-
-#     def _depth_first_walk(self, expr):
-#         if isinstance(expr, smoek.core.expr_components.ExprLeaf):
-#             return f'{self._visit(expr)}'
-#         elif isinstance(expr, smoek.core.expr_components.BinaryExprNode):
-#             return  [self._depth_first_walk(expr.left), self._visit(expr), self._depth_first_walk(expr.right)]
-#         elif isinstance(expr, smoek.core.functions.UnaryExprNode):
-#             return [self._visit(expr), self._depth_first_walk(expr.arg)]
-#         elif isinstance(expr, smoek.core.functions.SumExprNode):
-#             return [f'sum({expr._forall.to_string()})', self._depth_first_walk(expr._expr)]
-
-#     def _visit(self, expr):
-#         if isinstance(expr, smoek.core.expr_components.BinaryExprNode) or isinstance(expr, smoek.core.functions.UnaryExprNode):
-#             return expr.operation
-#         elif isinstance(expr, smoek.core.expr_components.ExprLeaf):
-#             return expr.to_string()

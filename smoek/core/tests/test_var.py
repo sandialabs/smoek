@@ -1,8 +1,9 @@
 import pytest
 import math
-from smoek.core import variable, forall, index, index_set
-from smoek.core.components import ComponentIndicesNode
-from smoek.core.var_components import IndexedVariable, ScalarVariable
+from smoek import variable, index, index_set
+from smoek.core.expr.forall import forall
+from smoek.core.expr.nodes import ComponentIndicesNode
+from smoek.core.model.var_components import IndexedVariable, ScalarVariable
 
 
 def test_variable_function():

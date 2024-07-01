@@ -153,20 +153,14 @@ class ExprNode(object):
         raise NotImplementedError("Should be implemented by derived classes")
 
     def __str__(self) -> str:
-        from .utils import expr_to_string
+        from smoek.core.utils import expr_to_string
 
         return expr_to_string(self)
 
     def __repr__(self) -> str:
-        from .utils import expr_to_string
+        from smoek.core.utils import expr_to_string
 
         return expr_to_string(self)
-
-    # def to_list(self):
-    #     return smoek.core.utils.to_list(self)
-
-    # def to_string(self):
-    #     return smoek.core.utils.to_string(self)
 
 
 class ExprLeaf(ExprNode):
