@@ -3,11 +3,15 @@ from .components import ModelingComponent
 
 
 class Constraint(ModelingComponent):
-    def __init__(self, expr=None, name=None, doc=None):
+    def __init__(self, name=None, expr=None, doc=None):
         super().__init__(name=name, doc=doc)
-        if expr is not None:
-            assert isinstance(expr, ExprNode)
         self._expr = expr
+
+    def expr(self, expr=None):
+        if expr is None:
+            return self._expr
+        self._expr = expr
+        return self
 
     def index_set(self):
         if self._forall is None:
@@ -20,8 +24,9 @@ class Constraint(ModelingComponent):
 
     def to_string(self):
         from smoek.core.utils import expr_to_string
+
         return f"{super().to_string()} : {expr_to_string(self._expr)}"
 
 
-def constraint(expr=None, name=None, doc=None):
-    return Constraint(expr=expr, name=name, doc=doc)
+def constraint(name=None):
+    return Constraint(name=name)

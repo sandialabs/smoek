@@ -13,22 +13,18 @@ class NamedComponent(object):
         self._name = name
         self._doc = doc
 
-    @property
-    def name(self):
-        assert self._name is not None, "No name specified for this component"
-        return self._name
-
-    @name.setter
-    def name(self, name):
+    def name(self, name=None):
+        if name is None:
+            assert self._name is not None, "No name specified for this component"
+            return self._name
         self._name = name
+        return self
 
-    @property
-    def doc(self):
-        return self._doc
-
-    @doc.setter
-    def doc(self, doc):
+    def doc(self, doc=None):
+        if doc is None:
+            return self._doc
         self._doc = doc
+        return self
 
     def __str__(self):
         if self._name is None:
@@ -67,4 +63,3 @@ class ModelingComponent(NamedComponent):
             return f"{self._name}"
         else:
             return f"{self._name}, {self._forall.to_string()}"
-

@@ -49,9 +49,7 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
 
     def _depth_first_walk(self, expr: ExprNode, **kwargs):
         assert expr is not None
-        if isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
-            self._visit(expr, *kwargs)
-        elif isinstance(expr, smoek.core.expr.nodes.BinaryExprNode):
+        if isinstance(expr, smoek.core.expr.nodes.BinaryExprNode):
             self._depth += 1
             self._depth_first_walk(expr.left, *kwargs)
             self._depth_first_walk(expr.right, *kwargs)
@@ -74,8 +72,10 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
             self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.model.expressions.Expression):
             self._depth += 1
-            self._depth_first_walk(expr.expr, *kwargs)
+            self._depth_first_walk(expr._expr, *kwargs)
             self._depth -= 1
+            self._visit(expr, *kwargs)
+        elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             self._visit(expr, *kwargs)
         else:
             raise NotImplementedError(
@@ -128,7 +128,7 @@ class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             body = self._stack.pop()
             ret = f"prod({expr._forall.to_string()}, {body})"
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.expressions.Expression):
+        elif isinstance(expr, smoek.core.model.expressions.Expression):
             body = self._stack.pop()
             ret = f"({body})"
             self._stack.append(ret)
@@ -147,21 +147,18 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
         assert self._stack == []
         self._walk(expr)
         ret = self._stack.pop()
-        assert self._stack == []
+        assert self._stack == [], "Expected empty stack: " + str(self._stack)
         return ret
 
     def _visit(self, expr):
         if isinstance(expr, smoek.core.expr.nodes.BinaryExprNode):
             right = self._stack.pop()
             left = self._stack.pop()
-            ret = [expr.operation, left, right]
+            ret = [str(expr.operation), left, right]
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()
-            ret = [expr.operation, arg]
-            self._stack.append(ret)
-        elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
-            ret = expr.to_string()
+            ret = [str(expr.operation), arg]
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.expr.functions.SumExprNode):
             body = self._stack.pop()
@@ -171,9 +168,19 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
             body = self._stack.pop()
             ret = ["prod", expr._forall.to_string(), body]
             self._stack.append(ret)
-        elif isinstance(expr, smoek.core.expressions.Expression):
+        elif isinstance(expr, smoek.core.model.expressions.Objective):
+            body = self._stack.pop()
+            if expr.sense():
+                ret = ["minimize"] + body
+            else:
+                ret = ["maximize"] + body
+            self._stack.append(ret)
+        elif isinstance(expr, smoek.core.model.expressions.Expression):
             body = self._stack.pop()
             ret = [body]
+            self._stack.append(ret)
+        elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
+            ret = expr.to_string()
             self._stack.append(ret)
         else:
             raise NotImplementedError(
@@ -187,6 +194,14 @@ def expr_to_list(expr):
 
 def expr_to_string(expr):
     return ExpressionToStringWalker().expression_to_string(expr)
+
+
+def model_to_dict(model):
+    ans = {}
+    ans[model.objective.name()] = expr_to_list(model.objective)
+    for c in model.constraints:
+        ans[c.name()] = expr_to_list(c.expr())
+    return ans
 
 
 class ExpressionDepthWalker(BottomUpDepthFirstExpressionWalker):
@@ -204,4 +219,3 @@ def get_expression_depth(expr):
     walker = ExpressionDepthWalker()
     walker._walk(expr)
     return walker._max_depth
-

@@ -13,12 +13,12 @@ class Model(object):
 
         # add names for model construction
         for i, c in enumerate(self.constraints):
-            if c.name is None:
-                c.name = f"_c{i}"
+            if c.name() is None:
+                c.name(f"_c{i}")
         for i, v in enumerate(self.variables):
-            if v.name is None:
-                v.name = f"_v{i}"
+            if v.name() is None:
+                v.name(f"_v{i}")
 
 
-def model(minimize, constraints, variables, name="model", doc=""):
-    return Model(minimize, constraints, variables, name=name, doc=doc)
+def model(objective, constraints, variables, name="model", doc=""):
+    return Model(objective, constraints, variables, name=name, doc=doc)

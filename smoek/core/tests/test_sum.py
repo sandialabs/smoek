@@ -139,7 +139,7 @@ def test_sum_nested():
     #
     assert expr_to_list(e) == ["+", ["*", "2", ["+", "a", "b"]], "c"]
     # TODO: Fix this test failure!
-    #assert expr_to_string(e) == "2 * (a + b) + c"
+    # assert expr_to_string(e) == "2 * (a + b) + c"
 
     #         *
     #        / \
@@ -229,4 +229,3 @@ def test_sum_trivial():
     e = a + a
     f = e + 0
     assert expr_to_list(f) == ["+", "a", "a"]
-

@@ -221,4 +221,3 @@ def test_mul_trivial_0():
     e = a + a
     f = e * 0
     assert expr_to_list(f) == "0"
-

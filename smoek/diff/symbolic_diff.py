@@ -76,7 +76,7 @@ def diff_cos(node, der_map):
 def diff_tan(node, der_map):
     if node.arg not in der_map:
         der_map[node.arg] = 0
-    der_map[node.arg] += der_map[node] / cos(node.arg)**2
+    der_map[node.arg] += der_map[node] / cos(node.arg) ** 2
 
 
 def diff_indexed_component(node, der_map):

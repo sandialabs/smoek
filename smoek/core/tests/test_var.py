@@ -22,12 +22,12 @@ def test_scalar_var():
     # test name
     v = variable()
     with pytest.raises(AssertionError, match="No name specified for this component"):
-        v.name
-    v.name = "x"
-    assert v.name == "x"
+        v.name()
+    v.name("x")
+    assert v.name() == "x"
 
     v = variable("x")
-    assert v.name == "x"
+    assert v.name() == "x"
 
     # test to_string
     assert str(v) == "x"
@@ -47,9 +47,9 @@ def test_indexed_var():
     # test name
     v = variable(forall=f)
     with pytest.raises(AssertionError, match="No name specified for this component"):
-        v.name
-    v.name = "x"
-    assert v.name == "x"
+        v.name()
+    v.name("x")
+    assert v.name() == "x"
 
     assert v._forall is f
     vi = v[i]
@@ -59,7 +59,7 @@ def test_indexed_var():
     assert vi._indices[0] is i
 
     v = variable("x", forall=f)
-    assert v.name == "x"
+    assert v.name() == "x"
 
     # test to_string
     assert str(v) == "x"

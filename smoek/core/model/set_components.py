@@ -47,7 +47,7 @@ class Set(ModelingComponent):
 #
 # WEH - This seems redundant with index_set().  Using index_set() for now.
 #
-#def set(name=None, doc=None):
+# def set(name=None, doc=None):
 #    return Set(name=name, doc=doc)
 
 
@@ -73,3 +73,39 @@ def index_set(name=None, forall=None, doc=None):
         return ScalarSet(name=name, doc=doc)
     else:
         return IndexedSet(name=name, forall=forall, doc=doc)
+
+
+class RangeSet(ScalarSet):
+
+    def __init__(self, name, stop):
+        super().__init__(name=name)
+        self._N = stop
+        self._size = stop
+
+    @property
+    def data(self):
+        return list(range(self._N))
+
+
+def range(name=None, *, stop=None):
+    assert type(stop) is int
+    return RangeSet(name=name, stop=stop)
+
+
+class SequenceSet(ScalarSet):
+
+    def __init__(self, name, start, stop):
+        super().__init__(name=name)
+        self._start = start
+        self._stop = stop
+        self._size = stop - start + 1
+
+    @property
+    def data(self):
+        return list(range(self._start, self._stop + 1))
+
+
+def sequence(name=None, *, start=None, stop=None):
+    assert type(start) is int
+    assert type(stop) is int
+    return SequenceSet(name, start, stop)

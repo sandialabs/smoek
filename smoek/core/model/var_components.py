@@ -3,6 +3,7 @@ from enum import Enum
 from smoek.core.expr.forall import ForAllObject
 from smoek.core.expr.nodes import ExprLeaf, ComponentIndicesNode, ExpressionType
 from .components import ModelingComponent
+from .set_components import index
 
 
 class Domain(Enum):
@@ -24,6 +25,20 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         else:
             domain = Domain.Reals
         self._domain = domain
+        self._lower = None
+        self._upper = None
+        self._value = None
+
+    def value(self, value=None):
+        if value is None:
+            return self._value
+        self._value = value
+        return self
+
+    def bounds(self, lower, upper):
+        self._lower = lower
+        self._upper = upper
+        return self
 
     def etype(self):
         return ExpressionType.variable
@@ -31,11 +46,14 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
     def forall(self, index, In):
         res = IndexedVariable(
             forall=ForAllObject().forall(index, In),
-            name=self.name,
+            name=self.name(),
             domain=self._domain,
             doc=self._doc,
         )
         return res
+
+    def index(self, In):
+        return self.forall(index(), In)
 
 
 def variable(name=None, domain=Domain.Reals, doc=None, forall=None):
@@ -63,6 +81,9 @@ class IndexedVariable(ModelingComponent):
         self._domain = domain
         self._forall = forall
         self._component_indices = ComponentMap()
+        self._lower = None
+        self._upper = None
+        self._value = None
 
     def etype(self):
         return ExpressionType.variable
@@ -72,3 +93,13 @@ class IndexedVariable(ModelingComponent):
             self._component_indices[indices] = ComponentIndicesNode(self, indices)
         return self._component_indices[indices]
 
+    def bounds(self, lower, upper):
+        self._lower = lower
+        self._upper = upper
+        return self
+
+    def value(self, value=None):
+        if value is None:
+            return self._value
+        self._value = value
+        return self

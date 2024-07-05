@@ -9,7 +9,7 @@ class ExpressionType(StrEnum):
     neg = "neg"
     mul = "*"
     div = "/"
-    pow = "**"
+    pow = "pow"
     sum = "sum"
     prod = "prod"
     log = "log"
@@ -278,5 +278,8 @@ class ComponentIndicesNode(ExprLeaf):
         return self._indices
 
     def to_string(self):
-        return f'{self._component.name}[{", ".join([index.to_string() for index in self._indices])}]'
-
+        indices = [
+            index.to_string() if hasattr(index, "to_string") else str(index)
+            for index in self._indices
+        ]
+        return f'{self._component.name()}[{", ".join(indices)}]'
