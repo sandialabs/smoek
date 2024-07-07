@@ -18,3 +18,4 @@ from smoek.core.utils import expr_to_list, expr_to_string, model_to_dict, collec
 import smoek.io
 import smoek.diff
 import smoek.pymodel.pyomo
+import smoek.code.coek

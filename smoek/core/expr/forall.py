@@ -35,10 +35,10 @@ class ForAllObject(object):
         return self
 
     def indices_list(self):
-        return list(isp.index for isp in self._index_set_pairs)
+        return [isp.index for isp in self._index_set_pairs]
 
     def sets_list(self):
-        return list(isp.set for isp in self._index_set_pairs)
+        return [isp.set for isp in self._index_set_pairs]
 
     def to_string(self):
         ret = "forall " + ", ".join(

@@ -1,7 +1,7 @@
 from pyomo.common.collections import ComponentMap
 from enum import Enum
 from smoek.core.expr.forall import ForAllObject
-from smoek.core.expr.nodes import ExprLeaf, ComponentIndicesNode, ExpressionType
+from smoek.core.expr.nodes import ExprLeaf, ComponentIndicesNode, ExpressionType, _wrap_expression_if_needed
 from .components import ModelingComponent, index
 
 
@@ -31,12 +31,24 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
     def value(self, value=None):
         if value is None:
             return self._value
-        self._value = value
+        self._value = _wrap_expression_if_needed(value)
+        return self
+
+    def lower(self, value=None):
+        if value is None:
+            return self._lower
+        self._lower = _wrap_expression_if_needed(value)
+        return self
+
+    def upper(self, value=None):
+        if value is None:
+            return self._upper
+        self._upper = _wrap_expression_if_needed(value)
         return self
 
     def bounds(self, lower, upper):
-        self._lower = lower
-        self._upper = upper
+        self._lower = _wrap_expression_if_needed(lower)
+        self._upper = _wrap_expression_if_needed(upper)
         return self
 
     def etype(self):
@@ -92,13 +104,25 @@ class IndexedVariable(ModelingComponent):
             self._component_indices[indices] = ComponentIndicesNode(self, indices)
         return self._component_indices[indices]
 
-    def bounds(self, lower, upper):
-        self._lower = lower
-        self._upper = upper
-        return self
-
     def value(self, value=None):
         if value is None:
             return self._value
-        self._value = value
+        self._value = _wrap_expression_if_needed(value)
+        return self
+
+    def lower(self, value=None):
+        if value is None:
+            return self._lower
+        self._lower = _wrap_expression_if_needed(value)
+        return self
+
+    def upper(self, value=None):
+        if value is None:
+            return self._upper
+        self._upper = _wrap_expression_if_needed(value)
+        return self
+
+    def bounds(self, lower, upper):
+        self._lower = _wrap_expression_if_needed(lower)
+        self._upper = _wrap_expression_if_needed(upper)
         return self
