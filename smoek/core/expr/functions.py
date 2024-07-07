@@ -1,4 +1,4 @@
-from smoek.core.expr.nodes import ExprNode, UnaryExprNode
+from smoek.core.expr.nodes import ExprNode, UnaryExprNode, ExpressionType
 from smoek.core.expr.forall import ForAllObject
 
 
