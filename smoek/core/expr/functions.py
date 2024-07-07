@@ -37,7 +37,7 @@ def prod(expr):
 
 
 def log(expr):
-    return UnaryExprNode(expr=expr, operation="log")
+    return UnaryExprNode(expr=expr, operation=ExpressionType.log)
 
 
 def exp(expr):
