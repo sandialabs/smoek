@@ -26,6 +26,7 @@ class ExpressionType(StrEnum):
     leq = "<="
     eq = "=="
     geq = ">="
+    neq = "!="
     indexed_component = "indexed_component"  # WEH: This is really a reference to an element in a indexed component, right?
 
 
