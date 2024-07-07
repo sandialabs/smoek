@@ -4,7 +4,7 @@ from smoek import index, index_set
 from smoek.core.expr.forall import forall
 from smoek.core.expr.nodes import ComponentIndicesNode
 from smoek.core.model.components import Index
-from smoek.core.model.set_components import ScalarSet, IndexedSet, Set
+from smoek.core.model.set_components import Set
 
 
 #
@@ -17,13 +17,15 @@ def test_index_function():
 
 def test_index_set_function():
     I = index_set()
-    assert type(I) == ScalarSet
+    assert type(I) == Set
+    assert not I.is_indexed()
 
     i = index("i")
     I = index_set("I")
     f = forall(i, In=I)
     II = index_set("II", forall=f)
-    assert type(II) == IndexedSet
+    assert type(II) == Set
+    assert II.is_indexed()
 
 
 def test_index():

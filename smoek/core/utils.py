@@ -9,29 +9,29 @@ import smoek.core.model.expressions
 native_types = {float, int}
 
 
-class Walker(ABC):
-    def __init__(self) -> None:
-        self._stack = []
-
-    @abstractmethod
-    def enter_node(self, node: ExprNode):
-        pass
-
-    @abstractmethod
-    def exit_node(self, node: ExprNode):
-        pass
-
-    def walk(self, expr: ExprNode):
-        self._stack = [expr]
-        prefix = []
-        while len(self._stack) > 0:
-            node = self._stack.pop()
-            prefix.append(node)
-            self.enter_node(node)
-            if not node.is_leaf():
-                self._stack.extend(reversed(node.args()))
-        for node in reversed(prefix):
-            self.exit_node(node)
+#class Walker(ABC):
+#    def __init__(self) -> None:
+#        self._stack = []
+#
+#    @abstractmethod
+#    def enter_node(self, node: ExprNode):
+#        pass
+#
+#    @abstractmethod
+#    def exit_node(self, node: ExprNode):
+#        pass
+#
+#    def walk(self, expr: ExprNode):
+#        self._stack = [expr]
+#        prefix = []
+#        while len(self._stack) > 0:
+#            node = self._stack.pop()
+#            prefix.append(node)
+#            self.enter_node(node)
+#            if not node.is_leaf():
+#                self._stack.extend(reversed(node.args()))
+#        for node in reversed(prefix):
+#            self.exit_node(node)
 
 
 T = TypeVar("T")

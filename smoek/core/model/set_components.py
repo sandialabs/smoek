@@ -18,10 +18,11 @@ from .components import ModelingComponent, NamedComponent
 
 
 class Set(ModelingComponent):
-    def __init__(self, name=None, data=None, size=None, doc=None):
+    def __init__(self, name=None, data=None, size=None, doc=None, forall=None):
         super().__init__(name=name, doc=doc)
         self._data = data
         self._size = size
+        self._forall = forall
 
     @property
     def data(self):
@@ -39,27 +40,14 @@ class Set(ModelingComponent):
 #    return Set(name=name, doc=doc)
 
 
-# I don't think we need to differentiate between ScalarSet and IndexedSet
-# Calling set().forall(...) will automatically create an indexed set
-class ScalarSet(Set):
-    def __init__(self, name=None, doc=None):
-        super().__init__(name=name, doc=doc)
-
-
-class IndexedSet(Set):
-    def __init__(self, name=None, forall=None, doc=None):
-        super().__init__(name=name, doc=doc)
-        self._forall = forall
-
-
 def index_set(name=None, forall=None, doc=None):
     if forall is None:
-        return ScalarSet(name=name, doc=doc)
+        return Set(name=name, doc=doc)
     else:
-        return IndexedSet(name=name, forall=forall, doc=doc)
+        return Set(name=name, forall=forall, doc=doc)
 
 
-class RangeSet(ScalarSet):
+class RangeSet(Set):
 
     def __init__(self, name, stop):
         super().__init__(name=name)
@@ -78,7 +66,7 @@ def range(name=None, *, stop=None):
     return RangeSet(name=name, stop=stop)
 
 
-class SequenceSet(ScalarSet):
+class SequenceSet(Set):
 
     def __init__(self, name, start, stop):
         super().__init__(name=name)
