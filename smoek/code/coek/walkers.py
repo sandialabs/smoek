@@ -55,7 +55,12 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
 
         elif isinstance(expr, smoek.core.expr.functions.SumExprNode):
             body = self._stack.pop()
-            ret = f"sum({expr._forall.to_string()}, {body})"
+            forall = []
+            for pair in expr._forall._index_set_pairs:
+                indices = str(pair.index)
+                index_set = pair.set.name()
+                forall.append(f"Forall({indices}).In({index_set})")
+            ret = f"coek::Sum({body}, {".".join(forall)})"
             self._stack.append(ret)
 
         #elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
@@ -96,17 +101,24 @@ def generate(*, model=None, data=None, outfile=None):
 
         if component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
-                coek_str = f"coek::RangeSet {component.name};"
+                coek_str = f"coek::RangeSet {component.name}({to_coek(component.object._N)});"
             elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
                 coek_str = f"coek::RangeSet {component.name}({to_coek(component.object._start)}, {to_coek(component.object._stop)}+1);"
             components.append(coek_str);
 
         elif component.type == "parameter":
             if component.object.is_indexed():
+                index_sets = component.object._index_sets()
                 #setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=True))
-                pass
+                if len(index_sets) == 1:
+                    coek_str = f"auto {component.name} = coek::parameter({component.name}, {index_sets[0].name()})"
+                else:
+                    coek_str = f"auto {component.name} = coek::parameter({component.name}, {"*".join(index_sets)})"
             else:
-                coek_str = f"auto {component.name} = coek::parameter({component.name}).value({to_coek(component.object.value())});"
+                coek_str = f"auto {component.name} = coek::parameter({component.name}).value({to_coek(component.object.value())})"
+            if component.object.value():
+                coek_str += f".value({to_coek(component.object.value())})"
+            coek_str += ";"
             components.append(coek_str);
     
         elif component.type == "data":
@@ -121,7 +133,6 @@ def generate(*, model=None, data=None, outfile=None):
         elif component.type == "variable":
             if component.object.is_indexed():
                 index_sets = component.object._index_sets()
-                print(index_sets)
                 if len(index_sets) == 1:
                     coek_str = f"auto {component.name} = coek::variable({component.name}, {index_sets[0].name()})"
                 else:
@@ -173,6 +184,8 @@ def generate(*, model=None, data=None, outfile=None):
             components.append(coek_str);
             components.append(f"model.add({component.name});")
 
+        if coek_str is None or components[-1] is None:
+            print("ERROR", component.name, component.type)
         if coek_str is not None:
             components.append("")
 

@@ -34,7 +34,7 @@ def hs060():
     return smk.model(objective=o, constraints=[c], variables=[x], name="hs060")
 
 
-def knapsack1(N):
+def knapsack1(N, name="knapsack1"):
     N_ = N * 1000
     W = N_ / 10.0
 
@@ -57,9 +57,9 @@ def knapsack1(N):
 
     c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i, In=INDEX) <= W)
 
-    return smk.model(objective=o, constraints=[c], variables=[x], name="knapsack")
+    return smk.model(objective=o, constraints=[c], variables=[x], name=name)
 
 
 def knapsack2(N):
     N_ = smk.parameter("N").value(N)
-    return knapsack1(N_)
+    return knapsack1(N_, "knapsack2")
