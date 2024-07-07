@@ -45,7 +45,7 @@ def exp(expr):
 
 
 def sin(expr):
-    return UnaryExprNode(expr=expr, operation="sin")
+    return UnaryExprNode(expr=expr, operation=ExpressionType.sin)
 
 
 def cos(expr):
