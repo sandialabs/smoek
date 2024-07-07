@@ -83,5 +83,6 @@ class SequenceSet(Set):
     def to_string(self):
         return f"sequence(start={str(self._start)}, stop={str(self._stop)})"
 
+
 def sequence(name=None, *, start=None, stop=None):
     return SequenceSet(name, start, stop)

@@ -12,7 +12,7 @@ from smoek.core.expr.nodes import (
     UnaryExprNode,
 )
 from smoek.core.expr.functions import SumExprNode, ProdExprNode
-from smoek.core.model.expressions import Expression
+from smoek.core.model.expressions import Expression, Objective
 from smoek.core.model.model_components import Model
 from smoek.core.model.var_components import ScalarVariable, IndexedVariable, Domain
 from smoek.core.utils import BottomUpDepthFirstExpressionWalker
@@ -86,6 +86,10 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             ret = rf"\prod_{{{self.forall_object_to_latex_string(expr._forall)}}} ({body})"
             self._stack.append(ret)
         elif isinstance(expr, Expression):
+            body = self._stack.pop()
+            ret = rf"({body})"
+            self._stack.append(ret)
+        elif isinstance(expr, Objective):
             body = self._stack.pop()
             ret = rf"({body})"
             self._stack.append(ret)

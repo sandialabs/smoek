@@ -1,4 +1,4 @@
-from smoek.core.expr.nodes import ExprLeaf
+from smoek.core.expr.nodes import ExprLeaf, _wrap_expression_if_needed
 from .components import ModelingComponent
 
 
@@ -11,7 +11,7 @@ class Parameter(ModelingComponent, ExprLeaf):
     def value(self, value=None):
         if value is None:
             return self._value
-        self._value = value
+        self._value = _wrap_expression_if_needed(value)
         return self
 
     def index_set(self, In):
@@ -26,6 +26,12 @@ def parameter(name=None, doc=None):
 class Data(ModelingComponent, ExprLeaf):
     def __init__(self, name=None, doc=None):
         super().__init__(name=name, doc=doc)
+
+    def value(self, value=None):
+        if value is None:
+            return self._value
+        self._value = _wrap_expression_if_needed(value)
+        return self
 
     def index_set(self, In):
         return self.forall(index(), In=In)

@@ -25,6 +25,9 @@ def test_simple1():
         "variables": {"x": "x", "y": "y"},
     }
 
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ["x", "y", "o", "c1", "c2", "c3"]
+
 
 def test_hs060():
     model = models.hs060()
@@ -63,6 +66,9 @@ def test_hs060():
         },
     }
 
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ["N", "x", "o", "c"]
+
 
 def test_knapsack1():
     model = models.knapsack1(10)
@@ -88,6 +94,9 @@ def test_knapsack1():
             "x": "x, forall i in INDEX",
         },
     }
+
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ["INDEX", "w", "v", "x", "o", "c"]
 
 
 def test_knapsack2():
@@ -120,3 +129,5 @@ def test_knapsack2():
         },
     }
 
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ["N", "INDEX", "w", "v", "x", "o", "c"]

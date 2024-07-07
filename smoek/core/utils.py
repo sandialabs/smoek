@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, List
+from munch import Munch
 import smoek.core.expr.nodes
 from smoek.core.expr.nodes import ExprNode
 import smoek.core.expr.functions
@@ -9,7 +10,7 @@ import smoek.core.model.expressions
 native_types = {float, int}
 
 
-#class Walker(ABC):
+# class Walker(ABC):
 #    def __init__(self) -> None:
 #        self._stack = []
 #
@@ -71,6 +72,16 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
             self._depth -= 1
             self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.model.expressions.Expression):
+            self._depth += 1
+            self._depth_first_walk(expr._expr, *kwargs)
+            self._depth -= 1
+            self._visit(expr, *kwargs)
+        elif isinstance(expr, smoek.core.model.expressions.Objective):
+            self._depth += 1
+            self._depth_first_walk(expr._expr, *kwargs)
+            self._depth -= 1
+            self._visit(expr, *kwargs)
+        elif isinstance(expr, smoek.core.model.constr_components.Constraint):
             self._depth += 1
             self._depth_first_walk(expr._expr, *kwargs)
             self._depth -= 1
@@ -179,6 +190,10 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
             body = self._stack.pop()
             ret = [body]
             self._stack.append(ret)
+        elif isinstance(expr, smoek.core.model.constr_components.Constraint):
+            body = self._stack.pop()
+            ret = body
+            self._stack.append(ret)
         elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             ret = expr.to_string()
             self._stack.append(ret)
@@ -200,58 +215,153 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
     def __init__(self):
         super().__init__()
         self._info = {}
-        self._info = {'variables':{}, 'index_sets':{}, 'parameters':{}, 'data':{}, 'expressions':{}}
 
-    def walk(self, expr):
+    def walk(self, expr, info_dict=None):
+        if info_dict is not None:
+            self._info = info_dict
         self._walk(expr)
         return self._info
 
     def _visit(self, expr):
         if isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
             # Indexed component
-            if isinstance(expr._component, smoek.core.model.data_components.Parameter):
-                self._info['parameters'][expr._component.name()] = expr._component
-            elif isinstance(expr._component, smoek.core.model.data_components.Data):
-                self._info['data'][expr._component.name()] = expr._component
-            elif isinstance(expr._component, smoek.core.model.var_components.IndexedVariable):
-                self._info['variables'][expr._component.name()] = expr._component
-            elif isinstance(expr._component, smoek.core.model.expressions.Expression):
-                self._info['expressions'][expr._component.name()] = expr._component
+            if expr._component.name() in self._info:
+                return
 
+            self._visit(expr._component)
             for indexset in expr._component._index_sets():
-                self._info['index_sets'][indexset.name()] = indexset
+                self._info[indexset.name()] = Munch(
+                    name=indexset.name(),
+                    id=indexset._id,
+                    dependencies=indexset._dependencies(),
+                    type="index_set",
+                    object=indexset,
+                )
 
         elif isinstance(expr, smoek.core.model.data_components.Parameter):
             # Unindexed parameter
-            self._info['parameters'][expr.name()] = expr
+            name = expr.name()
+            if name in self._info:
+                return
+            self._info[name] = Munch(
+                name=name,
+                id=expr._id,
+                dependencies=expr._dependencies(),
+                type="parameter",
+                object=expr,
+            )
 
         elif isinstance(expr, smoek.core.model.data_components.Data):
             # Unindexed data
-            self._info['data'][expr.name()] = expr
+            name = expr.name()
+            if name in self._info:
+                return
+            self._info[name] = Munch(
+                name=name,
+                id=expr._id,
+                dependencies=expr._dependencies(),
+                type="data",
+                object=expr,
+            )
 
-        elif isinstance(expr, smoek.core.model.var_components.ScalarVariable):
+        elif isinstance(
+            expr, smoek.core.model.var_components.ScalarVariable
+        ) or isinstance(expr, smoek.core.model.var_components.IndexedVariable):
             # Unindexed variable
-            self._info['variables'][expr.name()] = expr
+            name = expr.name()
+            if name in self._info:
+                return
+            self._info[name] = Munch(
+                name=name,
+                id=expr._id,
+                dependencies=expr._dependencies(),
+                type="variable",
+                object=expr,
+            )
+
+        elif isinstance(expr, smoek.core.model.expressions.Expression):
+            # Unindexed expression
+            name = expr.name()
+            if name in self._info:
+                return
+            self._info[name] = Munch(
+                name=name,
+                id=expr._id,
+                dependencies=expr._dependencies(),
+                type="expression",
+                object=expr,
+            )
 
 
-def collect_expr_leaves(expr):
-    return CollectLeafInfo().walk(expr)
+def collect_expr_leaves(expr, info_dict=None):
+    return CollectLeafInfo().walk(expr, info_dict)
+
+
+def collect_info(model):
+    info = collect_expr_leaves(model.objective)
+    for c in model.constraints:
+        info = collect_expr_leaves(c.expr(), info)
+
+    o = model.objective
+    info[o.name()] = Munch(
+        name=o.name(),
+        id=o._id,
+        dependencies=o._dependencies(),
+        type="objective",
+        object=o,
+    )
+    for c in model.constraints:
+        info[c.name()] = Munch(
+            name=c.name(),
+            id=c._id,
+            dependencies=c._dependencies(),
+            type="constraint",
+            object=c,
+        )
+    return info
+
+
+#
+# This function returns an ordering of model components that is based on the
+# order of component creation.  This is *often* but not always a valid order for
+# initializing model components.
+#
+# TODO: Check this ordering using the 'dependencies' information
+#
+def valid_order(info):
+    names = [v.name for v in info.values()]
+    names.sort(key=lambda x: info[x].id)
+    return names
 
 
 def model_to_dict(model):
-    ans = {'objectives': {}, 'constraints':{}, 'variables':{}, 'index_sets':{}, 'parameters':{}, 'data':{}, 'expressions':{}}
-    info = collect_expr_leaves(model.objective)
-    for component in info:
-        for k,v in info[component].items():
-            ans[component][k] = str(v)
-    ans['objectives'][model.objective.name()] = expr_to_list(model.objective)
+    info = collect_info(model)
 
-    for c in model.constraints:
-        info = collect_expr_leaves(c.expr())
-        for component in info:
-            for k,v in info[component].items():
-                ans[component][k] = str(v)
-        ans['constraints'][c.name()] = expr_to_list(c.expr())
+    ans = {
+        "objectives": {},
+        "constraints": {},
+        "variables": {},
+        "index_sets": {},
+        "parameters": {},
+        "data": {},
+        "expressions": {},
+    }
+    for k, v in info.items():
+        if v.type == "parameter":
+            ans["parameters"][k] = str(v.object)
+        elif v.type == "variable":
+            ans["variables"][k] = str(v.object)
+        elif v.type == "data":
+            ans["data"][k] = str(v.object)
+        elif v.type == "expression":
+            ans["expressions"][k] = str(v.object)
+        elif v.type == "index_set":
+            ans["index_sets"][k] = str(v.object)
+        elif v.type == "objective":
+            ans["objectives"][k] = expr_to_list(v.object)
+        elif v.type == "constraint":
+            ans["constraints"][k] = expr_to_list(v.object)
+
     return ans
 
 
