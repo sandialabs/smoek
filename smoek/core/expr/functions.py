@@ -49,7 +49,7 @@ def sin(expr):
 
 
 def cos(expr):
-    return UnaryExprNode(expr=expr, operation="cos")
+    return UnaryExprNode(expr=expr, operation=ExpressionType.cos)
 
 
 def tan(expr):
