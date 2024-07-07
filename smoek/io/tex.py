@@ -55,7 +55,7 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             if expr.operation in self._binary_op_lookup:
                 op = self._binary_op_lookup[expr.operation]
                 ret = f"{{{left}}} {op} {{{right}}}"
-            elif expr.operation == "/":
+            elif expr.operation == ExpressionType.div:
                 ret = f"\\frac{{{left}}}{{{right}}}"
             else:
                 raise NotImplementedError(
