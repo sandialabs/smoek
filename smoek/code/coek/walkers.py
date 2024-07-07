@@ -1,6 +1,10 @@
 import smoek.core.expr.nodes
 import smoek.core.expr.functions
-from smoek.core.utils import BottomUpDepthFirstExpressionWalker, collect_info, valid_order
+from smoek.core.utils import (
+    BottomUpDepthFirstExpressionWalker,
+    collect_info,
+    valid_order,
+)
 
 
 class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -22,12 +26,16 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
             left = self._stack.pop()
             if expr.operation == "pow":
                 ret = f"coek::pow({left}, {right})"
-            elif expr.operation in ['==', '<=', '>=']:
+            elif expr.operation in ["==", "<=", ">="]:
                 ret = f"{left} {expr.operation} {right}"
             else:
-                if isinstance(expr._right, smoek.core.expr.nodes.BinaryExprNode) and expr._right.operation in ['+','-','*','/']:
+                if isinstance(
+                    expr._right, smoek.core.expr.nodes.BinaryExprNode
+                ) and expr._right.operation in ["+", "-", "*", "/"]:
                     right = f"({right})"
-                if isinstance(expr._left, smoek.core.expr.nodes.BinaryExprNode) and expr._left.operation in ['+','-','*','/']:
+                if isinstance(
+                    expr._left, smoek.core.expr.nodes.BinaryExprNode
+                ) and expr._left.operation in ["+", "-", "*", "/"]:
                     left = f"({left})"
                 ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
@@ -37,18 +45,18 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
             ret = f"coek::{expr.operation}({arg})"
             self._stack.append(ret)
 
-        #elif isinstance(expr, smoek.core.model.var_components.ScalarVariable):
+        # elif isinstance(expr, smoek.core.model.var_components.ScalarVariable):
         #    self._stack.append( expr.name() )
 
-        #elif isinstance(expr, smoek.core.model.data_components.Parameter):
+        # elif isinstance(expr, smoek.core.model.data_components.Parameter):
         #    self._stack.append( expr.name() )
 
-        #elif isinstance(expr, smoek.core.model.data_components.Data):
+        # elif isinstance(expr, smoek.core.model.data_components.Data):
         #    self._stack.append( expr.name() )
 
-        #elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode)
+        # elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode)
         #    self._stack.append( expr.to_string() )
-                
+
         elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             ret = f"{expr.to_string()}"
             self._stack.append(ret)
@@ -60,15 +68,15 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
                 indices = str(pair.index)
                 index_set = pair.set.name()
                 forall.append(f"Forall({indices}).In({index_set})")
-            ret = f"coek::Sum({body}, {".".join(forall)})"
+            ret = f"coek::Sum({body}, {'.'.join(forall)})"
             self._stack.append(ret)
 
-        #elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
+        # elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
         #    body = self._stack.pop()
         #    ret = f"prod({expr._forall.to_string()}, {body})"
         #    self._stack.append(ret)
 
-        #elif isinstance(expr, smoek.core.expressions.Expression):
+        # elif isinstance(expr, smoek.core.expressions.Expression):
         #    body = self._stack.pop()
         #    ret = f"({body})"
         #    self._stack.append(ret)
@@ -86,7 +94,7 @@ def to_coek(expr, decl={}):
 def generate(*, model=None, data=None, outfile=None):
     """
     Generate a C++ code that generates a Coek model described by smoek.
-    
+
     If 'outfile' is None, then this is returned as a string.  Otherwise, 'outfile' is created with this code.
     """
 
@@ -101,42 +109,44 @@ def generate(*, model=None, data=None, outfile=None):
 
         if component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
-                coek_str = f"coek::RangeSet {component.name}({to_coek(component.object._N)});"
-            elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
+                coek_str = (
+                    f"coek::RangeSet {component.name}({to_coek(component.object._N)});"
+                )
+            elif isinstance(
+                component.object, smoek.core.model.set_components.SequenceSet
+            ):
                 coek_str = f"coek::RangeSet {component.name}({to_coek(component.object._start)}, {to_coek(component.object._stop)}+1);"
-            components.append(coek_str);
+            components.append(coek_str)
 
         elif component.type == "parameter":
             if component.object.is_indexed():
                 index_sets = component.object._index_sets()
-                #setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=True))
+                # setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=True))
                 if len(index_sets) == 1:
                     coek_str = f"auto {component.name} = coek::parameter({component.name}, {index_sets[0].name()})"
                 else:
-                    coek_str = f"auto {component.name} = coek::parameter({component.name}, {"*".join(index_sets)})"
+                    coek_str = f"auto {component.name} = coek::parameter({component.name}, {'*'.join(index_sets)})"
             else:
                 coek_str = f"auto {component.name} = coek::parameter({component.name}).value({to_coek(component.object.value())})"
             if component.object.value():
                 coek_str += f".value({to_coek(component.object.value())})"
             coek_str += ";"
-            components.append(coek_str);
-    
+            components.append(coek_str)
+
         elif component.type == "data":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=False))
                 pass
             else:
-                #pyo_component = pyo.Param(initialize=to_pyomo(component.object.value(), pyomo_decl), mutable=False)
                 pass
-            components.append(coek_str);
-    
+            components.append(coek_str)
+
         elif component.type == "variable":
             if component.object.is_indexed():
                 index_sets = component.object._index_sets()
                 if len(index_sets) == 1:
                     coek_str = f"auto {component.name} = coek::variable({component.name}, {index_sets[0].name()})"
                 else:
-                    coek_str = f"auto {component.name} = coek::variable({component.name}, {"*".join(index_sets)})"
+                    coek_str = f"auto {component.name} = coek::variable({component.name}, {'*'.join(index_sets)})"
                 if component.object.lower():
                     coek_str += f".lower({to_coek(component.object.lower())})"
                 if component.object.upper():
@@ -153,35 +163,35 @@ def generate(*, model=None, data=None, outfile=None):
                 if component.object.value():
                     coek_str += f".value({to_coek(component.object.value())})"
                 coek_str += ";"
-            components.append(coek_str);
+            components.append(coek_str)
             components.append(f"model.add({component.name});")
 
         elif component.type == "expression":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
+                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
-                #setattr(M, component.name, pyo.Expression(expr=to_pyomo(component.object.expr()), mutable=False))
+                # setattr(M, component.name, pyo.Expression(expr=to_pyomo(component.object.expr()), mutable=False))
                 pass
-            components.append(coek_str);
+            components.append(coek_str)
             components.append(f"model.add({component.name});")
-   
+
         elif component.type == "objective":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
+                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
                 coek_str = f"auto {component.name} = coek::objective({component.name}).expr({to_coek(component.object.expr())});"
-            components.append(coek_str);
+            components.append(coek_str)
             components.append(f"model.add({component.name});")
 
         elif component.type == "constraint":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
+                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
                 coek_str = f"auto {component.name} = coek::constraint({component.name}).expr({to_coek(component.object.expr())});"
-            components.append(coek_str);
+            components.append(coek_str)
             components.append(f"model.add({component.name});")
 
         if coek_str is None or components[-1] is None:
@@ -205,5 +215,5 @@ return model;
     if outfile is None:
         return code
     else:
-        with open(outfile, 'w') as OUTPUT:
+        with open(outfile, "w") as OUTPUT:
             OUTPUT.write(code)

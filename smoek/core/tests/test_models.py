@@ -62,7 +62,7 @@ def test_hs060():
         "index_sets": {"N": "sequence(start=1, stop=4)"},
         "parameters": {},
         "variables": {
-            "x": "x, forall UnnamedComponent in N",
+            "x": "x, forall i in N",
         },
     }
 

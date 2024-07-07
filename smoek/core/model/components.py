@@ -77,7 +77,7 @@ class ModelingComponent(NamedComponent):
         return self
 
     def index_set(self, In):
-        return self.forall(index(), In=In)
+        return self.forall(index("i"), In=In)
 
     def suchthat(self, expr):
         assert self._forall is not None

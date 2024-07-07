@@ -1,5 +1,9 @@
 import pyomo.environ as pyo
-from smoek.core.util import BottomUpDepthFirstExpressionWalker, collect_info, valid_order
+from smoek.core.util import (
+    BottomUpDepthFirstExpressionWalker,
+    collect_info,
+    valid_order,
+)
 
 
 class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -48,17 +52,19 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
             self._stack.append(ret)
 
         elif isinstance(expr, smoek.core.model.var_components.ScalarVariable):
-            self._stack.append( self._decl(expr.name()) )
+            self._stack.append(self._decl(expr.name()))
 
         elif isinstance(expr, smoek.core.model.data_components.Parameter):
-            self._stack.append( self._decl(expr.name()) )
+            self._stack.append(self._decl(expr.name()))
 
         elif isinstance(expr, smoek.core.model.data_components.Data):
-            self._stack.append( self._decl(expr.name()) )
+            self._stack.append(self._decl(expr.name()))
 
-        elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode)
-            if isinstance(expr._component, smoek.core.model.var_components.ScalarVariable):
-                
+        elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
+            if isinstance(
+                expr._component, smoek.core.model.var_components.ScalarVariable
+            ):
+                pass
 
         elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             ret = f"{expr.to_string()}"
@@ -113,40 +119,54 @@ def generate(*, model=None, data=None):
 
         elif component.type == "parameter":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=True))
+                # setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=True))
                 pass
             else:
-                pyo_component = pyo.Param(initialize=to_pyomo(component.object.value(), pyomo_decl), mutable=True)
-    
+                pyo_component = pyo.Param(
+                    initialize=to_pyomo(component.object.value(), pyomo_decl),
+                    mutable=True,
+                )
+
         elif component.type == "data":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=False))
+                # setattr(M, component.name, pyo.Param(initialize=component.object.data(), mutable=False))
                 pass
             else:
-                pyo_component = pyo.Param(initialize=to_pyomo(component.object.value(), pyomo_decl), mutable=False)
-    
+                pyo_component = pyo.Param(
+                    initialize=to_pyomo(component.object.value(), pyomo_decl),
+                    mutable=False,
+                )
+
         elif component.type == "expression":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
+                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
-                #setattr(M, component.name, pyo.Expression(expr=to_pyomo(component.object.expr()), mutable=False))
+                # setattr(M, component.name, pyo.Expression(expr=to_pyomo(component.object.expr()), mutable=False))
                 pass
-   
+
         elif component.type == "objective":
-            sense = pyo.Objective.minimize if component.object.sense() else pyo.Objective.maximize
+            sense = (
+                pyo.Objective.minimize
+                if component.object.sense()
+                else pyo.Objective.maximize
+            )
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
+                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
-                pyo_component = pyo.Objective(expr=to_pyomo(component.object.expr(), pyomo_decl), sense=sense)
+                pyo_component = pyo.Objective(
+                    expr=to_pyomo(component.object.expr(), pyomo_decl), sense=sense
+                )
 
         elif component.type == "constraint":
             if component.object.is_indexed():
-                #setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
+                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
-                pyo_component = pyo.Constraint(expr=to_pyomo(component.object.expr(), pyomo_decl))
+                pyo_component = pyo.Constraint(
+                    expr=to_pyomo(component.object.expr(), pyomo_decl)
+                )
 
         if pyo_component is not None:
             setattr(M, component.name, pyo_component)

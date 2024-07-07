@@ -7,11 +7,13 @@ from smoek.code.coek import generate
 def test_simple1():
     model = models.simple1()
 
-    #order = smk.valid_order(smk.collect_info(model))
-    #assert order == ["x", "y", "o", "c1", "c2", "c3"]
+    # order = smk.valid_order(smk.collect_info(model))
+    # assert order == ["x", "y", "o", "c1", "c2", "c3"]
 
-    #print(generate(model=model))
-    assert generate(model=model) == """
+    # print(generate(model=model))
+    assert (
+        generate(model=model)
+        == """
 #include <coek/coek.hpp>
 
 coek::Model generate_simple1()
@@ -39,16 +41,19 @@ model.add(c3);
 return model;
 }
 """
+    )
 
 
 def test_hs060():
     model = models.hs060()
 
-    #order = smk.valid_order(smk.collect_info(model))
-    #assert order == ["N", "x", "o", "c"]
+    # order = smk.valid_order(smk.collect_info(model))
+    # assert order == ["N", "x", "o", "c"]
 
-    #print(generate(model=model))
-    assert generate(model=model) == """
+    # print(generate(model=model))
+    assert (
+        generate(model=model)
+        == """
 #include <coek/coek.hpp>
 
 coek::Model generate_hs060()
@@ -69,16 +74,19 @@ model.add(c);
 return model;
 }
 """
+    )
 
 
 def test_knapsack1():
     model = models.knapsack1(10)
 
-    #order = smk.valid_order(smk.collect_info(model))
-    #assert order == ["INDEX", "w", "v", "x", "o", "c"]
+    # order = smk.valid_order(smk.collect_info(model))
+    # assert order == ["INDEX", "w", "v", "x", "o", "c"]
 
     print(generate(model=model))
-    assert generate(model=model) == """
+    assert (
+        generate(model=model)
+        == """
 #include <coek/coek.hpp>
 
 coek::Model generate_knapsack1()
@@ -103,15 +111,19 @@ model.add(c);
 return model;
 }
 """
+    )
+
 
 def test_knapsack2():
     model = models.knapsack2(10)
 
-    #order = smk.valid_order(smk.collect_info(model))
-    #assert order == ["N", "INDEX", "w", "v", "x", "o", "c"]
+    # order = smk.valid_order(smk.collect_info(model))
+    # assert order == ["N", "INDEX", "w", "v", "x", "o", "c"]
 
     print(generate(model=model))
-    assert generate(model=model) == """
+    assert (
+        generate(model=model)
+        == """
 #include <coek/coek.hpp>
 
 coek::Model generate_knapsack2()
@@ -138,3 +150,4 @@ model.add(c);
 return model;
 }
 """
+    )

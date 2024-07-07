@@ -4,6 +4,164 @@
 import smoek as smk
 
 
+def small1():
+    x = smk.variable("x").value(1.0)
+    y = smk.variable("y").value(1.0)
+
+    o = smk.objective("o").expr(x**2)
+    c = smk.constraint("c").expr(y**2 == 4)
+    return smk.model(objective=o, constraints=[c], variables=[x, y], name="small1")
+
+
+def small2():
+    x = smk.variable("x").value(1.0)
+    y = smk.variable("y").value(1.0)
+
+    o = smk.objective("o").expr(x)
+    c = smk.constraint("c").expr(y**2 == 4)
+    return smk.model(objective=o, constraints=[c], variables=[x, y], name="small2")
+
+
+def small3():
+    x = smk.variable("x").value(1.0)
+    y = smk.variable("y").value(1.0)
+
+    o = smk.objective("o").expr(x * y)
+    c = smk.constraint("c").expr(y**2 == 4)
+    return smk.model(objective=o, constraints=[c], variables=[x, y], name="small3")
+
+
+def small4():
+    x = smk.variable("x").value(1.0)
+    y = smk.variable("y").value(1.0)
+
+    o = smk.objective("o").expr(y**2)
+    c = smk.constraint("c").expr(y * x == 4)
+    return smk.model(objective=o, constraints=[c], variables=[x, y], name="small4")
+
+
+def small5():
+    x = smk.variable("x").lower(-1).upper(1).value(1.0)
+    y = smk.variable("y").lower(-1).upper(1).value(2.0)
+    v = smk.variable("v").lower(-1).upper(1).value(3.0)
+    p = 2.0
+    q = smk.parameter("q").value(2)
+
+    o = smk.objective().expr((x**2) / p + (x**2) / q)
+    c = [
+        smk.constraint().expr(1 / p * v * (x - y) == 2),
+        smk.constraint().expr(v * 1 / p * (x - y) == 2),
+        smk.constraint().expr(v * (x - y) / p == 2),
+        smk.constraint().expr(v * (x / p - y / p) == 2),
+        smk.constraint().expr(v * (x - y) * (1 / p) == 2),
+        smk.constraint().expr(v * (x - y) == 2 * p),
+        smk.constraint().expr(1 / q * v * (x - y) == 2),
+        smk.constraint().expr(v * 1 / q * (x - y) == 2),
+        smk.constraint().expr(v * (x - y) / q == 2),
+        smk.constraint().expr(v * (x / p - y / q) == 2),
+        smk.constraint().expr(v * (x - y) * (1 / q) == 2),
+        smk.constraint().expr(v * (x - y) == 2 * q),
+    ]
+    return smk.model(objective=o, constraints=c, variables=[x, y, v], name="small5")
+
+
+def small6():
+    x = smk.variable().lower(-1).upper(1).value(1)
+    y = smk.variable().lower(-1).upper(1).value(2)
+    v = smk.variable().lower(-1).upper(1).value(3)
+    p = smk.variable()
+    p.value(2)
+    p.fixed(true)
+
+    o = smk.objective().expr(x)
+    c = [
+        smk.constraint().expr(1 / p * v * (x - y) == 2),
+        smk.constraint().expr(v * 1 / p * (x - y) == 2),
+        smk.constraint().expr(v * (x - y) / p == 2),
+        smk.constraint().expr(v * (x / p - y / p) == 2),
+        smk.constraint().expr(v * (x - y) * (1 / p) == 2),
+        smk.constraint().expr(v * (x - y) == 2 * p),
+    ]
+    return smk.model(objective=o, constraints=c, variables=[x, y, v, p], name="small6")
+
+
+def testing1():
+    a = smk.variable("a").lower(0).upper(1).value(0).within(smk.Integers)
+    b = smk.variable("b").lower(0).upper(1).value(0).within(smk.Binary)
+    c = smk.variable().lower(0)
+    d = smk.variable().upper(0)
+    e = smk.variable("e")
+    q = smk.parameter("q").value(2)
+
+    o = smk.objective().expr(3 * a + q).sense(smk.maximize)
+    c = [
+        smk.constraint().expr(3 * b + q - a <= 0),
+        smk.constraint().expr(3 * b + b == 0),
+        smk.constraint().expr(3 * b * a + q + b * b + b * b == 0),
+        smk.constraint().expr(3 * b * b + q - a * b - a * a <= 0),
+        smk.constraint().expr(smk.inequality(-7, 3 * b * b + q - a * b - a * a, 7)),
+        smk.constraint().expr(c + d == 0),
+        smk.constraint().expr(e + 3 * d == 1),
+        smk.constraint().expr(smk.inequality(7, 3 * b + q - a, 7)),
+    ]
+    e.fix(1.0)
+    return smk.model(
+        objective=o, constraints=c, variables=[a, b, c, d, e, q], name="testing1"
+    )
+
+
+def testing2():
+    a = smk.variable("a").lower(0).upper(1).value(0).within(smk.Integers)
+    b = smk.variable("b").lower(0).upper(1).value(0).within(smk.Binary)
+    q = smk.parameter("q").value(2)
+    b.fix(2.0)
+
+    # This forces the use of a Negate term
+    e = 3 * a + q + a * a * a * (-a + b + 3 * a + 3 * b) + smk.sin(-smk.cos(a))
+    o = smk.objective().expr(e)
+    return smk.model(
+        objective=o, constraints=[], variables=[a, b, q, b], name="testing2"
+    )
+
+
+def testing3():
+    a = smk.variable("a").lower(0).upper(1).value(0).within(smk.Integers)
+    b = smk.variable("b").lower(0).upper(1).value(0).within(smk.Binary)
+
+    e = smk.expression()
+    o = smk.objective().expr(e)
+    c = smk.constraint().expr(a + b == 1)
+    return smk.model(objective=o, constraints=[c], variables=[a, b], name="testing3")
+
+
+def testing4():
+    x = smk.variable("x").lower(0).upper(1).value(0).within(smk.Binary)
+    y = smk.variable("y").lower(0).upper(1).value(0).within(smk.Binary)
+    z = smk.variable("z").lower(0).upper(1).value(0).within(smk.Binary)
+    a = smk.variable("a").lower(0).upper(1).value(0).within(smk.Integers)
+    b = smk.variable("b").lower(0).upper(1).value(0).within(smk.Binary)
+
+    o = smk.objective().expr(a + smk.cos(x) + smk.cos(y))
+    c = smk.constraint().expr(b + smk.cos(y) + smk.cos(z) == 1)
+    return smk.model(
+        objective=o, constraints=[c], variables=[x, y, z, a, b], name="testing4"
+    )
+
+
+# Confirming logic for variables with same upper-and-lower bounds
+def testing5():
+    x = smk.variable("x").lower(2).upper(2).value(0)
+    o = smk.objective().expr(x)
+    return smk.model(objective=o, constraints=[], variables=[x], name="testing5")
+
+
+def testing6():
+    x = smk.variable("x").lower(0).upper(1).value(0)
+    q = smk.parameter("q").value(2)
+    o = smk.objective().expr(-q * x * x)
+    return smk.model(objective=o, constraints=[], variables=[x], name="testing6")
+
+
 def simple1():
     x = smk.variable("x").bounds(0.0, 1.0)
     y = smk.variable().name("y").bounds(0.0, 1.0)
@@ -42,11 +200,11 @@ def knapsack1(N, name="knapsack1"):
 
     INDEX = smk.range("INDEX", stop=N_)  # 0..N-1
 
-    w = smk.parameter().name("w").forall(i, In=INDEX).value(1 / W)
+    w = smk.parameter().name("w").index_set(INDEX).value(1 / W)
 
-    v = smk.parameter("v").forall(i, In=INDEX).value(1)
+    v = smk.parameter("v").index_set(INDEX).value(1)
 
-    x = smk.variable().name("x").forall(i, In=INDEX).bounds(0.0, 1.0)
+    x = smk.variable().name("x").index_set(INDEX).bounds(0.0, 1.0)
 
     o = (
         smk.objective()
