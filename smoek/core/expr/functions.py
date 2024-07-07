@@ -53,7 +53,7 @@ def cos(expr):
 
 
 def tan(expr):
-    return UnaryExprNode(expr=expr, operation="tan")
+    return UnaryExprNode(expr=expr, operation=ExpressionType.tan)
 
 
 def sqrt(expr):
