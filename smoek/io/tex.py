@@ -23,7 +23,7 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
         self._allowed_math_functions = [ExpressionType.log, ExpressionType.exp, ExpressionType.sin, ExpressionType.cos, ExpressionType.tan]
-        self._binary_op_lookup = [
+        self._binary_op_lookup = {
             ExpressionType.add: '+',
             ExpressionType.sub: '-',
             ExpressionType.mul: r'\cdot',
@@ -32,7 +32,7 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             ExpressionType.neq: r'\neq',
             ExpressionType.leq: r'\leq',
             ExpressionType.geq: r'\geq',
-            ]
+            }
     def expression_to_latex_string(self, expr):
         assert self._stack == []
         self._walk(expr)
