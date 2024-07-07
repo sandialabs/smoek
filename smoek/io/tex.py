@@ -22,18 +22,17 @@ from smoek.core.utils import BottomUpDepthFirstExpressionWalker
 class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
-        self._allowed_math_functions = ["sin", "cos", "tan", "log", "exp"]
-        self._binary_op_lookup = {
-            "+": "+",
-            "-": "-",
-            "*": r"\cdot",
-            "**": "^",
-            "==": "=",
-            "!=": r"\neq",
-            "<=": r"\leq",
-            ">=": r"\geq",
-        }
-
+        self._allowed_math_functions = [ExpressionType.log, ExpressionType.exp, ExpressionType.sin, ExpressionType.cos, ExpressionType.tan]
+        self._binary_op_lookup = [
+            ExpressionType.add: '+',
+            ExpressionType.sub: '-',
+            ExpressionType.mul: r'\cdot',
+            ExpressionType.pow: '^',
+            ExpressionType.eq: '=',
+            ExpressionType.neq: r'\neq',
+            ExpressionType.leq: r'\leq',
+            ExpressionType.geq: r'\geq',
+            ]
     def expression_to_latex_string(self, expr):
         assert self._stack == []
         self._walk(expr)
