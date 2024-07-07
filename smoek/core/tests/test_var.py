@@ -62,4 +62,4 @@ def test_indexed_var():
     assert v.name() == "x"
 
     # test to_string
-    assert str(v) == "x"
+    assert str(v) == "x, forall i in I"

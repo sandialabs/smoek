@@ -5,7 +5,8 @@ import smoek.core
 from smoek.core.expr.forall import forall
 from smoek.core.expr.functions import sum, prod, sin, cos, tan, log, sqrt
 
-from smoek.core.model.set_components import index, index_set, range, sequence
+from smoek.core.model.components import index
+from smoek.core.model.set_components import index_set, range, sequence
 from smoek.core.model.data_components import parameter, data
 from smoek.core.model.var_components import variable, binary_variable, Domain
 from smoek.core.model.constr_components import constraint

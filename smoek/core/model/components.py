@@ -1,5 +1,5 @@
 from smoek.core.expr.forall import ForAllObject
-from smoek.core.expr.nodes import ComponentIndicesNode
+from smoek.core.expr.nodes import ComponentIndicesNode, ExprLeaf
 
 # todo: error checking
 # todo: augment printing
@@ -32,6 +32,26 @@ class NamedComponent(object):
         return self._name
 
 
+# should we include attribute for dimension of index?
+# can indices be ExprLeafs (e.g. for construction of filter expressions based on value)?
+# would imply all indices are numeric - may be a sensible restriction
+class Index(NamedComponent, ExprLeaf):
+    def __init__(self, name=None):
+        super().__init__(name=name)
+
+    def to_string(self):
+        return str(self)
+
+
+# class NumericIndex(Index, ExprLeaf):
+#     def __init__(self, name=None):
+#         super().__init__(name=name)
+
+
+def index(name=None):
+    return Index(name)
+
+
 class ModelingComponent(NamedComponent):
     def __init__(self, name=None, doc=None):
         super().__init__(name, doc)
@@ -49,6 +69,9 @@ class ModelingComponent(NamedComponent):
         self._forall.forall(index, In=In)
         return self
 
+    def index_set(self, In):
+        return self.forall(index(), In=In)
+
     def suchthat(self, expr):
         assert self._forall is not None
         self._forall.suchthat(expr)
@@ -63,3 +86,12 @@ class ModelingComponent(NamedComponent):
             return f"{self._name}"
         else:
             return f"{self._name}, {self._forall.to_string()}"
+
+    def __str__(self):
+        return self.to_string()
+
+    def _index_sets(self):
+        # Return a list of the index sets used with this component
+        if self._forall is None:
+            return []
+        return self._forall.sets_list()

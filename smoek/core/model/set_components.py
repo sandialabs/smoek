@@ -1,25 +1,5 @@
-from smoek.core.expr.nodes import ExprLeaf
+from smoek.core.expr.nodes import ExprLeaf, _wrap_expression_if_needed
 from .components import ModelingComponent, NamedComponent
-
-
-# should we include attribute for dimension of index?
-# can indices be ExprLeafs (e.g. for construction of filter expressions based on value)?
-# would imply all indices are numeric - may be a sensible restriction
-class Index(NamedComponent, ExprLeaf):
-    def __init__(self, name=None):
-        super().__init__(name=name)
-
-    def to_string(self):
-        return str(self)
-
-
-# class NumericIndex(Index, ExprLeaf):
-#     def __init__(self, name=None):
-#         super().__init__(name=name)
-
-
-def index(name=None):
-    return Index(name)
 
 
 # Conceptually it might make sense to pass index to set constructor,
@@ -27,6 +7,14 @@ def index(name=None):
 # i = index()
 # I = set()
 # s = set(i).forall(i, in = I)
+#
+# WEH: We would want to do this for other indexed components as well, right?
+#
+# v = variable(i,j).forall(i, In=I).forall(j, In=J)
+#
+#   vs
+#
+# v = variable.forall(i, In=I).forall(j, In=J)
 
 
 class Set(ModelingComponent):
@@ -63,10 +51,6 @@ class IndexedSet(Set):
         super().__init__(name=name, doc=doc)
         self._forall = forall
 
-    # Is already implemented in ModelingComponent
-    # def __getitem__(self, indices):
-    #     return ComponentIndicesNode(self, indices)
-
 
 def index_set(name=None, forall=None, doc=None):
     if forall is None:
@@ -79,16 +63,18 @@ class RangeSet(ScalarSet):
 
     def __init__(self, name, stop):
         super().__init__(name=name)
-        self._N = stop
-        self._size = stop
+        self._N = _wrap_expression_if_needed(stop)
+        self._size = _wrap_expression_if_needed(stop)
 
     @property
     def data(self):
         return list(range(self._N))
 
+    def to_string(self):
+        return f"range(stop={str(self._N)})"
+
 
 def range(name=None, *, stop=None):
-    assert type(stop) is int
     return RangeSet(name=name, stop=stop)
 
 
@@ -96,6 +82,8 @@ class SequenceSet(ScalarSet):
 
     def __init__(self, name, start, stop):
         super().__init__(name=name)
+        start = _wrap_expression_if_needed(start)
+        stop = _wrap_expression_if_needed(stop)
         self._start = start
         self._stop = stop
         self._size = stop - start + 1
@@ -104,8 +92,8 @@ class SequenceSet(ScalarSet):
     def data(self):
         return list(range(self._start, self._stop + 1))
 
+    def to_string(self):
+        return f"sequence(start={str(self._start)}, stop={str(self._stop)})"
 
 def sequence(name=None, *, start=None, stop=None):
-    assert type(start) is int
-    assert type(stop) is int
     return SequenceSet(name, start, stop)

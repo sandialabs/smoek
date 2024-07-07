@@ -3,7 +3,8 @@ import math
 from smoek import index, index_set
 from smoek.core.expr.forall import forall
 from smoek.core.expr.nodes import ComponentIndicesNode
-from smoek.core.model.set_components import Index, ScalarSet, IndexedSet, Set
+from smoek.core.model.components import Index
+from smoek.core.model.set_components import ScalarSet, IndexedSet, Set
 
 
 #

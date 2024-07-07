@@ -2,8 +2,7 @@ from pyomo.common.collections import ComponentMap
 from enum import Enum
 from smoek.core.expr.forall import ForAllObject
 from smoek.core.expr.nodes import ExprLeaf, ComponentIndicesNode, ExpressionType
-from .components import ModelingComponent
-from .set_components import index
+from .components import ModelingComponent, index
 
 
 class Domain(Enum):
@@ -52,8 +51,8 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         )
         return res
 
-    def index(self, In):
-        return self.forall(index(), In)
+    def index_set(self, In):
+        return self.forall(index(), In=In)
 
 
 def variable(name=None, domain=Domain.Reals, doc=None, forall=None):

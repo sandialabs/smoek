@@ -21,8 +21,8 @@ def simple1():
 
 def hs060():
     # Adapted from cute suite.
-    N = smk.sequence(start=1, stop=4)
-    x = smk.variable("x").index(N).value(2.0).bounds(-10, 10)
+    N = smk.sequence("N", start=1, stop=4)
+    x = smk.variable("x").index_set(N).value(2.0).bounds(-10, 10)
 
     o = smk.objective("o").expr(
         (x[1] - 1) ** 2 + (x[1] - x[2]) ** 2 + (x[2] - x[3]) ** 4
@@ -35,12 +35,12 @@ def hs060():
 
 
 def knapsack1(N):
-    N = N * 1000
-    W = N / 10.0
+    N_ = N * 1000
+    W = N_ / 10.0
 
     i = smk.index("i")
 
-    INDEX = smk.range("INDEX", stop=N)  # 0..N-1
+    INDEX = smk.range("INDEX", stop=N_)  # 0..N-1
 
     w = smk.parameter().name("w").forall(i, In=INDEX).value(1 / W)
 

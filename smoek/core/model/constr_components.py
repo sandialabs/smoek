@@ -1,5 +1,5 @@
 from smoek.core.expr.nodes import ExprNode
-from .components import ModelingComponent
+from .components import ModelingComponent, index
 
 
 class Constraint(ModelingComponent):
@@ -12,11 +12,6 @@ class Constraint(ModelingComponent):
             return self._expr
         self._expr = expr
         return self
-
-    def index_set(self):
-        if self._forall is None:
-            return None
-        return self._forall.indices_list()
 
     def forall(self, index, In):
         # TODO: assert index are present in ComponentIndicesNode in self._expr

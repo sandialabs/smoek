@@ -196,11 +196,62 @@ def expr_to_string(expr):
     return ExpressionToStringWalker().expression_to_string(expr)
 
 
+class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
+    def __init__(self):
+        super().__init__()
+        self._info = {}
+        self._info = {'variables':{}, 'index_sets':{}, 'parameters':{}, 'data':{}, 'expressions':{}}
+
+    def walk(self, expr):
+        self._walk(expr)
+        return self._info
+
+    def _visit(self, expr):
+        if isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
+            # Indexed component
+            if isinstance(expr._component, smoek.core.model.data_components.Parameter):
+                self._info['parameters'][expr._component.name()] = expr._component
+            elif isinstance(expr._component, smoek.core.model.data_components.Data):
+                self._info['data'][expr._component.name()] = expr._component
+            elif isinstance(expr._component, smoek.core.model.var_components.IndexedVariable):
+                self._info['variables'][expr._component.name()] = expr._component
+            elif isinstance(expr._component, smoek.core.model.expressions.Expression):
+                self._info['expressions'][expr._component.name()] = expr._component
+
+            for indexset in expr._component._index_sets():
+                self._info['index_sets'][indexset.name()] = indexset
+
+        elif isinstance(expr, smoek.core.model.data_components.Parameter):
+            # Unindexed parameter
+            self._info['parameters'][expr.name()] = expr
+
+        elif isinstance(expr, smoek.core.model.data_components.Data):
+            # Unindexed data
+            self._info['data'][expr.name()] = expr
+
+        elif isinstance(expr, smoek.core.model.var_components.ScalarVariable):
+            # Unindexed variable
+            self._info['variables'][expr.name()] = expr
+
+
+def collect_expr_leaves(expr):
+    return CollectLeafInfo().walk(expr)
+
+
 def model_to_dict(model):
-    ans = {}
-    ans[model.objective.name()] = expr_to_list(model.objective)
+    ans = {'objectives': {}, 'constraints':{}, 'variables':{}, 'index_sets':{}, 'parameters':{}, 'data':{}, 'expressions':{}}
+    info = collect_expr_leaves(model.objective)
+    for component in info:
+        for k,v in info[component].items():
+            ans[component][k] = str(v)
+    ans['objectives'][model.objective.name()] = expr_to_list(model.objective)
+
     for c in model.constraints:
-        ans[c.name()] = expr_to_list(c.expr())
+        info = collect_expr_leaves(c.expr())
+        for component in info:
+            for k,v in info[component].items():
+                ans[component][k] = str(v)
+        ans['constraints'][c.name()] = expr_to_list(c.expr())
     return ans
 
 
