@@ -10,6 +10,7 @@ from smoek.core.expr.nodes import (
     BinaryExprNode,
     ComponentIndicesNode,
     UnaryExprNode,
+    ExpressionType,
 )
 from smoek.core.expr.functions import SumExprNode, ProdExprNode
 from smoek.core.model.expressions import Expression, Objective
