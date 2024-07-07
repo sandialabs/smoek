@@ -41,7 +41,7 @@ def log(expr):
 
 
 def exp(expr):
-    return UnaryExprNode(expr=expr, operation="exp")
+    return UnaryExprNode(expr=expr, operation=ExpressionType.exp)
 
 
 def sin(expr):
