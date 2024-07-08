@@ -62,7 +62,7 @@ def test_hs060():
         "index_sets": {"N": "sequence(start=1, stop=4)"},
         "parameters": {},
         "variables": {
-            "x": "x, forall UnnamedComponent in N",
+            "x": "x, forall i in N",
         },
     }
 
@@ -96,7 +96,7 @@ def test_knapsack1():
     }
 
     order = smk.valid_order(smk.collect_info(model))
-    assert order == ["INDEX", "w", "v", "x", "o", "c"]
+    assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
 
 def test_knapsack2():
@@ -130,4 +130,38 @@ def test_knapsack2():
     }
 
     order = smk.valid_order(smk.collect_info(model))
-    assert order == ["N", "INDEX", "w", "v", "x", "o", "c"]
+    assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
+
+
+def test_knapsack3():
+    model = models.knapsack3()
+
+    repn = smk.model_to_dict(model)
+    assert repn == {
+        "objectives": {
+            "o": ["minimize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
+        },
+        "constraints": {
+            "c": [
+                "<=",
+                ["sum", "forall i in INDEX", ["*", "w[i]", "x[i]"]],
+                ["/", ["*", "N", "1000"], "10.0"],
+            ],
+        },
+        "data": {},
+        "expressions": {},
+        "index_sets": {
+            "INDEX": "range(stop=N * 1000)",
+        },
+        "parameters": {
+            "N": "N",
+            "v": "v, forall i in INDEX",
+            "w": "w, forall i in INDEX",
+        },
+        "variables": {
+            "x": "x, forall i in INDEX",
+        },
+    }
+
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]

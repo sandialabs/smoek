@@ -1,5 +1,5 @@
 from smoek.core.expr.nodes import ExprLeaf, _wrap_expression_if_needed
-from .components import ModelingComponent
+from .components import ModelingComponent, index
 
 
 # Mutable model data
@@ -15,7 +15,7 @@ class Parameter(ModelingComponent, ExprLeaf):
         return self
 
     def index_set(self, In):
-        return self.forall(index(), In=In)
+        return self.forall(index("i"), In=In)
 
 
 def parameter(name=None, doc=None):
@@ -34,7 +34,7 @@ class Data(ModelingComponent, ExprLeaf):
         return self
 
     def index_set(self, In):
-        return self.forall(index(), In=In)
+        return self.forall(index("i"), In=In)
 
 
 def data(name=None, doc=None):
