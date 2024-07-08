@@ -1,0 +1,32 @@
+#
+# Install smoek
+#
+cd ..
+pip install -e .
+
+#
+# Generate coek examples
+#
+python generate.py
+
+#
+# Compile with Coek
+#
+
+1. Install Coek using Spack
+
+2. Edit the CMakeLists.txt file to redefine the CMAKE_PREFIX_PATH variable for the Spack installation directory.
+
+3. Compile the example:
+
+   mkdir build
+   cd build
+   cmake ..
+   make
+
+#
+# Run the 'smoek' tester
+#
+
+smoek simple1
+
