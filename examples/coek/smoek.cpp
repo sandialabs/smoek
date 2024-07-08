@@ -1,4 +1,5 @@
 #include <coek/coek.hpp>
+#include <coek/util/DataPortal.hpp>
 
 coek::Model generate_simple1(coek::DataPortal& data);
 coek::Model generate_knapsack1(coek::DataPortal& data);
@@ -18,7 +19,7 @@ int main(int argc, char** argv)
     if (argc >= 2)
         testname = argv[1];   // filename
     if (argc >= 3) {
-        data.load(argv[2]);
+        data.load_from_file(argv[2]);
         }
 
     coek::Model model;
