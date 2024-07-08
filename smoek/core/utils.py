@@ -237,6 +237,15 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
                     type="index_set",
                     object=indexset,
                 )
+            for index in expr.indices:
+                if isinstance(index, smoek.core.model.components.Index):
+                    self._info[index.name()] = Munch(
+                        name=index.name(),
+                        id=index._id,
+                        dependencies=[],
+                        type="index",
+                        object=index,
+                    )
 
         elif isinstance(expr, smoek.core.model.data_components.Parameter):
             # Unindexed parameter
