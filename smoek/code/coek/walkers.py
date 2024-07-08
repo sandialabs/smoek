@@ -57,7 +57,7 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
             indices = [str(index) for index in expr._indices]
             ret = f'{expr._component.name()}({", ".join(indices)})'
-            self._stack.append( ret )
+            self._stack.append(ret)
 
         elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             ret = f"{expr.to_string()}"
@@ -117,9 +117,7 @@ def generate(*, model=None, data=None, outfile=None):
 
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
-                coek_str = (
-                    f"auto {component.name} = coek::RangeSet(0, {to_coek(component.object._N)});"
-                )
+                coek_str = f"auto {component.name} = coek::RangeSet(0, {to_coek(component.object._N)});"
             elif isinstance(
                 component.object, smoek.core.model.set_components.SequenceSet
             ):
@@ -133,17 +131,19 @@ def generate(*, model=None, data=None, outfile=None):
                 if len(index_sets) == 1:
                     coek_str = f'auto {component.name} = coek::parameter("{component.name}", {index_sets[0].name()})'
                 else:
-                    coek_str = f'auto {component.name} = coek::parameter("{component.name}", {'*'.join(index_sets)})'
+                    coek_str = f'auto {component.name} = coek::parameter("{component.name}", {"*".join(index_sets)})'
             else:
-                coek_str = f'auto {component.name} = coek::parameter("{component.name}")'
+                coek_str = (
+                    f'auto {component.name} = coek::parameter("{component.name}")'
+                )
             if component.name in data:
-                coek_str += f';\n'
+                coek_str += f";\n"
                 if component.object.value():
-                    coek_str += f'{data[component.name]} {component.name}_value = {component.object.value()};\n'
+                    coek_str += f"{data[component.name]} {component.name}_value = {component.object.value()};\n"
                 else:
-                    coek_str += f'{data[component.name]} {component.name}_value;\n'
+                    coek_str += f"{data[component.name]} {component.name}_value;\n"
                 coek_str += f'data.get<{data[component.name]}>("{component.name}", {component.name}_value);\n'
-                coek_str += f'{component.name}.value({component.name}_value)'
+                coek_str += f"{component.name}.value({component.name}_value)"
             elif component.object.value():
                 coek_str += f".value({to_coek(component.object.value())})"
             coek_str += ";"
@@ -162,7 +162,7 @@ def generate(*, model=None, data=None, outfile=None):
                 if len(index_sets) == 1:
                     coek_str = f'auto {component.name} = coek::variable("{component.name}", {index_sets[0].name()})'
                 else:
-                    coek_str = f'auto {component.name} = coek::variable("{component.name}", {'*'.join(index_sets)})'
+                    coek_str = f'auto {component.name} = coek::variable("{component.name}", {"*".join(index_sets)})'
                 if component.object.lower():
                     coek_str += f".lower({to_coek(component.object.lower())})"
                 if component.object.upper():

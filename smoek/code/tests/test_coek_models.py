@@ -171,9 +171,9 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model, data={"N":"int"}))
+    print(generate(model=model, data={"N": "int"}))
     assert (
-        generate(model=model, data={"N":"int"})
+        generate(model=model, data={"N": "int"})
         == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>

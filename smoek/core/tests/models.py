@@ -222,6 +222,7 @@ def knapsack2(N):
     N_ = smk.parameter("N").value(N)
     return knapsack1(N_, "knapsack2")
 
+
 def knapsack3():
     N_ = smk.parameter("N")
     return knapsack1(N_, "knapsack3")
