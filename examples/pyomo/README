@@ -1,0 +1,11 @@
+#
+# Generate pyomo examples
+#
+python generate.py
+
+#
+# Run the 'smoek' tester
+#
+
+smoek simple1
+

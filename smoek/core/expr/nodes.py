@@ -147,6 +147,9 @@ class ExprNode(object):
     def is_leaf(self):
         return False
 
+    def is_component(self):
+        return False
+
     def args(self):
         raise NotImplementedError("Should be implemented by derived classes")
 
@@ -269,6 +272,9 @@ class ComponentIndicesNode(ExprLeaf):
 
     def etype(self):
         return ExpressionType.indexed_component
+
+    def is_component(self):
+        return True
 
     @property
     def component(self):

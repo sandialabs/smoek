@@ -64,6 +64,9 @@ class ModelingComponent(NamedComponent):
         super().__init__(name, doc)
         self._forall = None
 
+    def is_component(self):
+        return True
+
     def is_scalar(self):
         return self._forall is None
 

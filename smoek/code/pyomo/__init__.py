@@ -1,1 +1,2 @@
-# smoek.src.pyomo
+# smoek.code.pyomo
+from .walkers import generate
