@@ -223,7 +223,7 @@ def generate_{model.name}(data):
     M = pyo.ConcreteModel("{model.name}")
 
 {add_components}
-    return model
+    return M
 """
 
     if outfile is None:
