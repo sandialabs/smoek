@@ -34,7 +34,7 @@ def generate_simple1(data):
 
     M.c3 = pyo.Constraint(expr=M.y - (2 * M.x) >= 1)
 
-    return model
+    return M
 """
     )
 
@@ -65,13 +65,13 @@ def generate_hs060(data):
 
     M.c = pyo.Constraint(expr=(M.x[1] * (1 + pow(M.x[2], 2))) + pow(M.x[3], 4) == 4 + (3 * pyo.sqrt(2)))
 
-    return model
+    return M
 """
     )
 
 
 def test_knapsack1():
-    model = models.knapsack1(10)
+    model = models.knapsack1(1)
 
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
@@ -88,9 +88,9 @@ def pow(a,b):
 def generate_knapsack1(data):
     M = pyo.ConcreteModel("knapsack1")
 
-    M.INDEX = pyo.RangeSet(0, 10000)
+    M.INDEX = pyo.RangeSet(0, 10)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=0.001)
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1.0)
 
     M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
 
@@ -98,14 +98,14 @@ def generate_knapsack1(data):
 
     M.o = pyo.Objective(expr=sum(M.v[i] * M.x[i] for i in M.INDEX))
 
-    M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= 1000.0)
+    M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= 1.0)
 
-    return model
+    return M
 """
     )
 
 def test_knapsack2():
-    model = models.knapsack2(10)
+    model = models.knapsack2(1)
 
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
@@ -122,11 +122,11 @@ def pow(a,b):
 def generate_knapsack2(data):
     M = pyo.ConcreteModel("knapsack2")
 
-    M.N = pyo.Param(mutable=True, initialize=10)
+    M.N = pyo.Param(mutable=True, initialize=1)
 
-    M.INDEX = pyo.RangeSet(0, M.N * 1000)
+    M.INDEX = pyo.RangeSet(0, M.N * 10)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 1000) / 10.0))
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
 
     M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
 
@@ -134,9 +134,9 @@ def generate_knapsack2(data):
 
     M.o = pyo.Objective(expr=sum(M.v[i] * M.x[i] for i in M.INDEX))
 
-    M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= (M.N * 1000) / 10.0)
+    M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= (M.N * 10) / 10.0)
 
-    return model
+    return M
 """
     )
 
@@ -161,9 +161,9 @@ def generate_knapsack3(data):
 
     M.N = pyo.Param(mutable=True, initialize=data["N"])
 
-    M.INDEX = pyo.RangeSet(0, M.N * 1000)
+    M.INDEX = pyo.RangeSet(0, M.N * 10)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 1000) / 10.0))
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
 
     M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
 
@@ -171,8 +171,8 @@ def generate_knapsack3(data):
 
     M.o = pyo.Objective(expr=sum(M.v[i] * M.x[i] for i in M.INDEX))
 
-    M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= (M.N * 1000) / 10.0)
+    M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= (M.N * 10) / 10.0)
 
-    return model
+    return M
 """
     )

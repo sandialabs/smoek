@@ -82,7 +82,7 @@ return model;
 
 
 def test_knapsack1():
-    model = models.knapsack1(10)
+    model = models.knapsack1(1)
 
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
@@ -101,9 +101,9 @@ model.name("knapsack1");
 
 auto i = coek::set_element("i");
 
-auto INDEX = coek::RangeSet(0, 10000);
+auto INDEX = coek::RangeSet(0, 10);
 
-auto w = coek::parameter("w", INDEX).value(0.001);
+auto w = coek::parameter("w", INDEX).value(1.0);
 
 auto v = coek::parameter("v", INDEX).value(1);
 
@@ -113,7 +113,7 @@ model.add(x);
 auto o = coek::objective("o").expr(coek::Sum(v(i) * x(i), coek::Forall(i).In(INDEX)));
 model.add(o);
 
-auto c = coek::constraint("c", coek::Sum(w(i) * x(i), coek::Forall(i).In(INDEX)) <= 1000.0);
+auto c = coek::constraint("c", coek::Sum(w(i) * x(i), coek::Forall(i).In(INDEX)) <= 1.0);
 model.add(c);
 
 return model;
@@ -123,7 +123,7 @@ return model;
 
 
 def test_knapsack2():
-    model = models.knapsack2(10)
+    model = models.knapsack2(1)
 
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
@@ -140,13 +140,13 @@ coek::Model generate_knapsack2(coek::DataPortal& data)
 coek::Model model;
 model.name("knapsack2");
 
-auto N = coek::parameter("N").value(10);
+auto N = coek::parameter("N").value(1);
 
 auto i = coek::set_element("i");
 
-auto INDEX = coek::RangeSet(0, N * 1000);
+auto INDEX = coek::RangeSet(0, N * 10);
 
-auto w = coek::parameter("w", INDEX).value(1 / ((N * 1000) / 10.0));
+auto w = coek::parameter("w", INDEX).value(1 / ((N * 10) / 10.0));
 
 auto v = coek::parameter("v", INDEX).value(1);
 
@@ -156,7 +156,7 @@ model.add(x);
 auto o = coek::objective("o").expr(coek::Sum(v(i) * x(i), coek::Forall(i).In(INDEX)));
 model.add(o);
 
-auto c = coek::constraint("c", coek::Sum(w(i) * x(i), coek::Forall(i).In(INDEX)) <= (N * 1000) / 10.0);
+auto c = coek::constraint("c", coek::Sum(w(i) * x(i), coek::Forall(i).In(INDEX)) <= (N * 10) / 10.0);
 model.add(c);
 
 return model;
@@ -190,9 +190,9 @@ N.value(N_value);
 
 auto i = coek::set_element("i");
 
-auto INDEX = coek::RangeSet(0, N * 1000);
+auto INDEX = coek::RangeSet(0, N * 10);
 
-auto w = coek::parameter("w", INDEX).value(1 / ((N * 1000) / 10.0));
+auto w = coek::parameter("w", INDEX).value(1 / ((N * 10) / 10.0));
 
 auto v = coek::parameter("v", INDEX).value(1);
 
@@ -202,7 +202,7 @@ model.add(x);
 auto o = coek::objective("o").expr(coek::Sum(v(i) * x(i), coek::Forall(i).In(INDEX)));
 model.add(o);
 
-auto c = coek::constraint("c", coek::Sum(w(i) * x(i), coek::Forall(i).In(INDEX)) <= (N * 1000) / 10.0);
+auto c = coek::constraint("c", coek::Sum(w(i) * x(i), coek::Forall(i).In(INDEX)) <= (N * 10) / 10.0);
 model.add(c);
 
 return model;

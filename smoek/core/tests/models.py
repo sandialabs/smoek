@@ -193,7 +193,7 @@ def hs060():
 
 
 def knapsack1(N, name="knapsack1"):
-    N_ = N * 1000
+    N_ = N*10
     W = N_ / 10.0
 
     i = smk.index("i")

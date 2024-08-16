@@ -71,7 +71,7 @@ def test_hs060():
 
 
 def test_knapsack1():
-    model = models.knapsack1(10)
+    model = models.knapsack1(1)
 
     repn = smk.model_to_dict(model)
     assert repn == {
@@ -79,12 +79,12 @@ def test_knapsack1():
             "o": ["minimize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
         },
         "constraints": {
-            "c": ["<=", ["sum", "forall i in INDEX", ["*", "w[i]", "x[i]"]], "1000.0"],
+            "c": ["<=", ["sum", "forall i in INDEX", ["*", "w[i]", "x[i]"]], "1.0"],
         },
         "data": {},
         "expressions": {},
         "index_sets": {
-            "INDEX": "range(stop=10000)",
+            "INDEX": "range(stop=10)",
         },
         "parameters": {
             "v": "v, forall i in INDEX",
@@ -100,7 +100,7 @@ def test_knapsack1():
 
 
 def test_knapsack2():
-    model = models.knapsack2(10)
+    model = models.knapsack2(1)
 
     repn = smk.model_to_dict(model)
     assert repn == {
@@ -111,13 +111,13 @@ def test_knapsack2():
             "c": [
                 "<=",
                 ["sum", "forall i in INDEX", ["*", "w[i]", "x[i]"]],
-                ["/", ["*", "N", "1000"], "10.0"],
+                ["/", ["*", "N", "10"], "10.0"],
             ],
         },
         "data": {},
         "expressions": {},
         "index_sets": {
-            "INDEX": "range(stop=N * 1000)",
+            "INDEX": "range(stop=N * 10)",
         },
         "parameters": {
             "N": "N",
@@ -145,13 +145,13 @@ def test_knapsack3():
             "c": [
                 "<=",
                 ["sum", "forall i in INDEX", ["*", "w[i]", "x[i]"]],
-                ["/", ["*", "N", "1000"], "10.0"],
+                ["/", ["*", "N", "10"], "10.0"],
             ],
         },
         "data": {},
         "expressions": {},
         "index_sets": {
-            "INDEX": "range(stop=N * 1000)",
+            "INDEX": "range(stop=N * 10)",
         },
         "parameters": {
             "N": "N",

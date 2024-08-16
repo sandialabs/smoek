@@ -5,10 +5,13 @@ from smoek.code.pyomo import generate
 model = models.simple1()
 generate(model=model, outfile="simple1.py")
 
-model = models.knapsack1(10)
+model = models.hs060()
+generate(model=model, outfile="hs060.py")
+
+model = models.knapsack1(1)
 generate(model=model, outfile="knapsack1.py")
 
-model = models.knapsack2(10)
+model = models.knapsack2(1)
 generate(model=model, outfile="knapsack2.py")
 
 model = models.knapsack3()
