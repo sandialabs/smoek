@@ -21,6 +21,8 @@ from smoek.core.utils import (
     valid_order,
 )
 
+from smoek.core.data_apis import load_data_from_json
+
 import smoek.io
 import smoek.diff
 import smoek.pymodel.pyomo
