@@ -71,7 +71,7 @@ def small6():
     v = smk.variable().lower(-1).upper(1).value(3)
     p = smk.variable()
     p.value(2)
-    p.fixed(true)
+    p.fixed(True)
 
     o = smk.objective().expr(x)
     c = [
@@ -94,7 +94,7 @@ def testing1():
     q = smk.parameter("q").value(2)
 
     o = smk.objective().expr(3 * a + q).sense(smk.maximize)
-    c = [
+    C = [
         smk.constraint().expr(3 * b + q - a <= 0),
         smk.constraint().expr(3 * b + b == 0),
         smk.constraint().expr(3 * b * a + q + b * b + b * b == 0),
@@ -106,7 +106,7 @@ def testing1():
     ]
     e.fix(1.0)
     return smk.model(
-        objective=o, constraints=c, variables=[a, b, c, d, e, q], name="testing1"
+        objective=o, constraints=C, variables=[a, b, c, d, e, q], name="testing1"
     )
 
 
@@ -151,15 +151,52 @@ def testing4():
 # Confirming logic for variables with same upper-and-lower bounds
 def testing5():
     x = smk.variable("x").lower(2).upper(2).value(0)
-    o = smk.objective().expr(x)
+    o = smk.objective("o").expr(x)
     return smk.model(objective=o, constraints=[], variables=[x], name="testing5")
 
 
 def testing6():
     x = smk.variable("x").lower(0).upper(1).value(0)
+    p = smk.parameter("p")
     q = smk.parameter("q").value(2)
-    o = smk.objective().expr(-q * x * x)
+    o = smk.objective("o").expr(-q * x * x + p)
     return smk.model(objective=o, constraints=[], variables=[x], name="testing6")
+
+
+# Confirming logic for indexed components
+def testing7():
+    A = smk.range("A", stop=10)  # 0..9
+    B = smk.range("B", stop=11)  # 0..9
+
+    i = smk.index("i")
+    j = smk.index("j")
+
+    p = smk.parameter("p")
+    pp = smk.parameter("pp").index_set(A)
+    # ppp = smk.parameter("ppp").index_set(A*B)     # TODO
+    # ppp = smk.parameter("ppp").index_set(A,B)     # TODO?
+    ppp = smk.parameter("ppp").index_set(A).index_set(B)
+
+    x = smk.variable("x")
+    xx = smk.variable("xx").index_set(A)
+    xxx = smk.variable("xxx").index_set(A).index_set(B)
+
+    o = smk.objective("o").expr(p * x)
+
+    c = smk.constraint("c").expr(x == 0)
+    cc = smk.constraint("cc").expr(pp[i] * xx[i] == 0).forall(i, In=A)
+    ccc = (
+        smk.constraint("ccc")
+        .expr(ppp[i, j] * xxx[i, j] == 0)
+        # .forall((i,j), In=A*B)        # TODO
+        # .forall(i, j, In=A*B)         # TODO?
+        .forall(i, In=A)
+        .forall(j, In=B)
+    )
+
+    return smk.model(
+        objective=o, constraints=[c, cc, ccc], variables=[x, xx, xxx], name="testing7"
+    )
 
 
 def simple1():
@@ -193,7 +230,7 @@ def hs060():
 
 
 def knapsack1(N, name="knapsack1"):
-    N_ = N*10
+    N_ = N * 10
     W = N_ / 10.0
 
     i = smk.index("i")

@@ -181,6 +181,8 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.model.expressions.Objective):
             body = self._stack.pop()
+            if type(body) is not list:
+                body = [body]
             if expr.sense():
                 ret = ["minimize"] + body
             else:

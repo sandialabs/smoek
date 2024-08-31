@@ -24,6 +24,10 @@ def expression(name=None, expr=None, doc=None):
     return Expression(name=name, expr=expr, doc=doc)
 
 
+minimize = True
+maximize = False
+
+
 class Objective(ModelingComponent, ExprNode):
     def __init__(self, name=None, expr=None, doc=None):
         super().__init__(name=name, doc=doc)
@@ -38,9 +42,9 @@ class Objective(ModelingComponent, ExprNode):
 
     def sense(self, sense=None):
         if sense is None:
-            self._sense = sense
-            return self
-        return self._sense
+            return self._sense
+        self._sense = sense
+        return self
 
     def minimize(self):
         self._sense = True

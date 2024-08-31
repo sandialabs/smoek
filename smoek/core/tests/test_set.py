@@ -30,8 +30,7 @@ def test_index_set_function():
 
 def test_index():
     i = index()
-    with pytest.raises(AssertionError, match="No name specified for this component"):
-        i.name()
+    assert i.name() is None
     i.name("i")
     assert i.name() == "i"
 
@@ -44,8 +43,7 @@ def test_index():
 
 def test_scalar_set():
     s = index_set()
-    with pytest.raises(AssertionError, match="No name specified for this component"):
-        s.name()
+    assert s.name() is None
     s.name("A")
     assert s.name() == "A"
 
@@ -69,8 +67,7 @@ def test_indexed_set():
     # TODO: determine whether this is intended behavior
     assert si._indices[0] is i
 
-    with pytest.raises(AssertionError, match="No name specified for this component"):
-        s.name()
+    assert s.name() is None
     s.name("A")
     assert s.name() == "A"
 

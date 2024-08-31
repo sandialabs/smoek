@@ -4,13 +4,439 @@ from smoek.core.tests import models
 from smoek.code.pyomo import generate
 
 
+def test_small1():
+    model = models.small1()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_small1(data):
+    M = pyo.ConcreteModel("small1")
+
+    M.x = pyo.Var(initialize=1.0)
+
+    M.y = pyo.Var(initialize=1.0)
+
+    M.o = pyo.Objective(expr=pow(M.x, 2))
+
+    M.c = pyo.Constraint(expr=pow(M.y, 2) == 4)
+
+    return M
+"""
+    )
+
+
+def test_small2():
+    model = models.small2()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_small2(data):
+    M = pyo.ConcreteModel("small2")
+
+    M.x = pyo.Var(initialize=1.0)
+
+    M.y = pyo.Var(initialize=1.0)
+
+    M.o = pyo.Objective(expr=M.x)
+
+    M.c = pyo.Constraint(expr=pow(M.y, 2) == 4)
+
+    return M
+"""
+    )
+
+
+def test_small3():
+    model = models.small3()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_small3(data):
+    M = pyo.ConcreteModel("small3")
+
+    M.x = pyo.Var(initialize=1.0)
+
+    M.y = pyo.Var(initialize=1.0)
+
+    M.o = pyo.Objective(expr=M.x * M.y)
+
+    M.c = pyo.Constraint(expr=pow(M.y, 2) == 4)
+
+    return M
+"""
+    )
+
+
+def test_small4():
+    model = models.small4()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_small4(data):
+    M = pyo.ConcreteModel("small4")
+
+    M.x = pyo.Var(initialize=1.0)
+
+    M.y = pyo.Var(initialize=1.0)
+
+    M.o = pyo.Objective(expr=pow(M.y, 2))
+
+    M.c = pyo.Constraint(expr=M.y * M.x == 4)
+
+    return M
+"""
+    )
+
+
+def test_small5():
+    model = models.small5()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_small5(data):
+    M = pyo.ConcreteModel("small5")
+
+    M.x = pyo.Var(bounds=(-1,1), initialize=1.0)
+
+    M.y = pyo.Var(bounds=(-1,1), initialize=2.0)
+
+    M.v = pyo.Var(bounds=(-1,1), initialize=3.0)
+
+    M.q = pyo.Param(mutable=True, initialize=2)
+
+    M._o = pyo.Objective(expr=(pow(M.x, 2) / 2.0) + (pow(M.x, 2) / M.q))
+
+    M._c0 = pyo.Constraint(expr=(0.5 * M.v) * (M.x - M.y) == 2)
+
+    M._c1 = pyo.Constraint(expr=(M.v / 2.0) * (M.x - M.y) == 2)
+
+    M._c2 = pyo.Constraint(expr=(M.v * (M.x - M.y)) / 2.0 == 2)
+
+    M._c3 = pyo.Constraint(expr=M.v * ((M.x / 2.0) - (M.y / 2.0)) == 2)
+
+    M._c4 = pyo.Constraint(expr=(M.v * (M.x - M.y)) * 0.5 == 2)
+
+    M._c5 = pyo.Constraint(expr=M.v * (M.x - M.y) == 4.0)
+
+    M._c6 = pyo.Constraint(expr=((1 / M.q) * M.v) * (M.x - M.y) == 2)
+
+    M._c7 = pyo.Constraint(expr=(M.v / M.q) * (M.x - M.y) == 2)
+
+    M._c8 = pyo.Constraint(expr=(M.v * (M.x - M.y)) / M.q == 2)
+
+    M._c9 = pyo.Constraint(expr=M.v * ((M.x / 2.0) - (M.y / M.q)) == 2)
+
+    M._c10 = pyo.Constraint(expr=(M.v * (M.x - M.y)) * (1 / M.q) == 2)
+
+    M._c11 = pyo.Constraint(expr=M.v * (M.x - M.y) == 2 * M.q)
+
+    return M
+"""
+    )
+
+
+def test_small6():
+    model = models.small6()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_small6(data):
+    M = pyo.ConcreteModel("small6")
+
+    M._v0 = pyo.Var(bounds=(-1,1), initialize=1)
+
+    M._v1 = pyo.Var(bounds=(-1,1), initialize=2)
+
+    M._v2 = pyo.Var(bounds=(-1,1), initialize=3)
+
+    M._v3 = pyo.Var(initialize=2)
+    M._v3.fix()
+
+    M._o = pyo.Objective(expr=M._v0)
+
+    M._c0 = pyo.Constraint(expr=((1 / M._v3) * M._v2) * (M._v0 - M._v1) == 2)
+
+    M._c1 = pyo.Constraint(expr=(M._v2 / M._v3) * (M._v0 - M._v1) == 2)
+
+    M._c2 = pyo.Constraint(expr=(M._v2 * (M._v0 - M._v1)) / M._v3 == 2)
+
+    M._c3 = pyo.Constraint(expr=M._v2 * ((M._v0 / M._v3) - (M._v1 / M._v3)) == 2)
+
+    M._c4 = pyo.Constraint(expr=(M._v2 * (M._v0 - M._v1)) * (1 / M._v3) == 2)
+
+    M._c5 = pyo.Constraint(expr=M._v2 * (M._v0 - M._v1) == 2 * M._v3)
+
+    return M
+"""
+    )
+
+
+def test_testing1():
+    model = models.testing1()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing1(data):
+    M = pyo.ConcreteModel("testing1")
+
+    M.a = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.b = pyo.Var(bounds=(0,1), initialize=0)
+
+    M._v2 = pyo.Var(bounds=(0,None))
+
+    M._v3 = pyo.Var(bounds=(None,0))
+
+    M.e = pyo.Var()
+    M.e.fix()
+
+    M.q = pyo.Param(mutable=True, initialize=2)
+
+    M._o = pyo.Objective(expr=(3 * M.a) + M.q)
+
+    M._c0 = pyo.Constraint(expr=((3 * M.b) + M.q) - M.a <= 0)
+
+    M._c1 = pyo.Constraint(expr=(3 * M.b) + M.b == 0)
+
+    M._c2 = pyo.Constraint(expr=((((3 * M.b) * M.a) + M.q) + (M.b * M.b)) + (M.b * M.b) == 0)
+
+    M._c3 = pyo.Constraint(expr=((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a) <= 0)
+
+    M._c4 = pyo.Constraint(expr=((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a) <= 7 >= -7)
+
+    M._c5 = pyo.Constraint(expr=M._v2 + M._v3 == 0)
+
+    M._c6 = pyo.Constraint(expr=M.e + (3 * M._v3) == 1)
+
+    M._c7 = pyo.Constraint(expr=((3 * M.b) + M.q) - M.a <= 7 >= 7)
+
+    return M
+"""
+    )
+
+
+def test_testing2():
+    model = models.testing2()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing2(data):
+    M = pyo.ConcreteModel("testing2")
+
+    M.a = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.b = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.q = pyo.Param(mutable=True, initialize=2)
+
+    M._o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * (((pyo.neg(M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin(pyo.neg(pyo.cos(M.a))))
+
+    return M
+"""
+    )
+
+
+# TODO: smk.expression()
+def Xtest_testing3():
+    model = models.testing3()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing3(data):
+    M = pyo.ConcreteModel("testing3")
+
+    return M
+"""
+    )
+
+
+def test_testing4():
+    model = models.testing4()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing4(data):
+    M = pyo.ConcreteModel("testing4")
+
+    M.x = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.y = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.z = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.a = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.b = pyo.Var(bounds=(0,1), initialize=0)
+
+    M._o = pyo.Objective(expr=(M.a + pyo.cos(M.x)) + pyo.cos(M.y))
+
+    M._c0 = pyo.Constraint(expr=(M.b + pyo.cos(M.y)) + pyo.cos(M.z) == 1)
+
+    return M
+"""
+    )
+
+
+def test_testing5():
+    model = models.testing5()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing5(data):
+    M = pyo.ConcreteModel("testing5")
+
+    M.x = pyo.Var(bounds=(2,2), initialize=0)
+
+    M.o = pyo.Objective(expr=M.x)
+
+    return M
+"""
+    )
+
+
+def test_testing6():
+    model = models.testing6()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing6(data):
+    M = pyo.ConcreteModel("testing6")
+
+    M.x = pyo.Var(bounds=(0,1), initialize=0)
+
+    M.p = pyo.Param(mutable=True)
+
+    M.q = pyo.Param(mutable=True, initialize=2)
+
+    M.o = pyo.Objective(expr=((pyo.neg(M.q) * M.x) * M.x) + M.p)
+
+    return M
+"""
+    )
+
+
+def test_testing7():
+    model = models.testing7()
+
+    assert (
+        generate(model=model)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_testing7(data):
+    M = pyo.ConcreteModel("testing7")
+
+    M.A = pyo.RangeSet(0, 10)
+
+    M.B = pyo.RangeSet(0, 11)
+
+    M.p = pyo.Param(mutable=True)
+
+    M.pp = pyo.Param(M.A, mutable=True)
+
+    M.ppp = pyo.Param(M.A, M.B, mutable=True)
+
+    M.x = pyo.Var()
+
+    M.xx = pyo.Var(M.A)
+
+    M.xxx = pyo.Var(M.A, M.B)
+
+    M.o = pyo.Objective(expr=M.p * M.x)
+
+    M.c = pyo.Constraint(expr=M.x == 0)
+
+    def cc_(m,i):
+        return m.pp[i] * m.xx[i] == 0
+    M.cc = pyo.Constraint(M.A, rule=cc_)
+
+    def ccc_(m,i,j):
+        return m.ppp[i,j] * m.xxx[i,j] == 0
+    M.ccc = pyo.Constraint(M.A, M.B, rule=ccc_)
+
+    return M
+"""
+    )
+
+
 def test_simple1():
     model = models.simple1()
 
-    # order = smk.valid_order(smk.collect_info(model))
-    # assert order == ["x", "y", "o", "c1", "c2", "c3"]
-
-    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -103,6 +529,7 @@ def generate_knapsack1(data):
     return M
 """
     )
+
 
 def test_knapsack2():
     model = models.knapsack2(1)

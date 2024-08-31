@@ -287,3 +287,7 @@ class ComponentIndicesNode(ExprLeaf):
     def to_string(self):
         indices = [str(index) for index in self._indices]
         return f'{self._component.name()}[{", ".join(indices)}]'
+
+
+def inequality(lower, body, upper):
+    return lower <= (body <= upper)

@@ -13,8 +13,9 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
         super().__init__()
         self._stack = []
 
-    def walk(self, expr, decl):
+    def walk(self, expr, decl, model):
         self._decl = decl
+        self._model = model
         assert self._stack == []
         self._walk(expr)
         ret = self._stack.pop(0)
@@ -32,11 +33,21 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
             else:
                 if isinstance(
                     expr._right, smoek.core.expr.nodes.BinaryExprNode
-                ) and expr._right.operation in [ExpressionType.add, ExpressionType.sub, ExpressionType.mul, ExpressionType.div]:
+                ) and expr._right.operation in [
+                    ExpressionType.add,
+                    ExpressionType.sub,
+                    ExpressionType.mul,
+                    ExpressionType.div,
+                ]:
                     right = f"({right})"
                 if isinstance(
                     expr._left, smoek.core.expr.nodes.BinaryExprNode
-                ) and expr._left.operation in [ExpressionType.add, ExpressionType.sub, ExpressionType.mul, ExpressionType.div]:
+                ) and expr._left.operation in [
+                    ExpressionType.add,
+                    ExpressionType.sub,
+                    ExpressionType.mul,
+                    ExpressionType.div,
+                ]:
                     left = f"({left})"
                 ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
@@ -57,12 +68,12 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
 
         elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
             indices = [str(index) for index in expr._indices]
-            ret = f'M.{expr._component.name()}[{",".join(indices)}]'
+            ret = f'{self._model}.{expr._component.name()}[{",".join(indices)}]'
             self._stack.append(ret)
 
         elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             if expr.is_component():
-                ret = f"M.{expr.to_string()}"
+                ret = f"{self._model}.{expr.to_string()}"
             else:
                 ret = f"{expr.to_string()}"
             self._stack.append(ret)
@@ -73,7 +84,7 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
             for pair in expr._forall._index_set_pairs:
                 index = str(pair.index)
                 index_set = pair.set.name()
-                ret += f' for {index} in M.{index_set}'
+                ret += f" for {index} in {self._model}.{index_set}"
             ret += ")"
             self._stack.append(ret)
 
@@ -87,14 +98,14 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
         #    ret = f"({body})"
         #    self._stack.append(ret)
 
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError(
                 f"Expression node {expr} of type {type(expr)} not supported in ExpressionToStringWalker"
             )
 
 
-def to_pyomo(expr, decl={}):
-    return SmoekToPyomoWalker().walk(expr, decl)
+def to_pyomo(expr, decl={}, model="M"):
+    return SmoekToPyomoWalker().walk(expr, decl, model)
 
 
 def generate(*, model=None, data=None, outfile=None):
@@ -116,8 +127,8 @@ def generate(*, model=None, data=None, outfile=None):
         pyomo_str = None
 
         if component.type == "index":
-            #pyomo_str = f'auto {component.name} = coek::set_element("{component.name}");'
-            #components.append(pyomo_str)
+            # pyomo_str = f'auto {component.name} = coek::set_element("{component.name}");'
+            # components.append(pyomo_str)
             continue
 
         elif component.type == "index_set":
@@ -133,27 +144,29 @@ def generate(*, model=None, data=None, outfile=None):
             mutable = component.type == "parameter"
             if component.name in data:
                 initial_value = f', initialize=data["{component.name}"]'
-                #if component.object.value():
+                # if component.object.value():
                 #    initial_value = f', initialize=data["{component.name}"]'
-                #else:
+                # else:
                 #    initial_value = f', initialize={component.object.value()}'
             elif component.object.value():
-                initial_value = f', initialize={to_pyomo(component.object.value())}'
+                initial_value = f", initialize={to_pyomo(component.object.value())}"
             else:
-                initial_value = ''
+                initial_value = ""
 
             if component.object.is_indexed():
-                index_sets = ["M."+iset.name() for iset in component.object._index_sets()]
+                index_sets = [
+                    "M." + iset.name() for iset in component.object._index_sets()
+                ]
                 if len(index_sets) == 1:
-                    pyomo_str = f'    M.{component.name} = pyo.Param({index_sets[0]}, mutable={mutable}{initial_value})'
+                    pyomo_str = f"    M.{component.name} = pyo.Param({index_sets[0]}, mutable={mutable}{initial_value})"
                 else:
                     pyomo_str = f'    M.{component.name} = pyo.Param({", ".join(index_sets)}, mutable={mutable}{initial_value})'
             else:
-                pyomo_str = f'    M.{component.name} = pyo.Param(mutable={mutable}{initial_value})'
+                pyomo_str = f"    M.{component.name} = pyo.Param(mutable={mutable}{initial_value})"
             components.append(pyomo_str)
 
         elif component.type == "variable":
-            varargs=[]
+            varargs = []
             if component.object.lower() or component.object.upper():
                 if component.object.lower():
                     lower = to_pyomo(component.object.lower())
@@ -163,23 +176,29 @@ def generate(*, model=None, data=None, outfile=None):
                     upper = to_pyomo(component.object.upper())
                 else:
                     upper = "None"
-                varargs.append(f'bounds=({lower},{upper})')
+                varargs.append(f"bounds=({lower},{upper})")
             if component.object.value():
                 varargs.append(f"initialize={to_pyomo(component.object.value())}")
 
             if component.object.is_indexed():
-                index_sets = ["M."+iset.name() for iset in component.object._index_sets()]
+                index_sets = [
+                    "M." + iset.name() for iset in component.object._index_sets()
+                ]
                 if len(varargs) > 0:
-                    varargs = ", "+", ".join(varargs)
+                    varargs = ", " + ", ".join(varargs)
                 else:
                     varargs = ""
                 if len(index_sets) == 1:
-                    pyomo_str = f'    M.{component.name} = pyo.Var({index_sets[0]}{varargs})'
+                    pyomo_str = (
+                        f"    M.{component.name} = pyo.Var({index_sets[0]}{varargs})"
+                    )
                 else:
                     pyomo_str = f'    M.{component.name} = pyo.Var({", ".join(index_sets)}{varargs})'
             else:
                 varargs = ", ".join(varargs)
-                pyomo_str = f'    M.{component.name} = pyo.Var({varargs})'
+                pyomo_str = f"    M.{component.name} = pyo.Var({varargs})"
+                if component.object.fixed():
+                    pyomo_str = pyomo_str + f"\n    M.{component.name}.fix()"
             components.append(pyomo_str)
 
         elif component.type == "expression":
@@ -196,18 +215,33 @@ def generate(*, model=None, data=None, outfile=None):
                 # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
-                pyomo_str = f'    M.{component.name} = pyo.Objective(expr={to_pyomo(component.object.expr())})'
+                pyomo_str = f"    M.{component.name} = pyo.Objective(expr={to_pyomo(component.object.expr())})"
             components.append(pyomo_str)
 
         elif component.type == "constraint":
             if component.object.is_indexed():
-                # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
-                pass
+                index_sets = [
+                    "M." + iset.name() for iset in component.object._index_sets()
+                ]
+                indices = [i.name() for i in component.object._indices()]
+                conargs = ""
+                if len(index_sets) == 1:
+                    pyomo_str = f'    def {component.name}_(m,{indices[0]}):\n        return {to_pyomo(component.object.expr(), model="m")}\n'
+                    pyomo_str = (
+                        pyomo_str
+                        + f"    M.{component.name} = pyo.Constraint({index_sets[0]}{conargs}, rule={component.name}_)"
+                    )
+                else:
+                    pyomo_str = f'    def {component.name}_(m,{",".join(indices)}):\n        return {to_pyomo(component.object.expr(), model="m")}\n'
+                    pyomo_str = (
+                        pyomo_str
+                        + f'    M.{component.name} = pyo.Constraint({", ".join(index_sets)}{conargs}, rule={component.name}_)'
+                    )
             else:
-                pyomo_str = f'    M.{component.name} = pyo.Constraint(expr={to_pyomo(component.object.expr())})'
+                pyomo_str = f"    M.{component.name} = pyo.Constraint(expr={to_pyomo(component.object.expr())})"
             components.append(pyomo_str)
 
-        if pyomo_str is None or components[-1] is None:
+        if pyomo_str is None or components[-1] is None:  # pragma: no cover
             print("ERROR", component.name, component.type)
         if pyomo_str is not None:
             components.append("")
@@ -228,6 +262,6 @@ def generate_{model.name}(data):
 
     if outfile is None:
         return code
-    else:
+    else:  # pragma : no cover
         with open(outfile, "w") as OUTPUT:
             OUTPUT.write(code)

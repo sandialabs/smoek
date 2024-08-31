@@ -34,13 +34,19 @@ class JSONDataPortal(collections.UserDict):
     def __init__(self, packed_data, filename=None):
         collections.UserDict.__init__(self)
         self.data = packed_data
-        self._filename=filename
+        self._filename = filename
 
     def is_set(self, name):
-        return name in self.data and type(self.data[name]) is dict and 'set_type' in self.data[name]
+        return (
+            name in self.data
+            and type(self.data[name]) is dict
+            and "set_type" in self.data[name]
+        )
 
     def is_parameter(self, name):
-        return name in self.data and (type(self.data[name]) is not dict or 'set_type' not in self.data[name])
+        return name in self.data and (
+            type(self.data[name]) is not dict or "set_type" not in self.data[name]
+        )
 
     def parameters(self):
         for name in self.data:
@@ -197,13 +203,13 @@ class JSONDataPortal_Coek(JSONDataPortal):
                     key = k
 
                 if type(v) is list:
-                    setflag=True
+                    setflag = True
                     if type(v[0]) is tuple:
                         value = [list(value) for value in v]
                     else:
                         value = v
                 elif type(v) is tuple:
-                    setflag=False
+                    setflag = False
                     value = list(v)
                 else:
                     value = v
@@ -212,20 +218,24 @@ class JSONDataPortal_Coek(JSONDataPortal):
 
             if type(datavals[0][1]) is list:
                 assert setflag is not None, "Unknown data type!"
-                if setflag:    # Set
+                if setflag:  # Set
                     return dict(
                         set_type=infer_types(datavals[0][1][0]),
                         key_type=infer_types(datavals[0][0]),
                         data=datavals,
                     )
-                else:       # Param
+                else:  # Param
                     return dict(
                         param_type=infer_types(datavals[0][1]),
                         key_type=infer_types(datavals[0][0]),
                         data=datavals,
                     )
             else:
-                return dict(key_type=infer_types(datavals[0][0]), param_type=infer_types(datavals[0][1]), data=datavals)
+                return dict(
+                    key_type=infer_types(datavals[0][0]),
+                    param_type=infer_types(datavals[0][1]),
+                    data=datavals,
+                )
 
         elif type(data) is list:
             #
@@ -265,5 +275,12 @@ def JsonDataPortal(packed_data=None, filename=None, json_string=None, schema="co
     raise ValueError("Unexpected JSON schema: " + schema)
 
 
-def load_data_from_json(*, filename=None, packed_data=None, json_string=None, schema="coek"):
-    return JsonDataPortal(filename=filename, packed_data=packed_data, json_string=json_string, schema=schema)
+def load_data_from_json(
+    *, filename=None, packed_data=None, json_string=None, schema="coek"
+):
+    return JsonDataPortal(
+        filename=filename,
+        packed_data=packed_data,
+        json_string=json_string,
+        schema=schema,
+    )
