@@ -502,7 +502,7 @@ def test_knapsack1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -537,7 +537,7 @@ def test_knapsack2():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -574,7 +574,7 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model, data={"N": "int"}))
+    # print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"N": "int"})
         == """
@@ -599,6 +599,40 @@ def generate_knapsack3(data):
     M.o = pyo.Objective(expr=sum(M.v[i] * M.x[i] for i in M.INDEX))
 
     M.c = pyo.Constraint(expr=sum(M.w[i] * M.x[i] for i in M.INDEX) <= (M.N * 10) / 10.0)
+
+    return M
+"""
+    )
+
+
+def test_knapsack4():
+    model = models.knapsack4()
+
+    # print(generate(model=model, data={"N": "int"}))
+    assert (
+        generate(model=model, data={"ITEMS": "int", "max_weight":"unsigned int", "value":"double", "weight":"unsigned int"})
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_knapsack4(data):
+    M = pyo.ConcreteModel("knapsack4")
+
+    M.ITEMS = pyo.Set()
+
+    M.value = pyo.Param(M.ITEMS, mutable=True, initialize=data["value"])
+
+    M.weight = pyo.Param(M.ITEMS, mutable=True, initialize=data["weight"])
+
+    M.max_weight = pyo.Param(mutable=True, initialize=data["max_weight"])
+
+    M.x = pyo.Var(M.ITEMS, bounds=(0.0,1.0))
+
+    M.o = pyo.Objective(expr=sum(M.value[i] * M.x[i] for i in M.ITEMS))
+
+    M.c = pyo.Constraint(expr=sum(M.weight[i] * M.x[i] for i in M.ITEMS) <= M.max_weight)
 
     return M
 """

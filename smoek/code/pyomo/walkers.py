@@ -98,7 +98,7 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
         #    ret = f"({body})"
         #    self._stack.append(ret)
 
-        else:  # pragma: no cover
+        else:  # pragma: nocover
             raise NotImplementedError(
                 f"Expression node {expr} of type {type(expr)} not supported in ExpressionToStringWalker"
             )
@@ -138,6 +138,8 @@ def generate(*, model=None, data=None, outfile=None):
                 component.object, smoek.core.model.set_components.SequenceSet
             ):
                 pyomo_str = f"    M.{component.name} = pyo.RangeSet({to_pyomo(component.object._start)}, {to_pyomo(component.object._stop)}+1)"
+            else:
+                pyomo_str = f"    M.{component.name} = pyo.Set()"
             components.append(pyomo_str)
 
         elif component.type == "parameter" or component.type == "data":
@@ -241,7 +243,7 @@ def generate(*, model=None, data=None, outfile=None):
                 pyomo_str = f"    M.{component.name} = pyo.Constraint(expr={to_pyomo(component.object.expr())})"
             components.append(pyomo_str)
 
-        if pyomo_str is None or components[-1] is None:  # pragma: no cover
+        if pyomo_str is None or components[-1] is None:  # pragma: nocover
             print("ERROR", component.name, component.type)
         if pyomo_str is not None:
             components.append("")
@@ -262,6 +264,6 @@ def generate_{model.name}(data):
 
     if outfile is None:
         return code
-    else:  # pragma : no cover
+    else:  # pragma: nocover
         with open(outfile, "w") as OUTPUT:
             OUTPUT.write(code)

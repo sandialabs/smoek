@@ -33,18 +33,11 @@ class Set(ModelingComponent):
         return self._size
 
 
-#
-# WEH - This seems redundant with index_set().  Using index_set() for now.
-#
-# def set(name=None, doc=None):
-#    return Set(name=name, doc=doc)
+def set(name=None, *, forall=None, doc=None):
+    return Set(name=name, doc=doc, forall=forall)
 
 
-def index_set(name=None, forall=None, doc=None):
-    if forall is None:
-        return Set(name=name, doc=doc)
-    else:
-        return Set(name=name, forall=forall, doc=doc)
+index_set = set
 
 
 class RangeSet(Set):

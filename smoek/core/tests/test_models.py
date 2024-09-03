@@ -1138,3 +1138,37 @@ def test_knapsack3():
 
     order = smk.valid_order(smk.collect_info(model))
     assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
+
+
+def test_knapsack4():
+    model = models.knapsack4()
+
+    repn = smk.model_to_dict(model)
+    assert repn == {
+        "objectives": {
+            "o": ["minimize", "sum", "forall i in ITEMS", ["*", "value[i]", "x[i]"]],
+        },
+        "constraints": {
+            "c": [
+                "<=",
+                ["sum", "forall i in ITEMS", ["*", "weight[i]", "x[i]"]],
+                "max_weight"
+            ],
+        },
+        "data": {},
+        "expressions": {},
+        "index_sets": {
+            "ITEMS": "ITEMS",
+        },
+        "parameters": {
+            "max_weight": "max_weight",
+            "value": "value, forall i in ITEMS",
+            "weight": "weight, forall i in ITEMS",
+        },
+        "variables": {
+            "x": "x, forall i in ITEMS",
+        },
+    }
+
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ["ITEMS", "i", "value", "weight", "max_weight", "x", "o", "c"]

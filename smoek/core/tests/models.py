@@ -263,3 +263,31 @@ def knapsack2(N):
 def knapsack3():
     N_ = smk.parameter("N")
     return knapsack1(N_, "knapsack3")
+
+
+def knapsack4(name="knapsack4"):
+
+    ITEMS = smk.set("ITEMS")
+
+    i = smk.index("i")
+
+    value = smk.parameter("value").index_set(ITEMS)
+
+    weight = smk.parameter("weight").index_set(ITEMS)
+
+    max_weight = smk.parameter("max_weight")
+
+
+    x = smk.variable("x").index_set(ITEMS).bounds(0.0, 1.0)
+
+    o = (
+        smk.objective()
+        .name("o")
+        .expr(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
+        .minimize()
+    )
+
+    c = smk.constraint("c").expr(smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= max_weight)
+
+    return smk.model(objective=o, constraints=[c], variables=[x], name=name)
+
