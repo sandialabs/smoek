@@ -52,6 +52,13 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
                 ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
 
+        elif isinstance(expr, smoek.core.expr.nodes.InequalityExprNode):
+            right = self._stack.pop()
+            body = self._stack.pop()
+            left = self._stack.pop()
+            ret = f"pyo.inequality({left}, {body}, {right})"
+            self._stack.append(ret)
+
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()
             ret = f"pyo.{expr.operation}({arg})"
@@ -139,7 +146,7 @@ def generate(*, model=None, data=None, outfile=None):
             ):
                 pyomo_str = f"    M.{component.name} = pyo.RangeSet({to_pyomo(component.object._start)}, {to_pyomo(component.object._stop)}+1)"
             else:
-                pyomo_str = f"    M.{component.name} = pyo.Set()"
+                pyomo_str = f'    M.{component.name} = pyo.Set(initialize=data["{component.name}"])'
             components.append(pyomo_str)
 
         elif component.type == "parameter" or component.type == "data":

@@ -56,6 +56,13 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
             self._depth_first_walk(expr.right, *kwargs)
             self._depth -= 1
             self._visit(expr, *kwargs)
+        elif isinstance(expr, smoek.core.expr.nodes.InequalityExprNode):
+            self._depth += 1
+            self._depth_first_walk(expr.left, *kwargs)
+            self._depth_first_walk(expr.body, *kwargs)
+            self._depth_first_walk(expr.right, *kwargs)
+            self._depth -= 1
+            self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             self._depth += 1
             self._depth_first_walk(expr.arg, *kwargs)
@@ -124,6 +131,12 @@ class ExpressionToStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             left = self._stack.pop()
             ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
+        elif isinstance(expr, smoek.core.expr.nodes.InequalityExprNode):
+            right = self._stack.pop()
+            body = self._stack.pop()
+            left = self._stack.pop()
+            ret = f"{left} <= {body} <= {right}"
+            self._stack.append(ret)
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()
             ret = f"{expr.operation}({arg})"
@@ -166,6 +179,12 @@ class ExpressionToListWalker(BottomUpDepthFirstExpressionWalker[List]):
             right = self._stack.pop()
             left = self._stack.pop()
             ret = [str(expr.operation), left, right]
+            self._stack.append(ret)
+        elif isinstance(expr, smoek.core.expr.nodes.InequalityExprNode):
+            right = self._stack.pop()
+            body = self._stack.pop()
+            left = self._stack.pop()
+            ret = ["<=", left, body, right]
             self._stack.append(ret)
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()

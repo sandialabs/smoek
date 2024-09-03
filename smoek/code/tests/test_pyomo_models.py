@@ -244,13 +244,13 @@ def generate_testing1(data):
 
     M._c3 = pyo.Constraint(expr=((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a) <= 0)
 
-    M._c4 = pyo.Constraint(expr=((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a) <= 7 >= -7)
+    M._c4 = pyo.Constraint(expr=pyo.inequality(-7, ((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a), 7))
 
     M._c5 = pyo.Constraint(expr=M._v2 + M._v3 == 0)
 
     M._c6 = pyo.Constraint(expr=M.e + (3 * M._v3) == 1)
 
-    M._c7 = pyo.Constraint(expr=((3 * M.b) + M.q) - M.a <= 7 >= 7)
+    M._c7 = pyo.Constraint(expr=pyo.inequality(7, ((3 * M.b) + M.q) - M.a, 7))
 
     return M
 """
@@ -576,7 +576,7 @@ def test_knapsack3():
 
     # print(generate(model=model, data={"N": "int"}))
     assert (
-        generate(model=model, data={"N": "int"})
+        generate(model=model, data={"N"})
         == """
 import pyomo.environ as pyo
 
@@ -610,7 +610,7 @@ def test_knapsack4():
 
     # print(generate(model=model, data={"N": "int"}))
     assert (
-        generate(model=model, data={"ITEMS": "int", "max_weight":"unsigned int", "value":"double", "weight":"unsigned int"})
+        generate(model=model, data={"ITEMS", "max_weight", "value", "weight"})
         == """
 import pyomo.environ as pyo
 
@@ -620,7 +620,7 @@ def pow(a,b):
 def generate_knapsack4(data):
     M = pyo.ConcreteModel("knapsack4")
 
-    M.ITEMS = pyo.Set()
+    M.ITEMS = pyo.Set(initialize=data["ITEMS"])
 
     M.value = pyo.Param(M.ITEMS, mutable=True, initialize=data["value"])
 

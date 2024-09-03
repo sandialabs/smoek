@@ -40,6 +40,13 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
                 ret = f"{left} {expr.operation} {right}"
             self._stack.append(ret)
 
+        elif isinstance(expr, smoek.core.expr.nodes.InequalityExprNode):
+            right = self._stack.pop()
+            body = self._stack.pop()
+            left = self._stack.pop()
+            ret = f"coek::inequality({left}, {body}, {right})"
+            self._stack.append(ret)
+
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             arg = self._stack.pop()
             ret = f"coek::{expr.operation}({arg})"

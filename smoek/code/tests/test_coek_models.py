@@ -295,7 +295,7 @@ model.add(_c2);
 auto _c3 = coek::constraint("_c3").expr(((((3 * b) * b) + q) - (a * b)) - (a * a) <= 0);
 model.add(_c3);
 
-auto _c4 = coek::constraint("_c4").expr(((((3 * b) * b) + q) - (a * b)) - (a * a) <= 7 >= -7);
+auto _c4 = coek::constraint("_c4").expr(coek::inequality(-7, ((((3 * b) * b) + q) - (a * b)) - (a * a), 7));
 model.add(_c4);
 
 auto _c5 = coek::constraint("_c5").expr(_v2 + _v3 == 0);
@@ -304,7 +304,7 @@ model.add(_c5);
 auto _c6 = coek::constraint("_c6").expr(e + (3 * _v3) == 1);
 model.add(_c6);
 
-auto _c7 = coek::constraint("_c7").expr(((3 * b) + q) - a <= 7 >= 7);
+auto _c7 = coek::constraint("_c7").expr(coek::inequality(7, ((3 * b) + q) - a, 7));
 model.add(_c7);
 
 return model;
