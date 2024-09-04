@@ -7,5 +7,5 @@ python generate.py
 # Run the 'smoek' tester
 #
 
-smoek simple1
+./run small1
 

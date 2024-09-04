@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+
+import os
+import os.path
+import json
+import sys
+import smoek as smk
+
+from models.small1 import generate_small1
+from models.small2 import generate_small2
+from models.small3 import generate_small3
+from models.small4 import generate_small4
+from models.small5 import generate_small5
+from models.small6 import generate_small6
+from models.testing1 import generate_testing1
+from models.testing2 import generate_testing2
+#from testing3 import generate_testing3
+from models.testing4 import generate_testing4
+from models.testing5 import generate_testing5
+from models.testing6 import generate_testing6
+from models.testing7 import generate_testing7
+from models.simple1 import generate_simple1
+from models.hs060 import generate_hs060
+from models.knapsack1 import generate_knapsack1
+from models.knapsack2 import generate_knapsack2
+from models.knapsack3 import generate_knapsack3
+from models.knapsack4 import generate_knapsack4
+
+tests = {
+    "small1": generate_small1,
+    "small2": generate_small2,
+    "small3": generate_small3,
+    "small4": generate_small4,
+    "small5": generate_small5,
+    "small6": generate_small6,
+    "testing1": generate_testing1,
+    "testing2": generate_testing2,
+    "testing4": generate_testing4,
+    "testing5": generate_testing5,
+    "testing6": generate_testing6,
+    "testing7": generate_testing7,
+    "simple1": generate_simple1,
+    "hs060": generate_hs060,
+    "knapsack1": generate_knapsack1,
+    "knapsack2": generate_knapsack2,
+    "knapsack3": generate_knapsack3,
+    "knapsack4": generate_knapsack4
+}
+
+
+def run(testname, jsonfile=None, quiet=False):
+    if jsonfile is None and os.path.exists(os.path.join("data",testname+".json")):
+        jsonfile = os.path.join("data",testname+".json")
+    if jsonfile:
+        data = smk.load_data_from_json(filename=jsonfile)
+    else:
+        data = {}
+    model = tests[testname](data)
+    if not quiet:
+        model.pprint()
+    model.write("models/"+testname+".nl")
+
+if len(sys.argv) == 1:
+    print("run.py <test-name> [<json-data-filename>]")
+    sys.exit(0)
+
+if len(sys.argv) == 2:
+    testname = sys.argv[1]
+    if testname in tests:
+        run(testname)
+    elif testname == "all":
+        for name in tests:
+            print("TEST "+name)
+            run(name, quiet=True)
+    else:
+        print("Unknown testname: "+testname)
+
+if len(sys.argv) == 3:
+    testname = sys.argv[1]
+    assert testname in tests, "Specified testname does not exist: "+testname
+    jsonfile = sys.argv
+    assert os.path.exists(jsonfile), "Specified JSON file does not exist: "+jsonfile
+    run(testname, jsonfile)
+
