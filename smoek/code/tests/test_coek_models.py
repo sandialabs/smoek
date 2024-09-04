@@ -145,10 +145,10 @@ model.name("small5");
 auto x = coek::variable("x").lower(-1).upper(1).value(1.0);
 model.add(x);
 
-auto y = coek::variable("y").lower(-1).upper(1).value(2.0);
+auto y = coek::variable("y").lower(-1).upper(2).value(2.0);
 model.add(y);
 
-auto v = coek::variable("v").lower(-1).upper(1).value(3.0);
+auto v = coek::variable("v").lower(-1).upper(3).value(3.0);
 model.add(v);
 
 auto q = coek::parameter("q").value(2);
@@ -214,10 +214,10 @@ model.name("small6");
 auto _v0 = coek::variable("_v0").lower(-1).upper(1).value(1);
 model.add(_v0);
 
-auto _v1 = coek::variable("_v1").lower(-1).upper(1).value(2);
+auto _v1 = coek::variable("_v1").lower(-1).upper(2).value(2);
 model.add(_v1);
 
-auto _v2 = coek::variable("_v2").lower(-1).upper(1).value(3);
+auto _v2 = coek::variable("_v2").lower(-1).upper(3).value(3);
 model.add(_v2);
 
 auto _v3 = coek::variable("_v3").value(2);
@@ -407,7 +407,7 @@ coek::Model generate_testing5(coek::DataPortal& data)
 coek::Model model;
 model.name("testing5");
 
-auto x = coek::variable("x").lower(2).upper(2).value(0);
+auto x = coek::variable("x").lower(2).upper(2);
 model.add(x);
 
 auto o = coek::objective("o").expr(x);
@@ -435,7 +435,7 @@ model.name("testing6");
 auto x = coek::variable("x").lower(0).upper(1).value(0);
 model.add(x);
 
-auto p = coek::parameter("p");
+auto p = coek::parameter("p").value(0);
 
 auto q = coek::parameter("q").value(2);
 
@@ -469,11 +469,11 @@ auto i = coek::set_element("i");
 
 auto j = coek::set_element("j");
 
-auto p = coek::parameter("p");
+auto p = coek::parameter("p").value(0);
 
-auto pp = coek::parameter("pp", A);
+auto pp = coek::parameter("pp", A).value(0);
 
-auto ppp = coek::parameter("ppp", A*B);
+auto ppp = coek::parameter("ppp", A*B).value(0);
 
 auto x = coek::variable("x");
 model.add(x);
@@ -718,7 +718,7 @@ def test_knapsack4():
 
     print(generate(model=model, data={"N": "int"}))
     assert (
-        generate(model=model, data={"max_weight": "double", "weight":"std::map<int,double>", "value":"std::map<int,double>", "ITEMS":"std::set<int>"})
+        generate(model=model, data={"capacity": "double", "weight":"std::map<int,double>", "value":"std::map<int,double>", "ITEMS":"std::set<int>"})
         == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
@@ -751,11 +751,11 @@ if (data.contains("weight") {
     weight.value(weight_value);
 }
 
-auto max_weight = coek::parameter("max_weight");
-if (data.contains("max_weight") {
-    double max_weight_value;
-    data.get<double>("max_weight", max_weight_value);
-    max_weight.value(max_weight_value);
+auto capacity = coek::parameter("capacity");
+if (data.contains("capacity") {
+    double capacity_value;
+    data.get<double>("capacity", capacity_value);
+    capacity.value(capacity_value);
 }
 
 auto x = coek::variable("x", ITEMS).lower(0.0).upper(1.0);
@@ -764,7 +764,7 @@ model.add(x);
 auto o = coek::objective("o").expr(coek::Sum(value(i) * x(i), coek::Forall(i).In(ITEMS)));
 model.add(o);
 
-auto c = coek::constraint("c").expr(coek::Sum(weight(i) * x(i), coek::Forall(i).In(ITEMS)) <= max_weight);
+auto c = coek::constraint("c").expr(coek::Sum(weight(i) * x(i), coek::Forall(i).In(ITEMS)) <= capacity);
 model.add(c);
 
 return model;

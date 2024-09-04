@@ -128,9 +128,9 @@ def generate_small5(data):
 
     M.x = pyo.Var(bounds=(-1,1), initialize=1.0)
 
-    M.y = pyo.Var(bounds=(-1,1), initialize=2.0)
+    M.y = pyo.Var(bounds=(-1,2), initialize=2.0)
 
-    M.v = pyo.Var(bounds=(-1,1), initialize=3.0)
+    M.v = pyo.Var(bounds=(-1,3), initialize=3.0)
 
     M.q = pyo.Param(mutable=True, initialize=2)
 
@@ -181,9 +181,9 @@ def generate_small6(data):
 
     M._v0 = pyo.Var(bounds=(-1,1), initialize=1)
 
-    M._v1 = pyo.Var(bounds=(-1,1), initialize=2)
+    M._v1 = pyo.Var(bounds=(-1,2), initialize=2)
 
-    M._v2 = pyo.Var(bounds=(-1,1), initialize=3)
+    M._v2 = pyo.Var(bounds=(-1,3), initialize=3)
 
     M._v3 = pyo.Var(initialize=2)
     M._v3.fix()
@@ -277,7 +277,7 @@ def generate_testing2(data):
 
     M.q = pyo.Param(mutable=True, initialize=2)
 
-    M._o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * (((pyo.neg(M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin(pyo.neg(pyo.cos(M.a))))
+    M._o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * ((((-M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin((-pyo.cos(M.a))))
 
     return M
 """
@@ -351,7 +351,7 @@ def pow(a,b):
 def generate_testing5(data):
     M = pyo.ConcreteModel("testing5")
 
-    M.x = pyo.Var(bounds=(2,2), initialize=0)
+    M.x = pyo.Var(bounds=(2,2))
 
     M.o = pyo.Objective(expr=M.x)
 
@@ -376,11 +376,11 @@ def generate_testing6(data):
 
     M.x = pyo.Var(bounds=(0,1), initialize=0)
 
-    M.p = pyo.Param(mutable=True)
+    M.p = pyo.Param(mutable=True, initialize=0)
 
     M.q = pyo.Param(mutable=True, initialize=2)
 
-    M.o = pyo.Objective(expr=((pyo.neg(M.q) * M.x) * M.x) + M.p)
+    M.o = pyo.Objective(expr=(((-M.q) * M.x) * M.x) + M.p)
 
     return M
 """
@@ -405,11 +405,11 @@ def generate_testing7(data):
 
     M.B = pyo.RangeSet(0, 11)
 
-    M.p = pyo.Param(mutable=True)
+    M.p = pyo.Param(mutable=True, initialize=0)
 
-    M.pp = pyo.Param(M.A, mutable=True)
+    M.pp = pyo.Param(M.A, mutable=True, initialize=0)
 
-    M.ppp = pyo.Param(M.A, M.B, mutable=True)
+    M.ppp = pyo.Param(M.A, M.B, mutable=True, initialize=0)
 
     M.x = pyo.Var()
 
@@ -610,7 +610,7 @@ def test_knapsack4():
 
     # print(generate(model=model, data={"N": "int"}))
     assert (
-        generate(model=model, data={"ITEMS", "max_weight", "value", "weight"})
+        generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
         == """
 import pyomo.environ as pyo
 
@@ -626,13 +626,13 @@ def generate_knapsack4(data):
 
     M.weight = pyo.Param(M.ITEMS, mutable=True, initialize=data["weight"])
 
-    M.max_weight = pyo.Param(mutable=True, initialize=data["max_weight"])
+    M.capacity = pyo.Param(mutable=True, initialize=data["capacity"])
 
     M.x = pyo.Var(M.ITEMS, bounds=(0.0,1.0))
 
     M.o = pyo.Objective(expr=sum(M.value[i] * M.x[i] for i in M.ITEMS))
 
-    M.c = pyo.Constraint(expr=sum(M.weight[i] * M.x[i] for i in M.ITEMS) <= M.max_weight)
+    M.c = pyo.Constraint(expr=sum(M.weight[i] * M.x[i] for i in M.ITEMS) <= M.capacity)
 
     return M
 """

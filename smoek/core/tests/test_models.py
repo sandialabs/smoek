@@ -1146,7 +1146,7 @@ def test_knapsack4():
             "c": [
                 "<=",
                 ["sum", "forall i in ITEMS", ["*", "weight[i]", "x[i]"]],
-                "max_weight"
+                "capacity"
             ],
         },
         "data": {},
@@ -1155,7 +1155,7 @@ def test_knapsack4():
             "ITEMS": "ITEMS",
         },
         "parameters": {
-            "max_weight": "max_weight",
+            "capacity": "capacity",
             "value": "value, forall i in ITEMS",
             "weight": "weight, forall i in ITEMS",
         },
@@ -1165,4 +1165,4 @@ def test_knapsack4():
     }
 
     order = smk.valid_order(smk.collect_info(model))
-    assert order == ["ITEMS", "i", "value", "weight", "max_weight", "x", "o", "c"]
+    assert order == ["ITEMS", "i", "value", "weight", "capacity", "x", "o", "c"]
