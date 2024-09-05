@@ -4,8 +4,12 @@
 python generate.py
 
 #
-# Run the 'smoek' tester
+# Run a single test
 #
+./run small1
 
-smoek simple1
+#
+# Run all tests
+#
+./run all
 

@@ -7,7 +7,7 @@ set(CMAKE_PREFIX_PATH "/home/wehart/dev/coek/coek-gh/_build/install;/home/wehart
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
 
 # Can we make this dependency be implied by Coek?
 #find_package(OpenMP)
@@ -16,11 +16,8 @@ find_package(coek)
 #
 # List smoek test function files here
 #
-SET(sources
-    knapsack1.cpp
-    knapsack2.cpp
-    knapsack3.cpp
-    simple1.cpp    
+file(GLOB sources CONFIGURE_DEPENDS
+    "models/*.cpp"
     )
 
 add_executable(smoek smoek.cpp ${sources})

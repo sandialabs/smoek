@@ -1,19 +1,25 @@
+import os
 import smoek as smk
 import smoek.core.tests.models as models
 from smoek.code.pyomo import generate
 
-model = models.simple1()
-generate(model=model, outfile="simple1.py")
+if not os.path.exists("models"):
+    os.mkdir("models")
 
-model = models.hs060()
-generate(model=model, outfile="hs060.py")
+testnames = ["small1", "small2", "small3", "small4", "small5", "small6",
+                "testing1", "testing2", "testing4", "testing5", "testing6", "testing7",
+                "simple1", "hs060",
+                "knapsack1", "knapsack2", "knapsack3", "knapsack4"
+]
 
-model = models.knapsack1(1)
-generate(model=model, outfile="knapsack1.py")
+data = {
+    "knapsack3": {"N"},
+    "knapsack4": {"value", "weight", "capacity", "ITEMS"},
+}
 
-model = models.knapsack2(1)
-generate(model=model, outfile="knapsack2.py")
-
-model = models.knapsack3()
-generate(model=model, outfile="knapsack3.py", data={"N":"int"})
+for name in testnames:
+    print("GENERATING "+name)
+    model = getattr(models, name)()
+    data_option = data.get(name,{}) 
+    generate(model=model, outfile=f"models/{name}.py", data=data_option)
 

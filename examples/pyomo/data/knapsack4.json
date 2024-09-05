@@ -1,0 +1,23 @@
+{
+"ITEMS": {
+    "set_type": "i",
+    "data": [1, 2, 3, 4]
+},
+"value": {
+    "param_type": "d",
+    "key_type": "i",
+    "data": [[1,8],
+            [2,3],
+            [3,6],
+            [4,11]]
+},
+"weight": {
+    "param_type": "d",
+    "key_type": "i",
+    "data": [[1,5],
+            [2,7],
+            [3,4],
+            [4,3]]
+},
+"capacity": 14
+}

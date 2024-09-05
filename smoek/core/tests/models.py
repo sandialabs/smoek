@@ -42,8 +42,8 @@ def small4():
 
 def small5():
     x = smk.variable("x").lower(-1).upper(1).value(1.0)
-    y = smk.variable("y").lower(-1).upper(1).value(2.0)
-    v = smk.variable("v").lower(-1).upper(1).value(3.0)
+    y = smk.variable("y").lower(-1).upper(2).value(2.0)
+    v = smk.variable("v").lower(-1).upper(3).value(3.0)
     p = 2.0
     q = smk.parameter("q").value(2)
 
@@ -67,11 +67,11 @@ def small5():
 
 def small6():
     x = smk.variable().lower(-1).upper(1).value(1)
-    y = smk.variable().lower(-1).upper(1).value(2)
-    v = smk.variable().lower(-1).upper(1).value(3)
+    y = smk.variable().lower(-1).upper(2).value(2)
+    v = smk.variable().lower(-1).upper(3).value(3)
     p = smk.variable()
     p.value(2)
-    p.fixed(true)
+    p.fixed(True)
 
     o = smk.objective().expr(x)
     c = [
@@ -94,7 +94,7 @@ def testing1():
     q = smk.parameter("q").value(2)
 
     o = smk.objective().expr(3 * a + q).sense(smk.maximize)
-    c = [
+    C = [
         smk.constraint().expr(3 * b + q - a <= 0),
         smk.constraint().expr(3 * b + b == 0),
         smk.constraint().expr(3 * b * a + q + b * b + b * b == 0),
@@ -106,7 +106,7 @@ def testing1():
     ]
     e.fix(1.0)
     return smk.model(
-        objective=o, constraints=c, variables=[a, b, c, d, e, q], name="testing1"
+        objective=o, constraints=C, variables=[a, b, c, d, e, q], name="testing1"
     )
 
 
@@ -150,16 +150,53 @@ def testing4():
 
 # Confirming logic for variables with same upper-and-lower bounds
 def testing5():
-    x = smk.variable("x").lower(2).upper(2).value(0)
-    o = smk.objective().expr(x)
+    x = smk.variable("x").lower(2).upper(2)
+    o = smk.objective("o").expr(x)
     return smk.model(objective=o, constraints=[], variables=[x], name="testing5")
 
 
 def testing6():
     x = smk.variable("x").lower(0).upper(1).value(0)
+    p = smk.parameter("p").value(0)
     q = smk.parameter("q").value(2)
-    o = smk.objective().expr(-q * x * x)
+    o = smk.objective("o").expr(-q * x * x + p)
     return smk.model(objective=o, constraints=[], variables=[x], name="testing6")
+
+
+# Confirming logic for indexed components
+def testing7():
+    A = smk.range("A", stop=10)  # 0..9
+    B = smk.range("B", stop=11)  # 0..9
+
+    i = smk.index("i")
+    j = smk.index("j")
+
+    p = smk.parameter("p").value(0)
+    pp = smk.parameter("pp").index_set(A).value(0)
+    # ppp = smk.parameter("ppp").index_set(A*B)     # TODO
+    # ppp = smk.parameter("ppp").index_set(A,B)     # TODO?
+    ppp = smk.parameter("ppp").index_set(A).index_set(B).value(0)
+
+    x = smk.variable("x")
+    xx = smk.variable("xx").index_set(A)
+    xxx = smk.variable("xxx").index_set(A).index_set(B)
+
+    o = smk.objective("o").expr(p * x)
+
+    c = smk.constraint("c").expr(x == 0)
+    cc = smk.constraint("cc").expr(pp[i] * xx[i] == 0).forall(i, In=A)
+    ccc = (
+        smk.constraint("ccc")
+        .expr(ppp[i, j] * xxx[i, j] == 0)
+        # .forall((i,j), In=A*B)        # TODO
+        # .forall(i, j, In=A*B)         # TODO?
+        .forall(i, In=A)
+        .forall(j, In=B)
+    )
+
+    return smk.model(
+        objective=o, constraints=[c, cc, ccc], variables=[x, xx, xxx], name="testing7"
+    )
 
 
 def simple1():
@@ -192,15 +229,15 @@ def hs060():
     return smk.model(objective=o, constraints=[c], variables=[x], name="hs060")
 
 
-def knapsack1(N, name="knapsack1"):
-    N_ = N*10
-    W = N_ / 10.0
+def knapsack1(N=1, name="knapsack1"):
+    N_ = N * 10
+    capacity = N_ / 10.0
 
     i = smk.index("i")
 
     INDEX = smk.range("INDEX", stop=N_)  # 0..N-1
 
-    w = smk.parameter().name("w").index_set(INDEX).value(1 / W)
+    w = smk.parameter().name("w").index_set(INDEX).value(1 / capacity)
 
     v = smk.parameter("v").index_set(INDEX).value(1)
 
@@ -213,12 +250,12 @@ def knapsack1(N, name="knapsack1"):
         .minimize()
     )
 
-    c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i, In=INDEX) <= W)
+    c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i, In=INDEX) <= capacity)
 
     return smk.model(objective=o, constraints=[c], variables=[x], name=name)
 
 
-def knapsack2(N):
+def knapsack2(N=1):
     N_ = smk.parameter("N").value(N)
     return knapsack1(N_, "knapsack2")
 
@@ -226,3 +263,31 @@ def knapsack2(N):
 def knapsack3():
     N_ = smk.parameter("N")
     return knapsack1(N_, "knapsack3")
+
+
+def knapsack4(name="knapsack4"):
+
+    ITEMS = smk.set("ITEMS")
+
+    i = smk.index("i")
+
+    value = smk.parameter("value").index_set(ITEMS)
+
+    weight = smk.parameter("weight").index_set(ITEMS)
+
+    capacity = smk.parameter("capacity")
+
+
+    x = smk.variable("x").index_set(ITEMS).bounds(0.0, 1.0)
+
+    o = (
+        smk.objective()
+        .name("o")
+        .expr(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
+        .minimize()
+    )
+
+    c = smk.constraint("c").expr(smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity)
+
+    return smk.model(objective=o, constraints=[c], variables=[x], name=name)
+

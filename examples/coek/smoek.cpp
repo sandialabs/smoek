@@ -1,11 +1,36 @@
+#include <cassert>
+#include <filesystem>
+#include <set>
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_simple1(coek::DataPortal& data);
-coek::Model generate_knapsack1(coek::DataPortal& data);
-coek::Model generate_knapsack2(coek::DataPortal& data);
-coek::Model generate_knapsack3(coek::DataPortal& data);
+const std::set<std::string>& testnames();
+coek::CompactModel generate(const std::string& testname, const coek::DataPortal& data);
 
+void run(const std::string& testname, const coek::DataPortal& data, bool quiet=false)
+{
+const auto& container = testnames();
+assert(container.find(testname) != container.end());
+auto compact_model = generate(testname, data);
+auto model = compact_model.expand();
+if (not quiet)
+    model.print_equations();
+model.write("models/"+testname+".nl");
+}
+
+void run(const std::string& testname, const std::string& jsonfile, bool quiet=false)
+{
+    coek::DataPortal data;
+    if (std::filesystem::exists(jsonfile))
+        data.load_from_file(jsonfile);
+    run(testname, data, quiet);
+}
+
+void run(const std::string& testname, bool quiet=false)
+{
+    std::string jsonfile = "data/" + testname + ".json";
+    run(testname, jsonfile, quiet);
+}
 
 int main(int argc, char** argv)
 {
@@ -14,26 +39,27 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    std::string testname;
-    coek::DataPortal data;
-    if (argc >= 2)
-        testname = argv[1];   // filename
-    if (argc >= 3) {
-        data.load_from_file(argv[2]);
+    if (argc == 2) {
+        std::string testname = argv[1];
+        const auto& container = testnames();
+        if (container.find(testname) != container.end()) {
+            run(testname);
+        }
+        else if (testname == "all") {
+            for (auto& name: testnames()) {
+                std::cout << "TEST " << name << std::endl;
+                run(name, true);
+            }
+        }
+        else
+            std::cout << "Unknown testname: " << testname << std::endl;
         }
 
-    coek::Model model;
-    if (testname == "simple1")
-        model = generate_simple1(data);
-    else if (testname == "knapsack1")
-        model = generate_knapsack1(data);
-    else if (testname == "knapsack2")
-        model = generate_knapsack2(data);
-    else if (testname == "knapsack3")
-        model = generate_knapsack3(data);
-
-    model.print_equations();
-    model.write(testname+".lp");
+    else if (argc == 3) {
+        std::string testname = argv[1];
+        std::string jsonfile = argv[2];
+        run(testname, jsonfile);
+        }
 
     return 0;
 }

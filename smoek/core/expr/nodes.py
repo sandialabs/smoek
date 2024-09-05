@@ -232,6 +232,31 @@ class UnaryExprNode(ExprNode):
         return (self.arg,)
 
 
+class InequalityExprNode(ExprNode):
+    def __init__(self, left, body, right):
+        self._left = _wrap_expression_if_needed(left)
+        self._body = _wrap_expression_if_needed(body)
+        self._right = _wrap_expression_if_needed(right)
+
+    def etype(self):
+        return self._operation
+
+    @property
+    def left(self):
+        return self._left
+
+    @property
+    def body(self):
+        return self._body
+
+    @property
+    def right(self):
+        return self._right
+
+    def args(self):
+        return (self.left, self.body, self.right)
+
+
 class NumberWrapper(ExprLeaf):
     def __init__(self, value):
         self._value = value
@@ -287,3 +312,8 @@ class ComponentIndicesNode(ExprLeaf):
     def to_string(self):
         indices = [str(index) for index in self._indices]
         return f'{self._component.name()}[{", ".join(indices)}]'
+
+
+def inequality(lower, body, upper):
+    return InequalityExprNode(lower, body, upper)
+

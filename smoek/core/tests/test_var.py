@@ -21,8 +21,7 @@ def test_variable_function():
 def test_scalar_var():
     # test name
     v = variable()
-    with pytest.raises(AssertionError, match="No name specified for this component"):
-        v.name()
+    assert v.name() is None
     v.name("x")
     assert v.name() == "x"
 
@@ -46,8 +45,7 @@ def test_indexed_var():
 
     # test name
     v = variable(forall=f)
-    with pytest.raises(AssertionError, match="No name specified for this component"):
-        v.name()
+    assert v.name() is None
     v.name("x")
     assert v.name() == "x"
 

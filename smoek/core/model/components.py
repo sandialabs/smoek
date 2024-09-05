@@ -22,7 +22,7 @@ class NamedComponent(object):
 
     def name(self, name=None):
         if name is None:
-            assert self._name is not None, "No name specified for this component"
+            # assert self._name is not None, "No name specified for this component"
             return self._name
         self._name = name
         return self
@@ -105,6 +105,12 @@ class ModelingComponent(NamedComponent):
         if self._forall is None:
             return []
         return self._forall.sets_list()
+
+    def _indices(self):
+        # Return a list of the indices used with this component
+        if self._forall is None:
+            return []
+        return self._forall.indices_list()
 
     def _dependencies(self):
         # Return a list of the names of components that this component depends on

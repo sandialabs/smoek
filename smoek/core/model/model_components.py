@@ -15,6 +15,8 @@ class Model(object):
         for i, c in enumerate(self.constraints):
             if c.name() is None:
                 c.name(f"_c{i}")
+        if self.objective.name() is None:
+            self.objective.name(f"_o")
         for i, v in enumerate(self.variables):
             if v.name() is None:
                 v.name(f"_v{i}")

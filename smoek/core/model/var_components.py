@@ -1,5 +1,6 @@
 from pyomo.common.collections import ComponentMap
 from enum import Enum
+from munch import Munch
 from smoek.core.expr.forall import ForAllObject
 from smoek.core.expr.nodes import (
     ExprLeaf,
@@ -14,6 +15,22 @@ class Domain(Enum):
     Reals = 1
     Binary = 2
     Integers = 3
+
+
+#
+# Can specify domain using a Munch that specifies domain/lower/upper values
+#
+Reals = Munch(domain=Domain.Reals, lower=None, upper=None)
+PositiveReals = Munch(domain=Reals, lower=0, upper=None)
+NegativeReals = Munch(domain=Reals, lower=None, upper=0)
+
+Binary = Munch(domain=Domain.Binary, lower=0, upper=1)
+
+Integers = Munch(domain=Domain.Integers, lower=None, upper=None)
+PositiveIntegers = Munch(domain=Integers, lower=1, upper=None)
+NegativeIntegers = Munch(domain=Integers, lower=None, upper=-1)
+NonNegativeIntegers = Munch(domain=Integers, lower=0, upper=None)
+NonPositiveIntegers = Munch(domain=Integers, lower=None, upper=0)
 
 
 #
@@ -33,6 +50,7 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         self._lower = None
         self._upper = None
         self._value = None
+        self._fixed = False
 
     def value(self, value=None):
         if value is None:
@@ -56,6 +74,22 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         self._lower = _wrap_expression_if_needed(lower)
         self._upper = _wrap_expression_if_needed(upper)
         return self
+
+    def domain(self, value=None):
+        if value is None:
+            return self._domain
+        self._domain = value
+        return self
+
+    within = domain
+
+    def fixed(self, value=None):
+        if value is None:
+            return self._fixed
+        self._fixed = value == True
+        return self
+
+    fix = fixed
 
     def etype(self):
         return ExpressionType.variable
