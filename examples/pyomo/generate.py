@@ -18,7 +18,7 @@ data = {
 }
 
 for name in testnames:
-    print("TEST "+name)
+    print("GENERATING "+name)
     model = getattr(models, name)()
     data_option = data.get(name,{}) 
     generate(model=model, outfile=f"models/{name}.py", data=data_option)

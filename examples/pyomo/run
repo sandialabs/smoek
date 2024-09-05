@@ -78,7 +78,7 @@ if len(sys.argv) == 2:
 if len(sys.argv) == 3:
     testname = sys.argv[1]
     assert testname in tests, "Specified testname does not exist: "+testname
-    jsonfile = sys.argv
+    jsonfile = sys.argv[2]
     assert os.path.exists(jsonfile), "Specified JSON file does not exist: "+jsonfile
     run(testname, jsonfile)
 
