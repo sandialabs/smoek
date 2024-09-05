@@ -13,9 +13,9 @@ def test_small1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_small1(coek::DataPortal& data)
+coek::CompactModel generate_small1(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("small1");
 
 auto x = coek::variable("x").value(1.0);
@@ -44,9 +44,9 @@ def test_small2():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_small2(coek::DataPortal& data)
+coek::CompactModel generate_small2(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("small2");
 
 auto x = coek::variable("x").value(1.0);
@@ -75,9 +75,9 @@ def test_small3():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_small3(coek::DataPortal& data)
+coek::CompactModel generate_small3(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("small3");
 
 auto x = coek::variable("x").value(1.0);
@@ -106,9 +106,9 @@ def test_small4():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_small4(coek::DataPortal& data)
+coek::CompactModel generate_small4(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("small4");
 
 auto x = coek::variable("x").value(1.0);
@@ -137,9 +137,9 @@ def test_small5():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_small5(coek::DataPortal& data)
+coek::CompactModel generate_small5(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("small5");
 
 auto x = coek::variable("x").lower(-1).upper(1).value(1.0);
@@ -206,9 +206,9 @@ def test_small6():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_small6(coek::DataPortal& data)
+coek::CompactModel generate_small6(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("small6");
 
 auto _v0 = coek::variable("_v0").lower(-1).upper(1).value(1);
@@ -258,9 +258,9 @@ def test_testing1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_testing1(coek::DataPortal& data)
+coek::CompactModel generate_testing1(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("testing1");
 
 auto a = coek::variable("a").lower(0).upper(1).value(0);
@@ -321,9 +321,9 @@ def test_testing2():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_testing2(coek::DataPortal& data)
+coek::CompactModel generate_testing2(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("testing2");
 
 auto a = coek::variable("a").lower(0).upper(1).value(0);
@@ -362,9 +362,9 @@ def test_testing4():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_testing4(coek::DataPortal& data)
+coek::CompactModel generate_testing4(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("testing4");
 
 auto x = coek::variable("x").lower(0).upper(1).value(0);
@@ -402,9 +402,9 @@ def test_testing5():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_testing5(coek::DataPortal& data)
+coek::CompactModel generate_testing5(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("testing5");
 
 auto x = coek::variable("x").lower(2).upper(2);
@@ -427,9 +427,9 @@ def test_testing6():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_testing6(coek::DataPortal& data)
+coek::CompactModel generate_testing6(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("testing6");
 
 auto x = coek::variable("x").lower(0).upper(1).value(0);
@@ -456,9 +456,9 @@ def test_testing7():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_testing7(coek::DataPortal& data)
+coek::CompactModel generate_testing7(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("testing7");
 
 auto A = coek::RangeSet(0, 10);
@@ -514,9 +514,9 @@ def test_simple1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_simple1(coek::DataPortal& data)
+coek::CompactModel generate_simple1(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("simple1");
 
 auto x = coek::variable("x").lower(0.0).upper(1.0);
@@ -556,9 +556,9 @@ def test_hs060():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_hs060(coek::DataPortal& data)
+coek::CompactModel generate_hs060(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("hs060");
 
 auto N = coek::RangeSet(1, 4+1);
@@ -591,9 +591,9 @@ def test_knapsack1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_knapsack1(coek::DataPortal& data)
+coek::CompactModel generate_knapsack1(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("knapsack1");
 
 auto i = coek::set_element("i");
@@ -632,9 +632,9 @@ def test_knapsack2():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_knapsack2(coek::DataPortal& data)
+coek::CompactModel generate_knapsack2(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("knapsack2");
 
 auto N = coek::parameter("N").value(1);
@@ -675,9 +675,9 @@ def test_knapsack3():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_knapsack3(coek::DataPortal& data)
+coek::CompactModel generate_knapsack3(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("knapsack3");
 
 auto N = coek::parameter("N");
@@ -723,9 +723,9 @@ def test_knapsack4():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::Model generate_knapsack4(coek::DataPortal& data)
+coek::CompactModel generate_knapsack4(coek::DataPortal& data)
 {
-coek::Model model;
+coek::CompactModel model;
 model.name("knapsack4");
 
 auto ITEMS = coek::Set();
