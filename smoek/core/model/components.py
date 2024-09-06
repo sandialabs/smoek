@@ -112,6 +112,11 @@ class ModelingComponent(NamedComponent):
             return []
         return self._forall.indices_list()
 
+    def _index_set_pairs(self):
+        if self._forall is None:
+            return []
+        return [isp for isp in self._forall._index_set_pairs]
+
     def _dependencies(self):
         # Return a list of the names of components that this component depends on
         return []
