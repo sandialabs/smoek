@@ -7,7 +7,7 @@ set(CMAKE_PREFIX_PATH "/home/wehart/dev/coek/coek-gh/_build/install;/home/wehart
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -I..")
 
 # Can we make this dependency be implied by Coek?
 #find_package(OpenMP)
@@ -20,6 +20,6 @@ file(GLOB sources CONFIGURE_DEPENDS
     "models/*.cpp"
     )
 
-add_executable(run run.cpp ${sources})
+add_executable(run run.cpp loadlib.cpp ${sources})
 TARGET_LINK_LIBRARIES(run coek::coek)
 
