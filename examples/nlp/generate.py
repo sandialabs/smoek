@@ -33,7 +33,6 @@ with open("models/smoek_generate.cpp",'w') as OUTPUT:
 #include <set>
 #include <vector>
 #include <string>
-#include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 #include "IpStdCInterfaceTypes.h"
 

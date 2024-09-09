@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <dlfcn.h>
 
 extern "C" libHandle_t loadlib(const char* libname, char* buf, size_t len)
 {
