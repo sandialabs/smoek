@@ -62,7 +62,7 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == "neg":
                 arg = self._stack.pop()
-                if isinstance(arg, smoek.core.expr.nodes.BinaryExprNode) and expr._left.operation in [
+                if isinstance(expr._arg, smoek.core.expr.nodes.BinaryExprNode) and expr._arg.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,
@@ -164,6 +164,7 @@ def generate(*, model=None, data=None, outfile=None):
 
         elif component.type == "parameter" or component.type == "data":
             mutable = component.type == "parameter"
+            initial_value = ""
             if component.name in data:
                 initial_value = f', initialize=data["{component.name}"]'
                 # if component.object.value():
@@ -172,8 +173,6 @@ def generate(*, model=None, data=None, outfile=None):
                 #    initial_value = f', initialize={component.object.value()}'
             elif component.object.value():
                 initial_value = f", initialize={to_pyomo(component.object.value())}"
-            else:
-                initial_value = ""
 
             if component.object.is_indexed():
                 index_sets = [

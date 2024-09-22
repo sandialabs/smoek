@@ -26,7 +26,7 @@ def small3():
     x = smk.variable("x").value(1.0)
     y = smk.variable("y").value(1.0)
 
-    o = smk.objective("o").expr(x * y)
+    o = smk.objective("o").expr(-(x * y))
     c = smk.constraint("c").expr(y**2 == 4)
     return smk.model(objective=o, constraints=[c], variables=[x, y], name="small3")
 
@@ -111,10 +111,10 @@ def testing1():
 
 
 def testing2():
-    a = smk.variable("a").lower(0).upper(1).value(0).within(smk.Integers)
+    a = smk.variable("a").lower(0).upper(2).value(0).within(smk.Integers)
     b = smk.variable("b").lower(0).upper(1).value(0).within(smk.Binary)
     q = smk.parameter("q").value(2)
-    b.fix(2.0)
+    b.fix(1.0)
 
     # This forces the use of a Negate term
     e = 3 * a + q + a * a * a * (-a + b + 3 * a + 3 * b) + smk.sin(-smk.cos(a))
@@ -165,8 +165,8 @@ def testing6():
 
 # Confirming logic for indexed components
 def testing7():
-    A = smk.range("A", stop=10)  # 0..9
-    B = smk.range("B", stop=11)  # 0..9
+    A = smk.range("A", stop=3)  # 0..3
+    B = smk.range("B", stop=4)  # 0..4
 
     i = smk.index("i")
     j = smk.index("j")
@@ -196,6 +196,37 @@ def testing7():
 
     return smk.model(
         objective=o, constraints=[c, cc, ccc], variables=[x, xx, xxx], name="testing7"
+    )
+
+
+# Confirming logic when indexed values are used
+def testing8():
+    A = smk.range("A", stop=3)  # 0..3
+    B = smk.range("B", stop=4)  # 0..4
+
+    i = smk.index("i")
+    j = smk.index("j")
+
+    ppp = smk.parameter("ppp").index_set(A).index_set(B).value(1)
+    pp = smk.parameter("pp").forall(i, In=A).value(smk.sum(ppp[i,j]).forall(j, In=B))
+    p = smk.parameter("p").value(smk.sum(pp[i]).forall(i, In=A))
+
+    x = smk.variable("x").value(smk.sum(pp[i]).forall(i, In=A))
+    xx = smk.variable("xx").forall(i, In=A).value(pp[i]).lower(pp[i]).upper(pp[i])
+    xxx = smk.variable("xxx").index_set(A).index_set(B)
+
+    o = smk.objective("o").expr(p*x + smk.sum(xx[i]).forall(i, In=A))
+
+    c = smk.constraint("c").expr(smk.sum(pp[i]*xx[i]).forall(i, In=A) == 0)
+    cc = smk.constraint("cc").expr(pp[i] * xx[i] == 0).forall(i, In=A)
+    ccc = (
+        smk.constraint("ccc")
+        .expr(smk.sum(ppp[i, j] * xxx[i, j]).forall(i, In=A)  == 0)
+        .forall(j, In=B)
+    )
+
+    return smk.model(
+        objective=o, constraints=[c, cc, ccc], variables=[xx, xxx], name="testing8"
     )
 
 
@@ -235,7 +266,7 @@ def knapsack1(N=1, name="knapsack1"):
 
     i = smk.index("i")
 
-    INDEX = smk.range("INDEX", stop=N_)  # 0..N-1
+    INDEX = smk.range("INDEX", stop=N_-1)  # 0..N-1
 
     w = smk.parameter().name("w").index_set(INDEX).value(1 / capacity)
 
@@ -247,7 +278,7 @@ def knapsack1(N=1, name="knapsack1"):
         smk.objective()
         .name("o")
         .expr(smk.sum(v[i] * x[i]).forall(i, In=INDEX))
-        .minimize()
+        .maximize()
     )
 
     c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i, In=INDEX) <= capacity)
@@ -284,7 +315,7 @@ def knapsack4(name="knapsack4"):
         smk.objective()
         .name("o")
         .expr(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
-        .minimize()
+        .maximize()
     )
 
     c = smk.constraint("c").expr(smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity)

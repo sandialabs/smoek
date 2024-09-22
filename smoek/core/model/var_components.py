@@ -1,6 +1,5 @@
 from pyomo.common.collections import ComponentMap
 from enum import Enum
-from munch import Munch
 from smoek.core.expr.forall import ForAllObject
 from smoek.core.expr.nodes import (
     ExprLeaf,
@@ -18,19 +17,36 @@ class Domain(Enum):
 
 
 #
-# Can specify domain using a Munch that specifies domain/lower/upper values
+# Can specify domain using a class that specifies domain/lower/upper values
 #
-Reals = Munch(domain=Domain.Reals, lower=None, upper=None)
-PositiveReals = Munch(domain=Reals, lower=0, upper=None)
-NegativeReals = Munch(domain=Reals, lower=None, upper=0)
+class DomainType(object):
 
-Binary = Munch(domain=Domain.Binary, lower=0, upper=1)
+    counter=0
 
-Integers = Munch(domain=Domain.Integers, lower=None, upper=None)
-PositiveIntegers = Munch(domain=Integers, lower=1, upper=None)
-NegativeIntegers = Munch(domain=Integers, lower=None, upper=-1)
-NonNegativeIntegers = Munch(domain=Integers, lower=0, upper=None)
-NonPositiveIntegers = Munch(domain=Integers, lower=None, upper=0)
+    def __init__(self, *, domain, lower, upper):
+        self.id = DomainType.counter
+        DomainType.counter = DomainType.counter + 1
+        self.domain = domain
+        self.lower = lower
+        self.upper = upper
+
+    def __eq__(self, dtype):
+        return self.id == dtype.id
+
+    def __neq__(self, dtype):
+        return self.id != dtype.id
+
+Reals = DomainType(domain=Domain.Reals, lower=None, upper=None)
+PositiveReals = DomainType(domain=Reals, lower=0, upper=None)
+NegativeReals = DomainType(domain=Reals, lower=None, upper=0)
+
+Binary = DomainType(domain=Domain.Binary, lower=0, upper=1)
+
+Integers = DomainType(domain=Domain.Integers, lower=None, upper=None)
+PositiveIntegers = DomainType(domain=Integers, lower=1, upper=None)
+NegativeIntegers = DomainType(domain=Integers, lower=None, upper=-1)
+NonNegativeIntegers = DomainType(domain=Integers, lower=0, upper=None)
+NonPositiveIntegers = DomainType(domain=Integers, lower=None, upper=0)
 
 
 #
@@ -43,9 +59,9 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
     def __init__(self, name=None, domain=None, doc=None):
         super().__init__(name, doc)
         if domain is not None:
-            assert isinstance(domain, Domain)
+            assert isinstance(domain, DomainType)
         else:
-            domain = Domain.Reals
+            domain = Reals
         self._domain = domain
         self._lower = None
         self._upper = None
@@ -89,7 +105,10 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         self._fixed = value == True
         return self
 
-    fix = fixed
+    def fix(self, value):
+        self._value = _wrap_expression_if_needed(value)
+        self._fixed = True
+        return self
 
     def etype(self):
         return ExpressionType.variable
@@ -104,10 +123,10 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
         return res
 
     def index_set(self, In):
-        return self.forall(index("i"), In=In)
+        return self.forall(index(f"i{len(self._index_sets())}"), In=In)
 
 
-def variable(name=None, domain=Domain.Reals, doc=None, forall=None):
+def variable(name=None, domain=Reals, doc=None, forall=None):
     if forall is None:
         return ScalarVariable(name=name, domain=domain, doc=doc)
     else:
@@ -116,19 +135,19 @@ def variable(name=None, domain=Domain.Reals, doc=None, forall=None):
 
 # WEH - Why are these only scalar?
 def binary_variable(name=None, doc=None):
-    return ScalarVariable(name=name, domain=Domain.Binary, doc=doc)
+    return ScalarVariable(name=name, domain=Binary, doc=doc)
 
 
 # WEH - Why are these only scalar?
 def real_variable(name=None, doc=None):
-    return ScalarVariable(name=name, domain=Domain.Reals, doc=doc)
+    return ScalarVariable(name=name, domain=Reals, doc=doc)
 
 
 class IndexedVariable(ModelingComponent):
     def __init__(self, forall, name=None, domain=None, doc=None):
         super().__init__(name, doc)
         if domain is not None:
-            assert isinstance(domain, Domain)
+            assert isinstance(domain, DomainType)
         self._domain = domain
         self._forall = forall
         self._component_indices = ComponentMap()
@@ -166,3 +185,12 @@ class IndexedVariable(ModelingComponent):
         self._lower = _wrap_expression_if_needed(lower)
         self._upper = _wrap_expression_if_needed(upper)
         return self
+
+    def domain(self, value=None):
+        if value is None:
+            return self._domain
+        self._domain = value
+        return self
+
+    within = domain
+

@@ -13,7 +13,7 @@ def test_small1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_small1(coek::DataPortal& data)
+coek::CompactModel generate_small1(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("small1");
@@ -44,7 +44,7 @@ def test_small2():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_small2(coek::DataPortal& data)
+coek::CompactModel generate_small2(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("small2");
@@ -75,7 +75,7 @@ def test_small3():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_small3(coek::DataPortal& data)
+coek::CompactModel generate_small3(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("small3");
@@ -86,7 +86,7 @@ model.add(x);
 auto y = coek::variable("y").value(1.0);
 model.add(y);
 
-auto o = coek::objective("o").expr(x * y);
+auto o = coek::objective("o").expr((-(x * y)));
 model.add(o);
 
 auto c = coek::constraint("c").expr(coek::pow(y, 2) == 4);
@@ -106,7 +106,7 @@ def test_small4():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_small4(coek::DataPortal& data)
+coek::CompactModel generate_small4(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("small4");
@@ -137,7 +137,7 @@ def test_small5():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_small5(coek::DataPortal& data)
+coek::CompactModel generate_small5(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("small5");
@@ -206,7 +206,7 @@ def test_small6():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_small6(coek::DataPortal& data)
+coek::CompactModel generate_small6(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("small6");
@@ -258,7 +258,7 @@ def test_testing1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_testing1(coek::DataPortal& data)
+coek::CompactModel generate_testing1(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("testing1");
@@ -275,7 +275,7 @@ model.add(_v2);
 auto _v3 = coek::variable("_v3").upper(0);
 model.add(_v3);
 
-auto e = coek::variable("e");
+auto e = coek::variable("e").value(1.0);
 model.add(e);
 
 auto q = coek::parameter("q").value(2);
@@ -321,20 +321,20 @@ def test_testing2():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_testing2(coek::DataPortal& data)
+coek::CompactModel generate_testing2(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("testing2");
 
-auto a = coek::variable("a").lower(0).upper(1).value(0);
+auto a = coek::variable("a").lower(0).upper(2).value(0);
 model.add(a);
 
-auto b = coek::variable("b").lower(0).upper(1).value(0);
+auto b = coek::variable("b").lower(0).upper(1).value(1.0);
 model.add(b);
 
 auto q = coek::parameter("q").value(2);
 
-auto _o = coek::objective("_o").expr((((3 * a) + q) + (((a * a) * a) * (((coek::neg(a) + b) + (3 * a)) + (3 * b)))) + coek::sin(coek::neg(coek::cos(a))));
+auto _o = coek::objective("_o").expr((((3 * a) + q) + (((a * a) * a) * ((((-a) + b) + (3 * a)) + (3 * b)))) + coek::sin((-coek::cos(a))));
 model.add(_o);
 
 return model;
@@ -362,7 +362,7 @@ def test_testing4():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_testing4(coek::DataPortal& data)
+coek::CompactModel generate_testing4(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("testing4");
@@ -402,7 +402,7 @@ def test_testing5():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_testing5(coek::DataPortal& data)
+coek::CompactModel generate_testing5(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("testing5");
@@ -427,7 +427,7 @@ def test_testing6():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_testing6(coek::DataPortal& data)
+coek::CompactModel generate_testing6(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("testing6");
@@ -439,7 +439,7 @@ auto p = coek::parameter("p").value(0);
 
 auto q = coek::parameter("q").value(2);
 
-auto o = coek::objective("o").expr(((coek::neg(q) * x) * x) + p);
+auto o = coek::objective("o").expr((((-q) * x) * x) + p);
 model.add(o);
 
 return model;
@@ -456,14 +456,14 @@ def test_testing7():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_testing7(coek::DataPortal& data)
+coek::CompactModel generate_testing7(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("testing7");
 
-auto A = coek::RangeSet(0, 10);
+auto A = coek::RangeSet(0, 3);
 
-auto B = coek::RangeSet(0, 11);
+auto B = coek::RangeSet(0, 4);
 
 auto i = coek::set_element("i");
 
@@ -490,10 +490,10 @@ model.add(o);
 auto c = coek::constraint("c").expr(x == 0);
 model.add(c);
 
-auto cc = coek::constraint("cc", A).expr(pp(i) * xx(i) == 0).Forall(i).In(A);
+auto cc = coek::constraint("cc", Forall(i).In(A)).expr(pp(i) * xx(i) == 0);
 model.add(cc);
 
-auto ccc = coek::constraint("ccc", A*B).expr(ppp(i, j) * xxx(i, j) == 0).Forall(i).In(A).Forall(j).In(B);
+auto ccc = coek::constraint("ccc", Forall(i).In(A).Forall(j).In(B)).expr(ppp(i, j) * xxx(i, j) == 0);
 model.add(ccc);
 
 return model;
@@ -514,7 +514,7 @@ def test_simple1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_simple1(coek::DataPortal& data)
+coek::CompactModel generate_simple1(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("simple1");
@@ -556,7 +556,7 @@ def test_hs060():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_hs060(coek::DataPortal& data)
+coek::CompactModel generate_hs060(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("hs060");
@@ -591,14 +591,14 @@ def test_knapsack1():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_knapsack1(coek::DataPortal& data)
+coek::CompactModel generate_knapsack1(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("knapsack1");
 
 auto i = coek::set_element("i");
 
-auto INDEX = coek::RangeSet(0, 10);
+auto INDEX = coek::RangeSet(0, 9);
 
 auto w = coek::parameter("w", INDEX).value(1.0);
 
@@ -632,7 +632,7 @@ def test_knapsack2():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_knapsack2(coek::DataPortal& data)
+coek::CompactModel generate_knapsack2(const coek::DataPortal& )
 {
 coek::CompactModel model;
 model.name("knapsack2");
@@ -641,7 +641,7 @@ auto N = coek::parameter("N").value(1);
 
 auto i = coek::set_element("i");
 
-auto INDEX = coek::RangeSet(0, N * 10);
+auto INDEX = coek::RangeSet(0, (N * 10) - 1);
 
 auto w = coek::parameter("w", INDEX).value(1 / ((N * 10) / 10.0));
 
@@ -675,21 +675,21 @@ def test_knapsack3():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_knapsack3(coek::DataPortal& data)
+coek::CompactModel generate_knapsack3(const coek::DataPortal& data)
 {
 coek::CompactModel model;
 model.name("knapsack3");
 
 auto N = coek::parameter("N");
-if (data.contains("N") {
+if (data.contains("N")) {
     int N_value;
-    data.get<int>("N", N_value);
+    data.get("N", N_value);
     N.value(N_value);
 }
 
 auto i = coek::set_element("i");
 
-auto INDEX = coek::RangeSet(0, N * 10);
+auto INDEX = coek::RangeSet(0, (N * 10) - 1);
 
 auto w = coek::parameter("w", INDEX).value(1 / ((N * 10) / 10.0));
 
@@ -723,38 +723,38 @@ def test_knapsack4():
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_knapsack4(coek::DataPortal& data)
+coek::CompactModel generate_knapsack4(const coek::DataPortal& data)
 {
 coek::CompactModel model;
 model.name("knapsack4");
 
-auto ITEMS = coek::Set();
-if (data.contains("ITEMS") {
+coek::ConcreteSet ITEMS;
+if (data.contains("ITEMS")) {
     std::set<int> ITEMS_value;
-    data.get<std::set<int>>("ITEMS", ITEMS_value);
-    ITEMS.value(ITEMS_value);
+    data.get("ITEMS", ITEMS_value);
+    ITEMS = coek::SetOf(ITEMS_value);
 }
 
 auto i = coek::set_element("i");
 
 auto value = coek::parameter("value", ITEMS);
-if (data.contains("value") {
+if (data.contains("value")) {
     std::map<int,double> value_value;
-    data.get<std::map<int,double>>("value", value_value);
+    data.get("value", value_value);
     value.value(value_value);
 }
 
 auto weight = coek::parameter("weight", ITEMS);
-if (data.contains("weight") {
+if (data.contains("weight")) {
     std::map<int,double> weight_value;
-    data.get<std::map<int,double>>("weight", weight_value);
+    data.get("weight", weight_value);
     weight.value(weight_value);
 }
 
 auto capacity = coek::parameter("capacity");
-if (data.contains("capacity") {
+if (data.contains("capacity")) {
     double capacity_value;
-    data.get<double>("capacity", capacity_value);
+    data.get("capacity", capacity_value);
     capacity.value(capacity_value);
 }
 

@@ -76,7 +76,7 @@ def generate_small3(data):
 
     M.y = pyo.Var(initialize=1.0)
 
-    M.o = pyo.Objective(expr=M.x * M.y)
+    M.o = pyo.Objective(expr=(-(M.x * M.y)))
 
     M.c = pyo.Constraint(expr=pow(M.y, 2) == 4)
 
@@ -229,7 +229,7 @@ def generate_testing1(data):
 
     M._v3 = pyo.Var(bounds=(None,0))
 
-    M.e = pyo.Var()
+    M.e = pyo.Var(initialize=1.0)
     M.e.fix()
 
     M.q = pyo.Param(mutable=True, initialize=2)
@@ -271,9 +271,10 @@ def pow(a,b):
 def generate_testing2(data):
     M = pyo.ConcreteModel("testing2")
 
-    M.a = pyo.Var(bounds=(0,1), initialize=0)
+    M.a = pyo.Var(bounds=(0,2), initialize=0)
 
-    M.b = pyo.Var(bounds=(0,1), initialize=0)
+    M.b = pyo.Var(bounds=(0,1), initialize=1.0)
+    M.b.fix()
 
     M.q = pyo.Param(mutable=True, initialize=2)
 
@@ -401,9 +402,9 @@ def pow(a,b):
 def generate_testing7(data):
     M = pyo.ConcreteModel("testing7")
 
-    M.A = pyo.RangeSet(0, 10)
+    M.A = pyo.RangeSet(0, 3)
 
-    M.B = pyo.RangeSet(0, 11)
+    M.B = pyo.RangeSet(0, 4)
 
     M.p = pyo.Param(mutable=True, initialize=0)
 
@@ -514,7 +515,7 @@ def pow(a,b):
 def generate_knapsack1(data):
     M = pyo.ConcreteModel("knapsack1")
 
-    M.INDEX = pyo.RangeSet(0, 10)
+    M.INDEX = pyo.RangeSet(0, 9)
 
     M.w = pyo.Param(M.INDEX, mutable=True, initialize=1.0)
 
@@ -551,7 +552,7 @@ def generate_knapsack2(data):
 
     M.N = pyo.Param(mutable=True, initialize=1)
 
-    M.INDEX = pyo.RangeSet(0, M.N * 10)
+    M.INDEX = pyo.RangeSet(0, (M.N * 10) - 1)
 
     M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
 
@@ -588,7 +589,7 @@ def generate_knapsack3(data):
 
     M.N = pyo.Param(mutable=True, initialize=data["N"])
 
-    M.INDEX = pyo.RangeSet(0, M.N * 10)
+    M.INDEX = pyo.RangeSet(0, (M.N * 10) - 1)
 
     M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
 

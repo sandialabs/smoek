@@ -1,4 +1,5 @@
 import smoek.core.expr.nodes
+from smoek.core.expr.nodes import ExpressionType
 import smoek.core.expr.functions
 from smoek.core.utils import (
     BottomUpDepthFirstExpressionWalker,
@@ -50,7 +51,7 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == smoek.core.expr.nodes.ExpressionType.neg:
                 arg = self._stack.pop()
-                if isinstance(arg, smoek.core.expr.nodes.BinaryExprNode) and expr._left.operation in [
+                if isinstance(expr._arg, smoek.core.expr.nodes.BinaryExprNode) and expr._arg.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,

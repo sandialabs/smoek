@@ -15,7 +15,7 @@ from smoek.core.expr.nodes import (
 from smoek.core.expr.functions import SumExprNode, ProdExprNode
 from smoek.core.model.expressions import Expression, Objective
 from smoek.core.model.model_components import Model
-from smoek.core.model.var_components import ScalarVariable, IndexedVariable, Domain
+from smoek.core.model.var_components import ScalarVariable, IndexedVariable, Reals, Binary
 from smoek.core.utils import BottomUpDepthFirstExpressionWalker
 
 
@@ -112,9 +112,9 @@ def expression_to_latex_string(expr):
 
 def variable_to_latex_string(var):
 
-    if var._domain == Domain.Reals:
+    if var._domain == Reals:
         dom_str = f"\\mathbb{{R}}"
-    elif var._domain == Domain.Binary:
+    elif var._domain == Binary:
         dom_str = "\\{0, 1\\}"
     else:
         raise NotImplementedError(

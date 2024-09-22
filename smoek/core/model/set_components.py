@@ -49,7 +49,7 @@ class RangeSet(Set):
 
     @property
     def data(self):
-        return list(range(self._N))
+        return list(range(self._N + 1))
 
     def to_string(self):
         return f"range(stop={str(self._N)})"

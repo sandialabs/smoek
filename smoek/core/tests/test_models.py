@@ -55,7 +55,7 @@ def test_small3():
     repn = smk.model_to_dict(model)
     assert repn == {
         "objectives": {
-            "o": ["minimize", "*", "x", "y"],
+            "o": ["minimize", "neg", ["*", "x", "y"]],
         },
         "constraints": {
             "c": ["==", ["pow", "y", "2"], "4"],
@@ -940,16 +940,16 @@ def test_testing7():
         },
         "data": {},
         "expressions": {},
-        "index_sets": {"A": "range(stop=10)", "B": "range(stop=11)"},
+        "index_sets": {"A": "range(stop=3)", "B": "range(stop=4)"},
         "parameters": {
             "p": "p",
-            "pp": "pp, forall i in A",
-            "ppp": "ppp, forall i in A, i in B",
+            "pp": "pp, forall i0 in A",
+            "ppp": "ppp, forall i0 in A, i1 in B",
         },
         "variables": {
             "x": "x",
-            "xx": "xx, forall i in A",
-            "xxx": "xxx, forall i in A, i in B",
+            "xx": "xx, forall i0 in A",
+            "xxx": "xxx, forall i0 in A, i1 in B",
         },
     }
 
@@ -1029,7 +1029,7 @@ def test_hs060():
         "index_sets": {"N": "sequence(start=1, stop=4)"},
         "parameters": {},
         "variables": {
-            "x": "x, forall i in N",
+            "x": "x, forall i0 in N",
         },
     }
 
@@ -1043,7 +1043,7 @@ def test_knapsack1():
     repn = smk.model_to_dict(model)
     assert repn == {
         "objectives": {
-            "o": ["minimize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
+            "o": ["maximize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
         },
         "constraints": {
             "c": ["<=", ["sum", "forall i in INDEX", ["*", "w[i]", "x[i]"]], "1.0"],
@@ -1051,14 +1051,14 @@ def test_knapsack1():
         "data": {},
         "expressions": {},
         "index_sets": {
-            "INDEX": "range(stop=10)",
+            "INDEX": "range(stop=9)",
         },
         "parameters": {
-            "v": "v, forall i in INDEX",
-            "w": "w, forall i in INDEX",
+            "v": "v, forall i0 in INDEX",
+            "w": "w, forall i0 in INDEX",
         },
         "variables": {
-            "x": "x, forall i in INDEX",
+            "x": "x, forall i0 in INDEX",
         },
     }
 
@@ -1072,7 +1072,7 @@ def test_knapsack2():
     repn = smk.model_to_dict(model)
     assert repn == {
         "objectives": {
-            "o": ["minimize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
+            "o": ["maximize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
         },
         "constraints": {
             "c": [
@@ -1084,15 +1084,15 @@ def test_knapsack2():
         "data": {},
         "expressions": {},
         "index_sets": {
-            "INDEX": "range(stop=N * 10)",
+            "INDEX": "range(stop=N * 10 - 1)",
         },
         "parameters": {
             "N": "N",
-            "v": "v, forall i in INDEX",
-            "w": "w, forall i in INDEX",
+            "v": "v, forall i0 in INDEX",
+            "w": "w, forall i0 in INDEX",
         },
         "variables": {
-            "x": "x, forall i in INDEX",
+            "x": "x, forall i0 in INDEX",
         },
     }
 
@@ -1106,7 +1106,7 @@ def test_knapsack3():
     repn = smk.model_to_dict(model)
     assert repn == {
         "objectives": {
-            "o": ["minimize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
+            "o": ["maximize", "sum", "forall i in INDEX", ["*", "v[i]", "x[i]"]],
         },
         "constraints": {
             "c": [
@@ -1118,15 +1118,15 @@ def test_knapsack3():
         "data": {},
         "expressions": {},
         "index_sets": {
-            "INDEX": "range(stop=N * 10)",
+            "INDEX": "range(stop=N * 10 - 1)",
         },
         "parameters": {
             "N": "N",
-            "v": "v, forall i in INDEX",
-            "w": "w, forall i in INDEX",
+            "v": "v, forall i0 in INDEX",
+            "w": "w, forall i0 in INDEX",
         },
         "variables": {
-            "x": "x, forall i in INDEX",
+            "x": "x, forall i0 in INDEX",
         },
     }
 
@@ -1140,7 +1140,7 @@ def test_knapsack4():
     repn = smk.model_to_dict(model)
     assert repn == {
         "objectives": {
-            "o": ["minimize", "sum", "forall i in ITEMS", ["*", "value[i]", "x[i]"]],
+            "o": ["maximize", "sum", "forall i in ITEMS", ["*", "value[i]", "x[i]"]],
         },
         "constraints": {
             "c": [
@@ -1156,11 +1156,11 @@ def test_knapsack4():
         },
         "parameters": {
             "capacity": "capacity",
-            "value": "value, forall i in ITEMS",
-            "weight": "weight, forall i in ITEMS",
+            "value": "value, forall i0 in ITEMS",
+            "weight": "weight, forall i0 in ITEMS",
         },
         "variables": {
-            "x": "x, forall i in ITEMS",
+            "x": "x, forall i0 in ITEMS",
         },
     }
 
