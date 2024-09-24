@@ -114,7 +114,7 @@ def to_coek(expr, decl={}):
     return SmoekToCoekWalker().walk(expr, decl)
 
 
-def generate(*, model=None, data=None, outfile=None, compact=True):
+def generate(*, model=None, data=None, outfile=None, loops="compact"):
     """
     Generate a C++ code that generates a Coek model described by smoek.
 
@@ -229,14 +229,25 @@ def generate(*, model=None, data=None, outfile=None, compact=True):
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
                 indices = [i.name() for i in component.object._indices()]
-                tmp = []
-                for i,index_set in enumerate(index_sets):
-                    index = indices[i]
-                    tmp.append(f"Forall({index}).In({index_set})")
-                coek_str = f'auto {component.name} = coek::constraint("{component.name}", {".".join(tmp)})'
-                if compact:
+                if loops=="compact":
+                    tmp = []
+                    for i,index_set in enumerate(index_sets):
+                        index = indices[i]
+                        tmp.append(f"Forall({index}).In({index_set})")
+                    coek_str = f'auto {component.name} = coek::constraint("{component.name}", {".".join(tmp)})'
                     coek_str = coek_str + f".expr({to_coek(component.object.expr())})"
                     coek_str = coek_str + ";"
+                elif loops=="simple":
+                    sets = []
+                    for index_set in index_sets:
+                        sets.append(f".index_set({index_set})")
+                    coek_str = f'auto {component.name} = coek::constraint("{component.name}"){"".join(sets)});\n'
+                    indent=""
+                    for i,index_set in enumerate(index_sets):
+                        index = indices[i]
+                        coek_str = coek_str + f"{indent}for(auto {index}: {index_set})\n"
+                        indent = indent + "  "
+                    coek_str = coek_str + f"{indent}{component.name}[{",".join(indices)}] = {to_coek(component.object.expr())};"
             else:
                 coek_str = f'auto {component.name} = coek::constraint("{component.name}").expr({to_coek(component.object.expr())});'
             components.append(coek_str)
