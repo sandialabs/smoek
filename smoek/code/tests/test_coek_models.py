@@ -802,7 +802,7 @@ model.add(x);
 auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
 model.add(y);
 
-auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).coek::Forall(m).In(M)));
+auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
 model.add(_o);
 
 auto single_x = coek::constraint("single_x", Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
@@ -822,7 +822,7 @@ return model;
 def test_pmedian_simple():
     model = models.pmedian()
 
-    print(generate(model=model, loops="simple"))
+    #print(generate(model=model, loops="simple"))
     assert (
         generate(model=model, loops="simple") == """
 #include <coek/coek.hpp>
@@ -849,18 +849,18 @@ model.add(x);
 auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
 model.add(y);
 
-auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).coek::Forall(m).In(M)));
+auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
 model.add(_o);
 
-auto single_x = coek::constraint("single_x").index_set(M));
-for(auto m: M)
-  single_x[m] = coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1;
+auto single_x = coek::constraint("single_x", M);
+for(auto m: coek::range(M.size()))
+  single_x(m) = coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1;
 model.add(single_x);
 
-auto bound_y = coek::constraint("bound_y").index_set(N).index_set(M));
-for(auto n: N)
-  for(auto m: M)
-    bound_y[n,m] = x(n, m) - y(n) <= 0;
+auto bound_y = coek::constraint("bound_y", N*M);
+for(auto n: coek::range(N.size()))
+  for(auto m: coek::range(M.size()))
+    bound_y(n,m) = x(n, m) - y(n) <= 0;
 model.add(bound_y);
 
 auto num_facilities = coek::constraint("num_facilities").expr(coek::Sum(y(n), coek::Forall(n).In(N)) == 1);

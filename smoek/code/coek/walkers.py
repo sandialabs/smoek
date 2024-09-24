@@ -90,8 +90,8 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
             for pair in expr._forall._index_set_pairs:
                 index = str(pair.index)
                 index_set = pair.set.name()
-                forall.append(f"coek::Forall({index}).In({index_set})")
-            ret = f"coek::Sum({body}, {'.'.join(forall)})"
+                forall.append(f"Forall({index}).In({index_set})")
+            ret = f"coek::Sum({body}, coek::{'.'.join(forall)})"
             self._stack.append(ret)
 
         # elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
@@ -114,7 +114,7 @@ def to_coek(expr, decl={}):
     return SmoekToCoekWalker().walk(expr, decl)
 
 
-def generate(*, model=None, data=None, outfile=None, loops="compact"):
+def generate(*, model=None, data=None, outfile=None, model_name=None, loops="compact"):
     """
     Generate a C++ code that generates a Coek model described by smoek.
 
@@ -238,16 +238,13 @@ def generate(*, model=None, data=None, outfile=None, loops="compact"):
                     coek_str = coek_str + f".expr({to_coek(component.object.expr())})"
                     coek_str = coek_str + ";"
                 elif loops=="simple":
-                    sets = []
-                    for index_set in index_sets:
-                        sets.append(f".index_set({index_set})")
-                    coek_str = f'auto {component.name} = coek::constraint("{component.name}"){"".join(sets)});\n'
+                    coek_str = f'auto {component.name} = coek::constraint("{component.name}", {"*".join(index_sets)});\n'
                     indent=""
                     for i,index_set in enumerate(index_sets):
                         index = indices[i]
-                        coek_str = coek_str + f"{indent}for(auto {index}: {index_set})\n"
+                        coek_str = coek_str + f"{indent}for(auto {index}: coek::range({index_set}.size()))\n"
                         indent = indent + "  "
-                    coek_str = coek_str + f"{indent}{component.name}[{",".join(indices)}] = {to_coek(component.object.expr())};"
+                    coek_str = coek_str + f"{indent}{component.name}({",".join(indices)}) = {to_coek(component.object.expr())};"
             else:
                 coek_str = f'auto {component.name} = coek::constraint("{component.name}").expr({to_coek(component.object.expr())});'
             components.append(coek_str)
@@ -260,14 +257,16 @@ def generate(*, model=None, data=None, outfile=None, loops="compact"):
 
     add_components = "\n".join(components)
     data_arg = "" if data is None or len(data) == 0 else "data"
+    if model_name is None:
+        model_name = model.name
     code = f"""
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_{model.name}(const coek::DataPortal& {data_arg})
+coek::CompactModel generate_{model_name}(const coek::DataPortal& {data_arg})
 \u007b
 coek::CompactModel model;
-model.name("{model.name}");
+model.name("{model_name}");
 
 {add_components}
 return model;
