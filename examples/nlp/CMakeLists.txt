@@ -10,7 +10,7 @@ include_directories(${RAPIDJSON_INCLUDE_DIR})
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -DWITH_RAPIDJSON")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -DWITH_RAPIDJSON")
 
 #
 # List smoek test function files here
@@ -20,7 +20,7 @@ file(GLOB sources CONFIGURE_DEPENDS
     )
 
 add_executable(run run.cpp loadlib.cpp coek/util/DataPortal.cpp ${sources})
-add_dependencies(run rapidjson)
-target_include_directories(run PUBLIC ${RapidJSON_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
+add_dependencies(run RapidJSON)
+target_include_directories(run PUBLIC ${RapidJSON_INCLUDE_DIRS}/.. ${CMAKE_CURRENT_SOURCE_DIR})
 TARGET_LINK_LIBRARIES(run)
 
