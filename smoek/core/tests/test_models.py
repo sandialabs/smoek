@@ -1166,3 +1166,26 @@ def test_knapsack4():
 
     order = smk.valid_order(smk.collect_info(model))
     assert order == ["ITEMS", "i", "value", "weight", "capacity", "x", "o", "c"]
+
+def test_pmedian():
+    model = models.pmedian()
+
+    repn = smk.model_to_dict(model)
+    print(repn)
+    assert repn == {
+         'constraints': {'single_x': ['==', ['sum', 'forall n in N', 'x[n, m]'], '1'],
+                          'bound_y': ['<=', ['-', 'x[n, m]', 'y[n]'], '0'],
+                          'num_facilities': ['==', ['sum', 'forall n in N', 'y[n]'], '1']},
+          'data': {},
+          'expressions': {},
+          'index_sets': {'M': 'range(stop=99)', 'N': 'range(stop=99)'},
+          'objectives': {'_o': ['minimize',
+                                'sum',
+                                'forall n in N, m in M',
+                                ['*', 'd[n, m]', 'x[n, m]']]},
+          'parameters': {'d': 'd, forall n in N, m in M'},
+          'variables': {'x': 'x, forall i0 in N, i1 in M', 'y': 'y, forall i0 in N'}
+            }
+
+    order = smk.valid_order(smk.collect_info(model))
+    assert order == ['n', 'm', 'N', 'M', 'd', 'x', 'y', '_o', 'single_x', 'bound_y', 'num_facilities']

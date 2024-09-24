@@ -771,3 +771,50 @@ return model;
 }
 """
     )
+
+def test_pmedian():
+    model = models.pmedian()
+
+    print(generate(model=model))
+    assert (
+        generate(model=model) == """
+#include <coek/coek.hpp>
+#include <coek/util/DataPortal.hpp>
+
+coek::CompactModel generate_pmedian(const coek::DataPortal& )
+{
+coek::CompactModel model;
+model.name("pmedian");
+
+auto n = coek::set_element("n");
+
+auto m = coek::set_element("m");
+
+auto N = coek::RangeSet(0, 99);
+
+auto M = coek::RangeSet(0, 99);
+
+auto d = coek::parameter("d", N*M).value(1.0 + (1.0 / ((n + m) + 1)));
+
+auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
+model.add(x);
+
+auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
+model.add(y);
+
+auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).coek::Forall(m).In(M)));
+model.add(_o);
+
+auto single_x = coek::constraint("single_x", Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
+model.add(single_x);
+
+auto bound_y = coek::constraint("bound_y", Forall(n).In(N).Forall(m).In(M)).expr(x(n, m) - y(n) <= 0);
+model.add(bound_y);
+
+auto num_facilities = coek::constraint("num_facilities").expr(coek::Sum(y(n), coek::Forall(n).In(N)) == 1);
+model.add(num_facilities);
+
+return model;
+}
+"""
+    )

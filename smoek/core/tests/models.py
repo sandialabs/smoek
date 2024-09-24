@@ -322,3 +322,34 @@ def knapsack4(name="knapsack4"):
 
     return smk.model(objective=o, constraints=[c], variables=[x], name=name)
 
+
+def pmedian(N_=100, P=1):
+
+    # N_ - Locations
+    M_ = N_  # Customers
+    # P_ - Facilities
+
+    n = smk.index("n")
+    m = smk.index("m")
+    N = smk.range("N", stop=N_-1)  # 0..N_-1
+    M = smk.range("M", stop=M_-1)  # 0..M_-1
+
+    d = smk.parameter("d").forall(n, In=N).forall(m, In=M).value(1.0 + 1.0 / (n + m + 1));
+
+    x = smk.variable("x").index_set(N).index_set(M).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
+    y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
+
+    # obj
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+
+    # single_x
+    c1 = smk.constraint("single_x").expr(smk.sum(x[n,m]).forall(n, In=N) == 1).forall(m, In=M)
+
+    # bound_y
+    c2 = smk.constraint("bound_y").expr(x[n,m] - y[n] <= 0).forall(n, In=N).forall(m, In=M)
+
+    # num_facilities
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+
+    return smk.model(objective=o, constraints=[c1, c2, c3], variables=[x,y], name="pmedian")
+
