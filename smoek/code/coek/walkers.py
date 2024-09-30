@@ -172,6 +172,7 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                 coek_str += f'    data.get("{component.name}", {component.name}_value);\n'
                 coek_str += f'    {component.name}.value({component.name}_value);\n' + '}'
             components.append(coek_str)
+            components.append(f"model.add({component.name});")
 
         elif component.type == "data":
             if component.object.is_indexed():
