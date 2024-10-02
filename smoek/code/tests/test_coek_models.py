@@ -152,6 +152,7 @@ auto v = coek::variable("v").lower(-1).upper(3).value(3.0);
 model.add(v);
 
 auto q = coek::parameter("q").value(2);
+model.add(q);
 
 auto _o = coek::objective("_o").expr((coek::pow(x, 2) / 2.0) + (coek::pow(x, 2) / q));
 model.add(_o);
@@ -279,6 +280,7 @@ auto e = coek::variable("e").value(1.0);
 model.add(e);
 
 auto q = coek::parameter("q").value(2);
+model.add(q);
 
 auto _o = coek::objective("_o").expr((3 * a) + q);
 model.add(_o);
@@ -333,6 +335,7 @@ auto b = coek::variable("b").lower(0).upper(1).value(1.0);
 model.add(b);
 
 auto q = coek::parameter("q").value(2);
+model.add(q);
 
 auto _o = coek::objective("_o").expr((((3 * a) + q) + (((a * a) * a) * ((((-a) + b) + (3 * a)) + (3 * b)))) + coek::sin((-coek::cos(a))));
 model.add(_o);
@@ -436,8 +439,10 @@ auto x = coek::variable("x").lower(0).upper(1).value(0);
 model.add(x);
 
 auto p = coek::parameter("p").value(0);
+model.add(p);
 
 auto q = coek::parameter("q").value(2);
+model.add(q);
 
 auto o = coek::objective("o").expr((((-q) * x) * x) + p);
 model.add(o);
@@ -470,10 +475,13 @@ auto i = coek::set_element("i");
 auto j = coek::set_element("j");
 
 auto p = coek::parameter("p").value(0);
+model.add(p);
 
 auto pp = coek::parameter("pp", A).value(0);
+model.add(pp);
 
 auto ppp = coek::parameter("ppp", A*B).value(0);
+model.add(ppp);
 
 auto x = coek::variable("x");
 model.add(x);
@@ -601,8 +609,10 @@ auto i = coek::set_element("i");
 auto INDEX = coek::RangeSet(0, 9);
 
 auto w = coek::parameter("w", INDEX).value(1.0);
+model.add(w);
 
 auto v = coek::parameter("v", INDEX).value(1);
+model.add(v);
 
 auto x = coek::variable("x", INDEX).lower(0.0).upper(1.0);
 model.add(x);
@@ -638,14 +648,17 @@ coek::CompactModel model;
 model.name("knapsack2");
 
 auto N = coek::parameter("N").value(1);
+model.add(N);
 
 auto i = coek::set_element("i");
 
 auto INDEX = coek::RangeSet(0, (N * 10) - 1);
 
 auto w = coek::parameter("w", INDEX).value(1 / ((N * 10) / 10.0));
+model.add(w);
 
 auto v = coek::parameter("v", INDEX).value(1);
+model.add(v);
 
 auto x = coek::variable("x", INDEX).lower(0.0).upper(1.0);
 model.add(x);
@@ -686,14 +699,17 @@ if (data.contains("N")) {
     data.get("N", N_value);
     N.value(N_value);
 }
+model.add(N);
 
 auto i = coek::set_element("i");
 
 auto INDEX = coek::RangeSet(0, (N * 10) - 1);
 
 auto w = coek::parameter("w", INDEX).value(1 / ((N * 10) / 10.0));
+model.add(w);
 
 auto v = coek::parameter("v", INDEX).value(1);
+model.add(v);
 
 auto x = coek::variable("x", INDEX).lower(0.0).upper(1.0);
 model.add(x);
@@ -743,6 +759,7 @@ if (data.contains("value")) {
     data.get("value", value_value);
     value.value(value_value);
 }
+model.add(value);
 
 auto weight = coek::parameter("weight", ITEMS);
 if (data.contains("weight")) {
@@ -750,6 +767,7 @@ if (data.contains("weight")) {
     data.get("weight", weight_value);
     weight.value(weight_value);
 }
+model.add(weight);
 
 auto capacity = coek::parameter("capacity");
 if (data.contains("capacity")) {
@@ -757,6 +775,7 @@ if (data.contains("capacity")) {
     data.get("capacity", capacity_value);
     capacity.value(capacity_value);
 }
+model.add(capacity);
 
 auto x = coek::variable("x", ITEMS).lower(0.0).upper(1.0);
 model.add(x);
@@ -795,6 +814,7 @@ auto N = coek::RangeSet(0, 99);
 auto M = coek::RangeSet(0, 99);
 
 auto d = coek::parameter("d", N*M).value(1.0 + (1.0 / ((n + m) + 1)));
+model.add(d);
 
 auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
 model.add(x);
@@ -842,6 +862,7 @@ auto N = coek::RangeSet(0, 99);
 auto M = coek::RangeSet(0, 99);
 
 auto d = coek::parameter("d", N*M).value(1.0 + (1.0 / ((n + m) + 1)));
+model.add(d);
 
 auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
 model.add(x);
