@@ -62,12 +62,14 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == "neg":
                 arg = self._stack.pop()
-                if isinstance(expr._arg, smoek.core.expr.nodes.BinaryExprNode) and expr._arg.operation in [
+                if isinstance(
+                    expr._arg, smoek.core.expr.nodes.BinaryExprNode
+                ) and expr._arg.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,
                     ExpressionType.div,
-                    ]:
+                ]:
                     ret = f"(-({arg}))"
                 else:
                     ret = f"(-{arg})"

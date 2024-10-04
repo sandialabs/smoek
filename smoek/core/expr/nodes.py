@@ -316,4 +316,3 @@ class ComponentIndicesNode(ExprLeaf):
 
 def inequality(lower, body, upper):
     return InequalityExprNode(lower, body, upper)
-

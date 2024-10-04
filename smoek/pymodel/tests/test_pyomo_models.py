@@ -9,9 +9,10 @@ def test_small1():
     model = models.small1()
     M = generate(model=model)
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 Var Declarations
+        out.getvalue()
+        == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -33,13 +34,15 @@ def test_small1():
 """
     )
 
+
 def test_small2():
     model = models.small2()
     M = generate(model=model)
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 Var Declarations
+        out.getvalue()
+        == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -66,9 +69,10 @@ def test_small3():
     model = models.small3()
     M = generate(model=model)
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 Var Declarations
+        out.getvalue()
+        == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -95,9 +99,10 @@ def test_small4():
     model = models.small4()
     M = generate(model=model)
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 Var Declarations
+        out.getvalue()
+        == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -123,11 +128,12 @@ def test_small4():
 def test_small5():
     model = models.small5()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 Param Declarations
+        out.getvalue()
+        == """1 Param Declarations
     q : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     2
@@ -194,11 +200,12 @@ def test_small5():
 def test_small6():
     model = models.small6()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """4 Var Declarations
+        out.getvalue()
+        == """4 Var Declarations
     _v0 : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :    -1 :     1 :     1 : False : False :  Reals
@@ -245,11 +252,12 @@ def test_small6():
 def test_testing1():
     model = models.testing1()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 Param Declarations
+        out.getvalue()
+        == """1 Param Declarations
     q : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     2
@@ -310,11 +318,12 @@ def test_testing1():
 def test_testing2():
     model = models.testing2()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 Param Declarations
+        out.getvalue()
+        == """1 Param Declarations
     q : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     2
@@ -341,11 +350,12 @@ def test_testing2():
 def XXtest_testing3():
     model = models.testing3()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """
+        out.getvalue()
+        == """
 """
     )
 
@@ -353,11 +363,12 @@ def XXtest_testing3():
 def test_testing4():
     model = models.testing4()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """5 Var Declarations
+        out.getvalue()
+        == """5 Var Declarations
     a : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :     0 :     0 :     1 : False : False : Integers
@@ -392,11 +403,12 @@ def test_testing4():
 def test_testing5():
     model = models.testing5()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 Var Declarations
+        out.getvalue()
+        == """1 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :     2 :  None :     2 : False :  True :  Reals
@@ -414,11 +426,12 @@ def test_testing5():
 def test_testing6():
     model = models.testing6()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 Param Declarations
+        out.getvalue()
+        == """2 Param Declarations
     p : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     0
@@ -444,11 +457,12 @@ def test_testing6():
 def test_testing7():
     model = models.testing7()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 RangeSet Declarations
+        out.getvalue()
+        == """2 RangeSet Declarations
     A : Dimen=1, Size=4, Bounds=(0, 3)
         Key  : Finite : Members
         None :   True :   [0:3]
@@ -568,11 +582,12 @@ def test_testing7():
 def test_testing8():
     model = models.testing8()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 RangeSet Declarations
+        out.getvalue()
+        == """2 RangeSet Declarations
     A : Dimen=1, Size=4, Bounds=(0, 3)
         Key  : Finite : Members
         None :   True :   [0:3]
@@ -673,14 +688,16 @@ def test_testing8():
 """
     )
 
+
 def test_simple1():
     model = models.simple1()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """2 Var Declarations
+        out.getvalue()
+        == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :   0.0 :  None :   1.0 : False :  True :  Reals
@@ -712,11 +729,12 @@ def test_simple1():
 def test_hs060():
     model = models.hs060()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 RangeSet Declarations
+        out.getvalue()
+        == """1 RangeSet Declarations
     N : Dimen=1, Size=4, Bounds=(1, 4)
         Key  : Finite : Members
         None :   True :   [1:4]
@@ -747,11 +765,12 @@ def test_hs060():
 def test_knapsack1():
     model = models.knapsack1()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 RangeSet Declarations
+        out.getvalue()
+        == """1 RangeSet Declarations
     INDEX : Dimen=1, Size=10, Bounds=(0, 9)
         Key  : Finite : Members
         None :   True :   [0:9]
@@ -814,11 +833,12 @@ def test_knapsack1():
 def test_knapsack2():
     model = models.knapsack2()
     M = generate(model=model)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 RangeSet Declarations
+        out.getvalue()
+        == """1 RangeSet Declarations
     INDEX : Dimen=1, Size=10, Bounds=(0, 9)
         Key  : Finite : Members
         None :   True :   [0:9]
@@ -884,12 +904,13 @@ def test_knapsack2():
 def test_knapsack3():
     model = models.knapsack3()
     data = {"N": 1}
-    M = generate(model=model,data=data)
-    #M.pprint()
+    M = generate(model=model, data=data)
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 RangeSet Declarations
+        out.getvalue()
+        == """1 RangeSet Declarations
     INDEX : Dimen=1, Size=10, Bounds=(0, 9)
         Key  : Finite : Members
         None :   True :   [0:9]
@@ -954,13 +975,19 @@ def test_knapsack3():
 
 def test_knapsack4():
     model = models.knapsack4()
-    data = {"ITEMS":[1,2,3,4], "capacity":14, "value":{1:8, 2:3, 3:6, 4:11}, "weight":{1:5, 2:7, 3:4, 4:3}}
+    data = {
+        "ITEMS": [1, 2, 3, 4],
+        "capacity": 14,
+        "value": {1: 8, 2: 3, 3: 6, 4: 11},
+        "weight": {1: 5, 2: 7, 3: 4, 4: 3},
+    }
     M = generate(model=model, data=data)
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
-    M.pprint(ostream=out) 
+    M.pprint(ostream=out)
     assert (
-        out.getvalue() == """1 Set Declarations
+        out.getvalue()
+        == """1 Set Declarations
     ITEMS : Size=1, Index=None, Ordered=Insertion
         Key  : Dimen : Domain : Size : Members
         None :     1 :    Any :    4 : {1, 2, 3, 4}

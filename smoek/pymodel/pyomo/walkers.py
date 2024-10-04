@@ -20,8 +20,9 @@ from smoek.core.utils import (
 
 try:
     import pyomo.environ as pyo
+
     pyomo_available = True
-except:         # pragma: nocover
+except:  # pragma: nocover
     pyomo_available = False
 
 if pyomo_available:
@@ -35,7 +36,7 @@ if pyomo_available:
         NegativeIntegers.id: pyo.NegativeIntegers,
         NonNegativeIntegers.id: pyo.NonNegativeIntegers,
         NonPositiveIntegers.id: pyo.NonPositiveIntegers,
-        }
+    }
     unary = {
         "sin": pyo.sin,
         "cos": pyo.cos,
@@ -45,7 +46,7 @@ if pyomo_available:
         "atan": pyo.atan,
         "log": pyo.log,
         "log10": pyo.log10,
-        }
+    }
 
 
 class SmoekToPyomoExprWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -67,7 +68,7 @@ class SmoekToPyomoExprWalker(BottomUpDepthFirstExpressionWalker[str]):
             right = self._stack.pop()
             left = self._stack.pop()
             if expr.operation == ExpressionType.pow:
-                ret = left ** right
+                ret = left**right
             elif expr.operation == ExpressionType.eq:
                 ret = left == right
             elif expr.operation == ExpressionType.leq:
@@ -96,17 +97,17 @@ class SmoekToPyomoExprWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == "neg":
                 ret = self._stack.pop()
-                self._stack.append(- ret)
+                self._stack.append(-ret)
             else:
                 arg = self._stack.pop()
                 ret = unary[expr.operation](arg)
                 self._stack.append(ret)
 
         elif isinstance(expr, smoek.core.model.var_components.ScalarVariable):
-            self._stack.append( getattr(self._model, expr.name()) )
+            self._stack.append(getattr(self._model, expr.name()))
 
         elif isinstance(expr, smoek.core.model.data_components.Parameter):
-            self._stack.append( getattr(self._model, expr.name()) )
+            self._stack.append(getattr(self._model, expr.name()))
 
         # elif isinstance(expr, smoek.core.model.data_components.Data):
         #    self._stack.append( expr.name() )
@@ -160,7 +161,11 @@ class SmoekToPyomoStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             left = self._stack.pop()
             if expr.operation == ExpressionType.pow:
                 ret = f"({left}) ** ({right})"
-            elif expr.operation in [ExpressionType.eq, ExpressionType.leq, ExpressionType.geq]:
+            elif expr.operation in [
+                ExpressionType.eq,
+                ExpressionType.leq,
+                ExpressionType.geq,
+            ]:
                 ret = f"{left} {expr.operation} {right}"
             else:
                 if isinstance(
@@ -194,12 +199,14 @@ class SmoekToPyomoStringWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == "neg":
                 arg = self._stack.pop()
-                if isinstance(expr._arg, smoek.core.expr.nodes.BinaryExprNode) and expr._arg.operation in [
+                if isinstance(
+                    expr._arg, smoek.core.expr.nodes.BinaryExprNode
+                ) and expr._arg.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,
                     ExpressionType.div,
-                    ]:
+                ]:
                     ret = f"(-({arg}))"
                 else:
                     ret = f"(-{arg})"
@@ -246,6 +253,7 @@ class SmoekToPyomoStringWalker(BottomUpDepthFirstExpressionWalker[str]):
 def to_pyomo(expr, decl={}, model=None):
     return SmoekToPyomoExprWalker().walk(expr, decl, model)
 
+
 def to_pyomo_str(expr, decl={}):
     return SmoekToPyomoStringWalker().walk(expr, decl, "m")
 
@@ -254,7 +262,7 @@ def generate(*, model=None, data=None):
     """
     Generate a Pyomo model described by smoek.
     """
-    if not pyomo_available:     # pragma: nocover
+    if not pyomo_available:  # pragma: nocover
         return None
 
     if data is None:
@@ -274,33 +282,52 @@ def generate(*, model=None, data=None):
 
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
-                setattr(M, component.name, pyo.RangeSet(0, to_pyomo(component.object._N, model=M)))
-            elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
-                setattr(M, component.name, pyo.RangeSet(to_pyomo(component.object._start, model=M), to_pyomo(component.object._stop, model=M)))
+                setattr(
+                    M,
+                    component.name,
+                    pyo.RangeSet(0, to_pyomo(component.object._N, model=M)),
+                )
+            elif isinstance(
+                component.object, smoek.core.model.set_components.SequenceSet
+            ):
+                setattr(
+                    M,
+                    component.name,
+                    pyo.RangeSet(
+                        to_pyomo(component.object._start, model=M),
+                        to_pyomo(component.object._stop, model=M),
+                    ),
+                )
             else:
+
                 def set_(m):
                     return data[component.name]
+
                 setattr(M, component.name, pyo.Set(initialize=set_))
 
         elif component.type == "parameter" or component.type == "data":
-            index_sets = [ getattr(M, iset.name()) for iset in component.object._index_sets() ]
+            index_sets = [
+                getattr(M, iset.name()) for iset in component.object._index_sets()
+            ]
 
             kwargs = {}
-            kwargs['mutable'] = component.type == "parameter"
-            kwargs['domain'] = pyo.Reals
+            kwargs["mutable"] = component.type == "parameter"
+            kwargs["domain"] = pyo.Reals
             if component.name in data:
-                kwargs['initialize']= data[component.name]
-            elif isinstance(component.object.value(), smoek.core.expr.nodes.NumberWrapper):
-                kwargs['initialize']= component.object.value().value
+                kwargs["initialize"] = data[component.name]
+            elif isinstance(
+                component.object.value(), smoek.core.expr.nodes.NumberWrapper
+            ):
+                kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
                     indices = [i.name() for i in component.object._indices()]
                     rule_str = f'def {component.name}_(m,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
                 else:
-                    rule_str = f'def {component.name}_(m):\n    return {to_pyomo_str(component.object.value())}'
+                    rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.value())}"
                 locals_ = {}
-                exec(rule_str, {"pyo":pyo}, locals_)
-                kwargs['initialize']= locals_[f"{component.name}_"]
+                exec(rule_str, {"pyo": pyo}, locals_)
+                kwargs["initialize"] = locals_[f"{component.name}_"]
 
             if component.object.is_indexed():
                 setattr(M, component.name, pyo.Param(*index_sets, **kwargs))
@@ -308,45 +335,53 @@ def generate(*, model=None, data=None):
                 setattr(M, component.name, pyo.Param(**kwargs))
 
         elif component.type == "variable":
-            index_sets = [ getattr(M, iset.name()) for iset in component.object._index_sets() ]
+            index_sets = [
+                getattr(M, iset.name()) for iset in component.object._index_sets()
+            ]
             indices = [i.name() for i in component.object._indices()]
 
-            kwargs={}
+            kwargs = {}
             if component.object.lower() or component.object.upper():
                 if component.object.lower():
-                    lower = f'{to_pyomo_str(component.object.lower())}'
+                    lower = f"{to_pyomo_str(component.object.lower())}"
                 else:
                     lower = "None"
                 if component.object.upper():
-                    upper = f'{to_pyomo_str(component.object.upper())}'
+                    upper = f"{to_pyomo_str(component.object.upper())}"
                 else:
                     upper = "None"
                 if component.object.is_indexed():
                     rule_str = f'def {component.name}_bounds_(m,{",".join(indices)}):\n    return {lower},{upper}'
                 else:
-                    rule_str = f'def {component.name}_bounds_(m):\n    return {lower},{upper}'
+                    rule_str = (
+                        f"def {component.name}_bounds_(m):\n    return {lower},{upper}"
+                    )
                 locals_ = {}
-                exec(rule_str, {"pyo":pyo}, locals_)
-                kwargs['bounds'] = locals_[f"{component.name}_bounds_"]
+                exec(rule_str, {"pyo": pyo}, locals_)
+                kwargs["bounds"] = locals_[f"{component.name}_bounds_"]
 
-            if isinstance(component.object.value(), smoek.core.expr.nodes.NumberWrapper):
-                kwargs['initialize']= component.object.value().value
+            if isinstance(
+                component.object.value(), smoek.core.expr.nodes.NumberWrapper
+            ):
+                kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
                     rule_str = f'def {component.name}_(m,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
                 else:
-                    rule_str = f'def {component.name}_(m):\n    return {to_pyomo_str(component.object.value())}'
+                    rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.value())}"
                 locals_ = {}
-                exec(rule_str, {"pyo":pyo}, locals_)
-                kwargs['initialize'] = locals_[f"{component.name}_"]
-            kwargs['domain'] = domain[component.object.domain().id]
+                exec(rule_str, {"pyo": pyo}, locals_)
+                kwargs["initialize"] = locals_[f"{component.name}_"]
+            kwargs["domain"] = domain[component.object.domain().id]
 
             if component.object.is_indexed():
                 setattr(M, component.name, pyo.Var(*index_sets, **kwargs))
             else:
                 setattr(M, component.name, pyo.Var(**kwargs))
                 if component.object.fixed():
-                    getattr(M, component.name).fix(to_pyomo(component.object.value(), model=M))
+                    getattr(M, component.name).fix(
+                        to_pyomo(component.object.value(), model=M)
+                    )
 
         elif component.type == "expression":
             # TODO
@@ -360,24 +395,31 @@ def generate(*, model=None, data=None):
                 # TODO
                 pass
             else:
-                rule_str = f'def {component.name}_(m):\n    return {to_pyomo_str(component.object.expr())}'
+                rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.expr())}"
             locals_ = {}
-            exec(rule_str, {"pyo":pyo}, locals_)
-            setattr(M, component.name, pyo.Objective(rule=locals_[f"{component.name}_"]))
+            exec(rule_str, {"pyo": pyo}, locals_)
+            setattr(
+                M, component.name, pyo.Objective(rule=locals_[f"{component.name}_"])
+            )
 
         elif component.type == "constraint":
-            index_sets = [ getattr(M, iset.name()) for iset in component.object._index_sets() ]
+            index_sets = [
+                getattr(M, iset.name()) for iset in component.object._index_sets()
+            ]
             if component.object.is_indexed():
                 indices = [i.name() for i in component.object._indices()]
                 if len(index_sets) == 1:
-                    rule_str = f'def {component.name}_(m,{indices[0]}):\n    return {to_pyomo_str(component.object.expr())}'
+                    rule_str = f"def {component.name}_(m,{indices[0]}):\n    return {to_pyomo_str(component.object.expr())}"
                 else:
                     rule_str = f'def {component.name}_(m,{",".join(indices)}):\n    return {to_pyomo_str(component.object.expr())}'
             else:
-                rule_str = f'def {component.name}_(m):\n    return {to_pyomo_str(component.object.expr())}'
+                rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.expr())}"
             locals_ = {}
-            exec(rule_str, {"pyo":pyo}, locals_)
-            setattr(M, component.name, pyo.Constraint(*index_sets, rule=locals_[f"{component.name}_"]))
+            exec(rule_str, {"pyo": pyo}, locals_)
+            setattr(
+                M,
+                component.name,
+                pyo.Constraint(*index_sets, rule=locals_[f"{component.name}_"]),
+            )
 
     return M
-

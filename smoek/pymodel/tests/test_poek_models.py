@@ -11,27 +11,30 @@ def test_small1():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 2
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
-    assert(
-        out.getvalue() == """MODEL
+    M.print_equations(ostream=out)
+    assert (
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( pow(x, 2) )
   Constraints
     0:  pow(y, 2) == 4
-""")
+"""
+    )
 
 
 def test_small2():
@@ -40,22 +43,24 @@ def test_small2():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 2
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( x )
   Constraints
@@ -70,22 +75,24 @@ def test_small3():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 2
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( - ((x)*(y)) )
   Constraints
@@ -100,22 +107,24 @@ def test_small4():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 2
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( pow(y, 2) )
   Constraints
@@ -130,11 +139,12 @@ def test_small5():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 3
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 3
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  v 3 -1 3 0
    1:  x 1 -1 1 0
@@ -142,11 +152,12 @@ def test_small5():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( (pow(x, 2))/(2) + (pow(x, 2))/(q) )
   Constraints
@@ -172,11 +183,12 @@ def test_small6():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 4
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 4
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  _v0 1 -1 1 0
    1:  _v1 2 -1 2 0
@@ -185,11 +197,12 @@ def test_small6():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( _v0 )
   Constraints
@@ -209,11 +222,12 @@ def test_testing1():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 5
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 5
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  _v2 nan 0 1e+100 0
    1:  _v3 nan -1e+100 0 0
@@ -223,11 +237,12 @@ def test_testing1():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  max( 3*a + q )
   Constraints
@@ -249,22 +264,24 @@ def test_testing2():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 2
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  a 0 0 2 0
    1:  b 1 0 1 1
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( 3*a + q + (((a)*(a))*(a))*(-1*a + b + 3*a + 3*b) + sin(- (cos(a))) )
   Constraints
@@ -279,19 +296,21 @@ def XXtest_testing3():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """
+        out.getvalue()
+        == """
 """
     )
 
@@ -302,11 +321,12 @@ def test_testing4():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 5
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 5
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  a 0 0 1 0
    1:  b 0 0 1 0
@@ -316,11 +336,12 @@ def test_testing4():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( a + cos(x) + cos(y) )
   Constraints
@@ -335,21 +356,23 @@ def test_testing5():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 1
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 1
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan 2 2 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( x )
   Constraints
@@ -363,21 +386,23 @@ def test_testing6():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 1
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 1
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 0 0 1 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( ((- (q))*(x))*(x) + p )
   Constraints
@@ -391,11 +416,12 @@ def test_testing7():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 25
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 25
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan -1e+100 1e+100 0
    1:  xx[0] nan -1e+100 1e+100 0
@@ -425,11 +451,12 @@ def test_testing7():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( (p)*(x) )
   Constraints
@@ -468,11 +495,12 @@ def test_testing8():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 25
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 25
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan -1e+100 1e+100 0
    1:  xx[0] nan -1e+100 1e+100 0
@@ -502,11 +530,12 @@ def test_testing8():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( (p)*(x) + xx[0] + xx[1] + xx[2] + xx[3] )
   Constraints
@@ -523,28 +552,31 @@ def test_testing8():
 """
     )
 
+
 def test_simple1():
     model = models.simple1()
     m = generate(model=model)
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 2
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan 0 1 0
    1:  y nan 0 1 0
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( x + y )
   Constraints
@@ -561,11 +593,12 @@ def test_hs060():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 4
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 4
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[1] 2 -10 10 0
    1:  x[2] 2 -10 10 0
@@ -574,11 +607,12 @@ def test_hs060():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  min( pow(x[1] + -1, 2) + pow(x[1] + -1*x[2], 2) + pow(x[2] + -1*x[3], 4) )
   Constraints
@@ -593,11 +627,12 @@ def test_knapsack1():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 10
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 10
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0] nan 0 1 0
    1:  x[1] nan 0 1 0
@@ -612,11 +647,12 @@ def test_knapsack1():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  max( (v[0])*(x[0]) + (v[1])*(x[1]) + (v[2])*(x[2]) + (v[3])*(x[3]) + (v[4])*(x[4]) + (v[5])*(x[5]) + (v[6])*(x[6]) + (v[7])*(x[7]) + (v[8])*(x[8]) + (v[9])*(x[9]) )
   Constraints
@@ -631,11 +667,12 @@ def test_knapsack2():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 10
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 10
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0] nan 0 1 0
    1:  x[1] nan 0 1 0
@@ -650,11 +687,12 @@ def test_knapsack2():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  max( (v[0])*(x[0]) + (v[1])*(x[1]) + (v[2])*(x[2]) + (v[3])*(x[3]) + (v[4])*(x[4]) + (v[5])*(x[5]) + (v[6])*(x[6]) + (v[7])*(x[7]) + (v[8])*(x[8]) + (v[9])*(x[9]) )
   Constraints
@@ -666,15 +704,16 @@ def test_knapsack2():
 def test_knapsack3():
     model = models.knapsack3()
     data = {"N": 1}
-    m = generate(model=model,data=data)
+    m = generate(model=model, data=data)
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 10
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 10
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0] nan 0 1 0
    1:  x[1] nan 0 1 0
@@ -689,11 +728,12 @@ def test_knapsack3():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  max( (v[0])*(x[0]) + (v[1])*(x[1]) + (v[2])*(x[2]) + (v[3])*(x[3]) + (v[4])*(x[4]) + (v[5])*(x[5]) + (v[6])*(x[6]) + (v[7])*(x[7]) + (v[8])*(x[8]) + (v[9])*(x[9]) )
   Constraints
@@ -704,16 +744,22 @@ def test_knapsack3():
 
 def test_knapsack4():
     model = models.knapsack4()
-    data = {"ITEMS":[1,2,3,4], "capacity":14, "value":{1:8, 2:3, 3:6, 4:11}, "weight":{1:5, 2:7, 3:4, 4:3}}
+    data = {
+        "ITEMS": [1, 2, 3, 4],
+        "capacity": 14,
+        "value": {1: 8, 2: 3, 3: 6, 4: 11},
+        "weight": {1: 5, 2: 7, 3: 4, 4: 3},
+    }
     m = generate(model=model, data=data)
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
-    M.print_values(ostream=out) 
-    assert(
-        out.getvalue() == """Model Variables: 4
+    M.print_values(ostream=out)
+    assert (
+        out.getvalue()
+        == """Model Variables: 4
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[1] nan 0 1 0
    1:  x[2] nan 0 1 0
@@ -722,11 +768,12 @@ def test_knapsack4():
 """
     )
 
-    #M.print_equations() 
+    # M.print_equations()
     out = StringIO()
-    M.print_equations(ostream=out) 
+    M.print_equations(ostream=out)
     assert (
-        out.getvalue() == """MODEL
+        out.getvalue()
+        == """MODEL
   Objectives
     0:  max( (value[1])*(x[1]) + (value[2])*(x[2]) + (value[3])*(x[3]) + (value[4])*(x[4]) )
   Constraints

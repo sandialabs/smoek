@@ -15,7 +15,12 @@ from smoek.core.expr.nodes import (
 from smoek.core.expr.functions import SumExprNode, ProdExprNode
 from smoek.core.model.expressions import Expression, Objective
 from smoek.core.model.model_components import Model
-from smoek.core.model.var_components import ScalarVariable, IndexedVariable, Reals, Binary
+from smoek.core.model.var_components import (
+    ScalarVariable,
+    IndexedVariable,
+    Reals,
+    Binary,
+)
 from smoek.core.utils import BottomUpDepthFirstExpressionWalker
 
 

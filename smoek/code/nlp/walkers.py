@@ -50,12 +50,14 @@ class SmoekToNLPWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == smoek.core.expr.nodes.ExpressionType.neg:
                 arg = self._stack.pop()
-                if isinstance(arg, smoek.core.expr.nodes.BinaryExprNode) and expr._left.operation in [
+                if isinstance(
+                    arg, smoek.core.expr.nodes.BinaryExprNode
+                ) and expr._left.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,
                     ExpressionType.div,
-                    ]:
+                ]:
                     ret = f"(-({arg}))"
                 else:
                     ret = f"(-{arg})"
@@ -77,7 +79,7 @@ class SmoekToNLPWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
             indices = [str(index) for index in expr._indices]
             if len(indices) == 1:
-                ret = f'{expr._component.name()}[{indices[0]}]'
+                ret = f"{expr._component.name()}[{indices[0]}]"
             else:
                 ret = f'{expr._component.name()}[{{{", ".join(indices)}}}]'
             self._stack.append(ret)
@@ -106,7 +108,7 @@ class SmoekToNLPWalker(BottomUpDepthFirstExpressionWalker[str]):
         #    ret = f"({body})"
         #    self._stack.append(ret)
 
-        else:                                   # pragma: nocover
+        else:  # pragma: nocover
             raise NotImplementedError(
                 f"Expression node {expr} of type {type(expr)} not supported in ExpressionToStringWalker"
             )
@@ -148,34 +150,52 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
 
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
-                data_decls.append( f"std::vector<int> {component.name};" ) 
-                data_init.append( f"int {component.name}_stop = {to_cpp(component.object._N)};" )
-                data_init.append( f"for (int i=0; i<{component.name}_stop; i++) {component.name}.push_back(i);" )
-            elif isinstance( component.object, smoek.core.model.set_components.SequenceSet ):
-                data_decls.append( f"std::vector<int> {component.name};" ) 
-                data_init.append( f"int {component.name}_stop = {to_cpp(component.object._stop)};" )
-                data_init.append( f"for (int i=1; i<={component.name}_stop; i++) {component.name}.push_back(i);" )
+                data_decls.append(f"std::vector<int> {component.name};")
+                data_init.append(
+                    f"int {component.name}_stop = {to_cpp(component.object._N)};"
+                )
+                data_init.append(
+                    f"for (int i=0; i<{component.name}_stop; i++) {component.name}.push_back(i);"
+                )
+            elif isinstance(
+                component.object, smoek.core.model.set_components.SequenceSet
+            ):
+                data_decls.append(f"std::vector<int> {component.name};")
+                data_init.append(
+                    f"int {component.name}_stop = {to_cpp(component.object._stop)};"
+                )
+                data_init.append(
+                    f"for (int i=1; i<={component.name}_stop; i++) {component.name}.push_back(i);"
+                )
             else:
-                data_decls.append( f"std::vector<int int> {component.name};" ) 
+                data_decls.append(f"std::vector<int int> {component.name};")
                 if component.name in data:
-                    data_init.append( f'if (data.contains("{component.name}")) ' )
-                    data_init.append( f'    data.get("{component.name}", {component.name});' )
+                    data_init.append(f'if (data.contains("{component.name}")) ')
+                    data_init.append(
+                        f'    data.get("{component.name}", {component.name});'
+                    )
 
         elif component.type == "parameter":
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
                 if len(index_sets) == 1:
-                    data_decls.append( f'std::map<int,double> {component.name};' )
+                    data_decls.append(f"std::map<int,double> {component.name};")
                 else:
-                    data_decls.append( f'std::map<std::tuple<{",".join(["int"]*len(index_sets))}>,double> {component.name};' )
+                    data_decls.append(
+                        f'std::map<std::tuple<{",".join(["int"]*len(index_sets))}>,double> {component.name};'
+                    )
                 # TODO: Do we provide a dense initial value for keys specified for a parameter?  C++ doesn't have a map with default values.
             else:
-                data_decls.append( f'double {component.name};' )
+                data_decls.append(f"double {component.name};")
                 if component.object.value():
-                    data_init.append( f'{component.name} = {to_cpp(component.object.value())};' )
+                    data_init.append(
+                        f"{component.name} = {to_cpp(component.object.value())};"
+                    )
             if component.name in data:
-                data_init.append( f'if (data.contains("{component.name}")) ' )
-                data_init.append( f'    data.get("{component.name}", {component.name});\n' )
+                data_init.append(f'if (data.contains("{component.name}")) ')
+                data_init.append(
+                    f'    data.get("{component.name}", {component.name});\n'
+                )
 
         elif component.type == "data":
             if component.object.is_indexed():
@@ -187,67 +207,97 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
                 if len(index_sets) == 1:
-                    data_decls.append( f'std::map<int,double> {component.name};' )
+                    data_decls.append(f"std::map<int,double> {component.name};")
                 else:
-                    data_decls.append( f'std::map<std::tuple<{",".join(["int"]*len(index_sets))}>,double> {component.name};' )
-                #data_decls.append( f'std::vector<Number> {component.name}_lower;' )
-                #data_decls.append( f'std::vector<Number> {component.name}_upper;' )
-                #data_decls.append( f'std::vector<Number> {component.name}_init;' )
+                    data_decls.append(
+                        f'std::map<std::tuple<{",".join(["int"]*len(index_sets))}>,double> {component.name};'
+                    )
+                # data_decls.append( f'std::vector<Number> {component.name}_lower;' )
+                # data_decls.append( f'std::vector<Number> {component.name}_upper;' )
+                # data_decls.append( f'std::vector<Number> {component.name}_init;' )
 
-                prefix=""
+                prefix = ""
                 for isp in component.object._index_set_pairs():
-                    data_init.append( prefix + f'for (auto& {isp.index.name()}: {isp.set.name()})' )
+                    data_init.append(
+                        prefix + f"for (auto& {isp.index.name()}: {isp.set.name()})"
+                    )
                     prefix += "  "
-                data_init.append( prefix + "{" )
+                data_init.append(prefix + "{")
                 if len(component.object._index_set_pairs()) == 1:
-                    data_init.append( prefix + f'{component.name}[{",".join(isp.index.name() for isp in component.object._index_set_pairs())}] = 0;' )
+                    data_init.append(
+                        prefix
+                        + f'{component.name}[{",".join(isp.index.name() for isp in component.object._index_set_pairs())}] = 0;'
+                    )
                 else:
-                    data_init.append( prefix + f'{component.name}[{{{",".join(isp.index.name() for isp in component.object._index_set_pairs())}}}] = 0;' )
+                    data_init.append(
+                        prefix
+                        + f'{component.name}[{{{",".join(isp.index.name() for isp in component.object._index_set_pairs())}}}] = 0;'
+                    )
                 if component.object.lower():
-                    data_init.append( prefix + f'x_lower_[i_] = {to_cpp(component.object.lower())};' )
+                    data_init.append(
+                        prefix + f"x_lower_[i_] = {to_cpp(component.object.lower())};"
+                    )
                 else:
-                    data_init.append( prefix + f'x_lower_[i_] = -INFTY;' )
+                    data_init.append(prefix + f"x_lower_[i_] = -INFTY;")
                 if component.object.upper():
-                    data_init.append( prefix + f'x_upper_[i_] = {to_cpp(component.object.upper())};' )
+                    data_init.append(
+                        prefix + f"x_upper_[i_] = {to_cpp(component.object.upper())};"
+                    )
                 else:
-                    data_init.append( prefix + f'x_upper_[i_] = -INFTY;' )
+                    data_init.append(prefix + f"x_upper_[i_] = -INFTY;")
                 if component.object.value():
-                    data_init.append( prefix + f'x_init_[i_] = {to_cpp(component.object.value())};' )
+                    data_init.append(
+                        prefix + f"x_init_[i_] = {to_cpp(component.object.value())};"
+                    )
                 else:
-                    data_init.append( prefix + f'x_init_[i_] = 0.0;' )
-                data_init.append( prefix + "i_++;" )
-                data_init.append( prefix + "}" )
-                data_init.append( f"nv += {component.name}.size();" )
+                    data_init.append(prefix + f"x_init_[i_] = 0.0;")
+                data_init.append(prefix + "i_++;")
+                data_init.append(prefix + "}")
+                data_init.append(f"nv += {component.name}.size();")
 
-                prefix=""
+                prefix = ""
                 for isp in component.object._index_set_pairs():
-                    copy_into_vars.append( prefix + f'for (auto& {isp.index.name()}: {isp.set.name()})' )
+                    copy_into_vars.append(
+                        prefix + f"for (auto& {isp.index.name()}: {isp.set.name()})"
+                    )
                     prefix += "  "
                 if len(component.object._index_set_pairs()) == 1:
-                    copy_into_vars.append( prefix + f'{component.name}[{",".join(isp.index.name() for isp in component.object._index_set_pairs())}] = x_[i_++];' )
+                    copy_into_vars.append(
+                        prefix
+                        + f'{component.name}[{",".join(isp.index.name() for isp in component.object._index_set_pairs())}] = x_[i_++];'
+                    )
                 else:
-                    copy_into_vars.append( prefix + f'{component.name}[{{{",".join(isp.index.name() for isp in component.object._index_set_pairs())}}}] = x_[i_++];' )
+                    copy_into_vars.append(
+                        prefix
+                        + f'{component.name}[{{{",".join(isp.index.name() for isp in component.object._index_set_pairs())}}}] = x_[i_++];'
+                    )
             else:
-                data_decls.append( f'double {component.name};' )
-                #data_decls.append( f'double {component.name}_lower;' )
-                #data_decls.append( f'double {component.name}_upper;' )
-                #data_decls.append( f'double {component.name}_init;' )
+                data_decls.append(f"double {component.name};")
+                # data_decls.append( f'double {component.name}_lower;' )
+                # data_decls.append( f'double {component.name}_upper;' )
+                # data_decls.append( f'double {component.name}_init;' )
 
-                data_init.append( f"nv++; //{component.name}" )
+                data_init.append(f"nv++; //{component.name}")
                 if component.object.lower():
-                    data_init.append( f"x_lower_[i_++] = {to_cpp(component.object.lower())};" )
+                    data_init.append(
+                        f"x_lower_[i_++] = {to_cpp(component.object.lower())};"
+                    )
                 else:
-                    data_init.append( f"x_lower_[i_++] = -INFTY;" )
+                    data_init.append(f"x_lower_[i_++] = -INFTY;")
                 if component.object.upper():
-                    data_init.append( f"x_upper_[i_++] = {to_cpp(component.object.upper())};" )
+                    data_init.append(
+                        f"x_upper_[i_++] = {to_cpp(component.object.upper())};"
+                    )
                 else:
-                    data_init.append( f"x_upper_[i_++] = INFTY;" )
+                    data_init.append(f"x_upper_[i_++] = INFTY;")
                 if component.object.value():
-                    data_init.append( f"x_init_[i_++] = {to_cpp(component.object.value())};" )
+                    data_init.append(
+                        f"x_init_[i_++] = {to_cpp(component.object.value())};"
+                    )
                 else:
-                    data_init.append( f"x_init_[i_++] = 0.0;" )
+                    data_init.append(f"x_init_[i_++] = 0.0;")
 
-                copy_into_vars.append( f'{component.name} = x_[i_++];' )
+                copy_into_vars.append(f"{component.name} = x_[i_++];")
 
         elif component.type == "expression":
             if component.object.is_indexed():
@@ -261,17 +311,19 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
                 pass
             else:
                 if component.object.sense():
-                    data_decls.append( f"const Number objsense = 1.0;")
+                    data_decls.append(f"const Number objsense = 1.0;")
                 else:
-                    data_decls.append( f"const Number objsense = -1.0;")
-                eval_f.append( f"*obj_value_ = objsense * ({to_cpp(component.object.expr())});" )
+                    data_decls.append(f"const Number objsense = -1.0;")
+                eval_f.append(
+                    f"*obj_value_ = objsense * ({to_cpp(component.object.expr())});"
+                )
 
         elif component.type == "constraint":
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
                 indices = [i.name() for i in component.object._indices()]
                 tmp = []
-                for i,index_set in enumerate(index_sets):
+                for i, index_set in enumerate(index_sets):
                     index = indices[i]
                     tmp.append(f"Forall({index}).In({index_set})")
                 coek_str = f'auto {component.name} = coek::constraint("{component.name}", {".".join(tmp)})'
@@ -422,7 +474,7 @@ return (*func_ptr)(
 
     if outfile is None:
         return code
-    else:                                                           # pragma: nocover
+    else:  # pragma: nocover
         with open(outfile, "w") as OUTPUT:
             OUTPUT.write(code)
 
@@ -438,4 +490,4 @@ def generate(*, model=None, data=None, outfile=None, nlp="ipopt"):
 
     if nlp == "ipopt":
         return generate_ipopt(model=model, data=data, outfile=outfile)
-    raise RuntimeError("Unknown NLP interface: "+nlp)
+    raise RuntimeError("Unknown NLP interface: " + nlp)

@@ -21,7 +21,7 @@ class Domain(Enum):
 #
 class DomainType(object):
 
-    counter=0
+    counter = 0
 
     def __init__(self, *, domain, lower, upper):
         self.id = DomainType.counter
@@ -35,6 +35,7 @@ class DomainType(object):
 
     def __neq__(self, dtype):
         return self.id != dtype.id
+
 
 Reals = DomainType(domain=Domain.Reals, lower=None, upper=None)
 PositiveReals = DomainType(domain=Reals, lower=0, upper=None)
@@ -205,4 +206,3 @@ class IndexedVariable(ModelingComponent):
         return self
 
     within = domain
-
