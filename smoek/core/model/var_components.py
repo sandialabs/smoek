@@ -154,6 +154,7 @@ class IndexedVariable(ModelingComponent):
         self._lower = None
         self._upper = None
         self._value = None
+        self._fixed = None
 
     def etype(self):
         return ExpressionType.variable
@@ -190,6 +191,17 @@ class IndexedVariable(ModelingComponent):
         if value is None:
             return self._domain
         self._domain = value
+        return self
+
+    def fixed(self, value=None):
+        if value is None:
+            return self._fixed
+        self._fixed = value == True
+        return self
+
+    def fix(self, value):
+        self._value = _wrap_expression_if_needed(value)
+        self._fixed = True
         return self
 
     within = domain
