@@ -255,7 +255,7 @@ def to_pyomo(expr, decl={}, model=None):
 
 
 def to_pyomo_str(expr, decl={}):
-    return SmoekToPyomoStringWalker().walk(expr, decl, "m")
+    return SmoekToPyomoStringWalker().walk(expr, decl, "m_")
 
 
 def generate(*, model=None, data=None):
@@ -322,9 +322,9 @@ def generate(*, model=None, data=None):
             elif component.object.value():
                 if component.object.is_indexed():
                     indices = [i.name() for i in component.object._indices()]
-                    rule_str = f'def {component.name}_(m,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
+                    rule_str = f'def {component.name}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
                 else:
-                    rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.value())}"
+                    rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.value())}"
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
                 kwargs["initialize"] = locals_[f"{component.name}_"]
@@ -351,10 +351,10 @@ def generate(*, model=None, data=None):
                 else:
                     upper = "None"
                 if component.object.is_indexed():
-                    rule_str = f'def {component.name}_bounds_(m,{",".join(indices)}):\n    return {lower},{upper}'
+                    rule_str = f'def {component.name}_bounds_(m_,{",".join(indices)}):\n    return {lower},{upper}'
                 else:
                     rule_str = (
-                        f"def {component.name}_bounds_(m):\n    return {lower},{upper}"
+                        f"def {component.name}_bounds_(m_):\n    return {lower},{upper}"
                     )
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
@@ -366,9 +366,9 @@ def generate(*, model=None, data=None):
                 kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
-                    rule_str = f'def {component.name}_(m,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
+                    rule_str = f'def {component.name}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
                 else:
-                    rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.value())}"
+                    rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.value())}"
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
                 kwargs["initialize"] = locals_[f"{component.name}_"]
@@ -395,7 +395,7 @@ def generate(*, model=None, data=None):
                 # TODO
                 pass
             else:
-                rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.expr())}"
+                rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.expr())}"
             locals_ = {}
             exec(rule_str, {"pyo": pyo}, locals_)
             setattr(
@@ -409,11 +409,11 @@ def generate(*, model=None, data=None):
             if component.object.is_indexed():
                 indices = [i.name() for i in component.object._indices()]
                 if len(index_sets) == 1:
-                    rule_str = f"def {component.name}_(m,{indices[0]}):\n    return {to_pyomo_str(component.object.expr())}"
+                    rule_str = f"def {component.name}_(m_,{indices[0]}):\n    return {to_pyomo_str(component.object.expr())}"
                 else:
-                    rule_str = f'def {component.name}_(m,{",".join(indices)}):\n    return {to_pyomo_str(component.object.expr())}'
+                    rule_str = f'def {component.name}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.expr())}'
             else:
-                rule_str = f"def {component.name}_(m):\n    return {to_pyomo_str(component.object.expr())}"
+                rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.expr())}"
             locals_ = {}
             exec(rule_str, {"pyo": pyo}, locals_)
             setattr(

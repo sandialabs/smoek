@@ -251,7 +251,7 @@ def to_poek(expr, decl={}, model=None):
 
 
 def to_poek_str(expr, decl={}):
-    return SmoekToPoekStringWalker().walk(expr, decl, "m")
+    return SmoekToPoekStringWalker().walk(expr, decl, "m_")
 
 
 class Tmp(object):
@@ -328,12 +328,12 @@ def generate(*, model=None, data=None):
                 kwargs["value"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
-                    rule_str = f"def {component.name}_(m):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
                     # locals_ = {}
                     exec(rule_str, globals_, locals_)
                     kwargs["value"] = locals_[f"{component.name}_"](M)
                 else:
-                    rule_str = f"def {component.name}_(m):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
                     # locals_ = {}
                     exec(rule_str, globals_, locals_)
                     kwargs["value"] = locals_[f"{component.name}_"](M)
@@ -374,12 +374,12 @@ def generate(*, model=None, data=None):
                     upper = "None"
                 # locals_ = {}
                 exec(
-                    f"def {component.name}_lower_(m):\n    return {lower}",
+                    f"def {component.name}_lower_(m_):\n    return {lower}",
                     globals_,
                     locals_,
                 )
                 exec(
-                    f"def {component.name}_upper_(m):\n    return {upper}",
+                    f"def {component.name}_upper_(m_):\n    return {upper}",
                     globals_,
                     locals_,
                 )
@@ -393,9 +393,9 @@ def generate(*, model=None, data=None):
                 kwargs["value"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
-                    rule_str = f"def {component.name}_(m):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
                 else:
-                    rule_str = f"def {component.name}_(m):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
                 # locals_ = {}
                 # print(rule_str)
                 exec(rule_str, globals_, locals_)
@@ -437,8 +437,8 @@ def generate(*, model=None, data=None):
                 # TODO
                 pass
             else:
-                # rule_str = f'def {component.name}_(m):\n    e = {to_poek_str(component.object.expr())}\n    print(e.to_list())\n    return {to_poek_str(component.object.expr())}'
-                rule_str = f"def {component.name}_(m):\n    return {to_poek_str(component.object.expr())}"
+                # rule_str = f'def {component.name}_(m_):\n    e = {to_poek_str(component.object.expr())}\n    print(e.to_list())\n    return {to_poek_str(component.object.expr())}'
+                rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}"
             # locals_ = {}
             # print("HERE o",rule_str)
             exec(rule_str, globals_, locals_)
@@ -455,15 +455,15 @@ def generate(*, model=None, data=None):
                 tmp = []
                 for i, index_set in enumerate(index_sets):
                     index = indices[i]
-                    tmp.append(f"Forall({index}).In(m.{index_set})")
-                rule_str = f'def {component.name}_(m):\n    return {to_poek_str(component.object.expr())}, pk.{".".join(tmp)}'
+                    tmp.append(f"Forall({index}).In(m_.{index_set})")
+                rule_str = f'def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}, pk.{".".join(tmp)}'
                 # locals_ = {}
                 # print(rule_str)
                 exec(rule_str, globals_, locals_)
                 con_, context_ = locals_[f"{component.name}_"](M)
                 M._model.add_constraint(con_, context_)
             else:
-                rule_str = f"def {component.name}_(m):\n    return {to_poek_str(component.object.expr())}"
+                rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}"
                 # locals_ = {}
                 # print(rule_str)
                 exec(rule_str, globals_, locals_)
