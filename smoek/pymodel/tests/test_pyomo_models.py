@@ -1031,8 +1031,8 @@ def test_knapsack4():
 """
     )
 
-def test_pmedian():
-    model = models.pmedian(5)
+def test_pmedian1():
+    model = models.pmedian1(5)
     M = generate(model=model)
 
     #M.pprint()
@@ -1117,6 +1117,138 @@ def test_pmedian():
     _o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : d[0,0]*x[0,0] + d[0,1]*x[0,1] + d[0,2]*x[0,2] + d[0,3]*x[0,3] + d[0,4]*x[0,4] + d[1,0]*x[1,0] + d[1,1]*x[1,1] + d[1,2]*x[1,2] + d[1,3]*x[1,3] + d[1,4]*x[1,4] + d[2,0]*x[2,0] + d[2,1]*x[2,1] + d[2,2]*x[2,2] + d[2,3]*x[2,3] + d[2,4]*x[2,4] + d[3,0]*x[3,0] + d[3,1]*x[3,1] + d[3,2]*x[3,2] + d[3,3]*x[3,3] + d[3,4]*x[3,4] + d[4,0]*x[4,0] + d[4,1]*x[4,1] + d[4,2]*x[4,2] + d[4,3]*x[4,3] + d[4,4]*x[4,4]
+
+3 Constraint Declarations
+    bound_y : Size=25, Index=N*M, Active=True
+        Key    : Lower : Body          : Upper : Active
+        (0, 0) :  -Inf : x[0,0] - y[0] :   0.0 :   True
+        (0, 1) :  -Inf : x[0,1] - y[0] :   0.0 :   True
+        (0, 2) :  -Inf : x[0,2] - y[0] :   0.0 :   True
+        (0, 3) :  -Inf : x[0,3] - y[0] :   0.0 :   True
+        (0, 4) :  -Inf : x[0,4] - y[0] :   0.0 :   True
+        (1, 0) :  -Inf : x[1,0] - y[1] :   0.0 :   True
+        (1, 1) :  -Inf : x[1,1] - y[1] :   0.0 :   True
+        (1, 2) :  -Inf : x[1,2] - y[1] :   0.0 :   True
+        (1, 3) :  -Inf : x[1,3] - y[1] :   0.0 :   True
+        (1, 4) :  -Inf : x[1,4] - y[1] :   0.0 :   True
+        (2, 0) :  -Inf : x[2,0] - y[2] :   0.0 :   True
+        (2, 1) :  -Inf : x[2,1] - y[2] :   0.0 :   True
+        (2, 2) :  -Inf : x[2,2] - y[2] :   0.0 :   True
+        (2, 3) :  -Inf : x[2,3] - y[2] :   0.0 :   True
+        (2, 4) :  -Inf : x[2,4] - y[2] :   0.0 :   True
+        (3, 0) :  -Inf : x[3,0] - y[3] :   0.0 :   True
+        (3, 1) :  -Inf : x[3,1] - y[3] :   0.0 :   True
+        (3, 2) :  -Inf : x[3,2] - y[3] :   0.0 :   True
+        (3, 3) :  -Inf : x[3,3] - y[3] :   0.0 :   True
+        (3, 4) :  -Inf : x[3,4] - y[3] :   0.0 :   True
+        (4, 0) :  -Inf : x[4,0] - y[4] :   0.0 :   True
+        (4, 1) :  -Inf : x[4,1] - y[4] :   0.0 :   True
+        (4, 2) :  -Inf : x[4,2] - y[4] :   0.0 :   True
+        (4, 3) :  -Inf : x[4,3] - y[4] :   0.0 :   True
+        (4, 4) :  -Inf : x[4,4] - y[4] :   0.0 :   True
+    num_facilities : Size=1, Index=None, Active=True
+        Key  : Lower : Body                             : Upper : Active
+        None :   1.0 : y[0] + y[1] + y[2] + y[3] + y[4] :   1.0 :   True
+    single_x : Size=5, Index=M, Active=True
+        Key : Lower : Body                                       : Upper : Active
+          0 :   1.0 : x[0,0] + x[1,0] + x[2,0] + x[3,0] + x[4,0] :   1.0 :   True
+          1 :   1.0 : x[0,1] + x[1,1] + x[2,1] + x[3,1] + x[4,1] :   1.0 :   True
+          2 :   1.0 : x[0,2] + x[1,2] + x[2,2] + x[3,2] + x[4,2] :   1.0 :   True
+          3 :   1.0 : x[0,3] + x[1,3] + x[2,3] + x[3,3] + x[4,3] :   1.0 :   True
+          4 :   1.0 : x[0,4] + x[1,4] + x[2,4] + x[3,4] + x[4,4] :   1.0 :   True
+
+9 Declarations: N M d x y _o single_x bound_y num_facilities
+"""
+    )
+
+
+
+def test_pmedian2():
+    model = models.pmedian2(5)
+    M = generate(model=model)
+
+    M.pprint()
+    out = StringIO()
+    M.pprint(ostream=out)
+    assert (
+        out.getvalue()
+        == """2 RangeSet Declarations
+    M : Dimen=1, Size=5, Bounds=(0, 4)
+        Key  : Finite : Members
+        None :   True :   [0:4]
+    N : Dimen=1, Size=5, Bounds=(0, 4)
+        Key  : Finite : Members
+        None :   True :   [0:4]
+
+1 Param Declarations
+    d : Size=25, Index=N*M, Domain=Reals, Default=None, Mutable=False
+        Key    : Value
+        (0, 0) :                2.0
+        (0, 1) :                1.5
+        (0, 2) : 1.3333333333333333
+        (0, 3) :               1.25
+        (0, 4) :                1.2
+        (1, 0) :                1.5
+        (1, 1) : 1.3333333333333333
+        (1, 2) :               1.25
+        (1, 3) :                1.2
+        (1, 4) : 1.1666666666666667
+        (2, 0) : 1.3333333333333333
+        (2, 1) :               1.25
+        (2, 2) :                1.2
+        (2, 3) : 1.1666666666666667
+        (2, 4) : 1.1428571428571428
+        (3, 0) :               1.25
+        (3, 1) :                1.2
+        (3, 2) : 1.1666666666666667
+        (3, 3) : 1.1428571428571428
+        (3, 4) :              1.125
+        (4, 0) :                1.2
+        (4, 1) : 1.1666666666666667
+        (4, 2) : 1.1428571428571428
+        (4, 3) :              1.125
+        (4, 4) : 1.1111111111111112
+
+2 Var Declarations
+    x : Size=25, Index=N*M
+        Key    : Lower : Value : Upper : Fixed : Stale : Domain
+        (0, 0) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (0, 1) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (0, 2) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (0, 3) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (0, 4) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (1, 0) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (1, 1) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (1, 2) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (1, 3) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (1, 4) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (2, 0) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (2, 1) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (2, 2) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (2, 3) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (2, 4) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (3, 0) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (3, 1) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (3, 2) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (3, 3) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (3, 4) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (4, 0) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (4, 1) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (4, 2) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (4, 3) :   0.0 :   0.0 :   1.0 : False : False : Binary
+        (4, 4) :   0.0 :   0.0 :   1.0 : False : False : Binary
+    y : Size=5, Index=N
+        Key : Lower : Value : Upper : Fixed : Stale : Domain
+          0 :   0.0 :   0.0 :   1.0 : False : False : Binary
+          1 :   0.0 :   0.0 :   1.0 : False : False : Binary
+          2 :   0.0 :   0.0 :   1.0 : False : False : Binary
+          3 :   0.0 :   0.0 :   1.0 : False : False : Binary
+          4 :   0.0 :   0.0 :   1.0 : False : False : Binary
+
+1 Objective Declarations
+    _o : Size=1, Index=None, Active=True
+        Key  : Active : Sense    : Expression
+        None :   True : minimize : 2.0*x[0,0] + 1.5*x[0,1] + 1.3333333333333333*x[0,2] + 1.25*x[0,3] + 1.2*x[0,4] + 1.5*x[1,0] + 1.3333333333333333*x[1,1] + 1.25*x[1,2] + 1.2*x[1,3] + 1.1666666666666667*x[1,4] + 1.3333333333333333*x[2,0] + 1.25*x[2,1] + 1.2*x[2,2] + 1.1666666666666667*x[2,3] + 1.1428571428571428*x[2,4] + 1.25*x[3,0] + 1.2*x[3,1] + 1.1666666666666667*x[3,2] + 1.1428571428571428*x[3,3] + 1.125*x[3,4] + 1.2*x[4,0] + 1.1666666666666667*x[4,1] + 1.1428571428571428*x[4,2] + 1.125*x[4,3] + 1.1111111111111112*x[4,4]
 
 3 Constraint Declarations
     bound_y : Size=25, Index=N*M, Active=True
