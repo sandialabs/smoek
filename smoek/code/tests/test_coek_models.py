@@ -510,10 +510,10 @@ model.add(o);
 auto c = coek::constraint("c").expr(x == 0);
 model.add(c);
 
-auto cc = coek::constraint("cc", Forall(i).In(A)).expr(pp(i) * xx(i) == 0);
+auto cc = coek::constraint("cc", coek::Forall(i).In(A)).expr(pp(i) * xx(i) == 0);
 model.add(cc);
 
-auto ccc = coek::constraint("ccc", Forall(i).In(A).Forall(j).In(B)).expr(ppp(i, j) * xxx(i, j) == 0);
+auto ccc = coek::constraint("ccc", coek::Forall(i).In(A).Forall(j).In(B)).expr(ppp(i, j) * xxx(i, j) == 0);
 model.add(ccc);
 
 return model;
@@ -528,7 +528,7 @@ def test_simple1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["x", "y", "o", "c1", "c2", "c3"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -570,7 +570,7 @@ def test_hs060():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -605,7 +605,7 @@ def test_knapsack1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -648,7 +648,7 @@ def test_knapsack2():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -694,7 +694,7 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model, data={"N": "int"}))
+    #print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"N": "int"})
         == """
@@ -745,7 +745,7 @@ def test_knapsack4():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    print(generate(model=model, data={"N": "int"}))
+    #print(generate(model=model, data={"N": "int"}))
     assert (
         generate(
             model=model,
@@ -778,7 +778,7 @@ auto value = coek::parameter("value", ITEMS);
 if (data.contains("value")) {
     std::map<int,double> value_value;
     data.get("value", value_value);
-    value.value(value_value);
+    for (auto& [k,v]: value_value) value(k).value(v);
 }
 model.add(value);
 
@@ -786,7 +786,7 @@ auto weight = coek::parameter("weight", ITEMS);
 if (data.contains("weight")) {
     std::map<int,double> weight_value;
     data.get("weight", weight_value);
-    weight.value(weight_value);
+    for (auto& [k,v]: weight_value) weight(k).value(v);
 }
 model.add(weight);
 
@@ -813,30 +813,30 @@ return model;
     )
 
 
-def test_pmedian():
-    model = models.pmedian()
+def test_pmedian1():
+    model = models.pmedian1()
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_pmedian(const coek::DataPortal& )
+coek::CompactModel generate_pmedian1(const coek::DataPortal& )
 {
 coek::CompactModel model;
-model.name("pmedian");
+model.name("pmedian1");
 
 auto n = coek::set_element("n");
 
 auto m = coek::set_element("m");
 
-auto N = coek::RangeSet(0, 99);
+auto N = coek::RangeSet(0, 9);
 
-auto M = coek::RangeSet(0, 99);
+auto M = coek::RangeSet(0, 9);
 
-auto d = coek::parameter("d", N*M).value(1.0 + (1.0 / ((n + m) + 1)));
+auto d = coek::parameter("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0 / ((n + m) + 1)));
 model.add(d);
 
 auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
@@ -848,10 +848,10 @@ model.add(y);
 auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
 model.add(_o);
 
-auto single_x = coek::constraint("single_x", Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
+auto single_x = coek::constraint("single_x", coek::Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
 model.add(single_x);
 
-auto bound_y = coek::constraint("bound_y", Forall(n).In(N).Forall(m).In(M)).expr(x(n, m) - y(n) <= 0);
+auto bound_y = coek::constraint("bound_y", coek::Forall(n).In(N).Forall(m).In(M)).expr(x(n, m) - y(n) <= 0);
 model.add(bound_y);
 
 auto num_facilities = coek::constraint("num_facilities").expr(coek::Sum(y(n), coek::Forall(n).In(N)) == 1);
@@ -863,30 +863,30 @@ return model;
     )
 
 
-def test_pmedian_simple():
-    model = models.pmedian()
+def test_pmedian1_simple():
+    model = models.pmedian1()
 
-    # print(generate(model=model, loops="simple"))
+    #print(generate(model=model, loops="simple"))
     assert (
         generate(model=model, loops="simple")
         == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_pmedian(const coek::DataPortal& )
+coek::CompactModel generate_pmedian1(const coek::DataPortal& )
 {
 coek::CompactModel model;
-model.name("pmedian");
+model.name("pmedian1");
 
 auto n = coek::set_element("n");
 
 auto m = coek::set_element("m");
 
-auto N = coek::RangeSet(0, 99);
+auto N = coek::RangeSet(0, 9);
 
-auto M = coek::RangeSet(0, 99);
+auto M = coek::RangeSet(0, 9);
 
-auto d = coek::parameter("d", N*M).value(1.0 + (1.0 / ((n + m) + 1)));
+auto d = coek::parameter("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0 / ((n + m) + 1)));
 model.add(d);
 
 auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
@@ -916,3 +916,120 @@ return model;
 }
 """
     )
+
+
+def test_pmedian2():
+    model = models.pmedian2()
+    data={"d": "std::map<std::tuple<int,int>,double>"}
+
+    print(generate(model=model, data=data))
+    assert (
+        generate(model=model, data=data)
+        == """
+#include <coek/coek.hpp>
+#include <coek/util/DataPortal.hpp>
+
+coek::CompactModel generate_pmedian2(const coek::DataPortal& data)
+{
+coek::CompactModel model;
+model.name("pmedian2");
+
+auto n = coek::set_element("n");
+
+auto m = coek::set_element("m");
+
+auto N = coek::RangeSet(0, 9);
+
+auto M = coek::RangeSet(0, 9);
+
+auto d = coek::data("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0 / ((n + m) + 1)));
+if (data.contains("d")) {
+    std::map<std::tuple<int,int>,double> d_value;
+    data.get("d", d_value);
+    for (auto& [k,v]: d_value) d(k).value(v);
+}
+model.add(d);
+
+auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
+model.add(x);
+
+auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
+model.add(y);
+
+auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
+model.add(_o);
+
+auto single_x = coek::constraint("single_x", coek::Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
+model.add(single_x);
+
+auto bound_y = coek::constraint("bound_y", coek::Forall(n).In(N).Forall(m).In(M)).expr(x(n, m) - y(n) <= 0);
+model.add(bound_y);
+
+auto num_facilities = coek::constraint("num_facilities").expr(coek::Sum(y(n), coek::Forall(n).In(N)) == 1);
+model.add(num_facilities);
+
+return model;
+}
+"""
+    )
+
+def test_pmedian2_simple():
+    model = models.pmedian2()
+    data={"d": "std::map<std::tuple<int,int>,double>"}
+
+    print(generate(model=model, data=data, loops="simple"))
+    assert (
+        generate(model=model, data=data, loops="simple")
+        == """
+#include <coek/coek.hpp>
+#include <coek/util/DataPortal.hpp>
+
+coek::CompactModel generate_pmedian2(const coek::DataPortal& data)
+{
+coek::CompactModel model;
+model.name("pmedian2");
+
+auto n = coek::set_element("n");
+
+auto m = coek::set_element("m");
+
+auto N = coek::RangeSet(0, 9);
+
+auto M = coek::RangeSet(0, 9);
+
+auto d = coek::data("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0 / ((n + m) + 1)));
+if (data.contains("d")) {
+    std::map<std::tuple<int,int>,double> d_value;
+    data.get("d", d_value);
+    for (auto& [k,v]: d_value) d(k).value(v);
+}
+model.add(d);
+
+auto x = coek::variable("x", N*M).lower(0.0).upper(1.0).value(0.0);
+model.add(x);
+
+auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
+model.add(y);
+
+auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
+model.add(_o);
+
+auto single_x = coek::constraint("single_x", M);
+for(auto m: coek::range(M.size()))
+  single_x(m) = coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1;
+model.add(single_x);
+
+auto bound_y = coek::constraint("bound_y", N*M);
+for(auto n: coek::range(N.size()))
+  for(auto m: coek::range(M.size()))
+    bound_y(n,m) = x(n, m) - y(n) <= 0;
+model.add(bound_y);
+
+auto num_facilities = coek::constraint("num_facilities").expr(coek::Sum(y(n), coek::Forall(n).In(N)) == 1);
+model.add(num_facilities);
+
+return model;
+}
+"""
+    )
+

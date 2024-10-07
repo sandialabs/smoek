@@ -165,8 +165,10 @@ def generate(*, model=None, data=None, outfile=None):
             components.append(pyomo_str)
 
         elif component.type == "parameter" or component.type == "data":
+            pyomo_str = ""
             mutable = component.type == "parameter"
             initial_value = ""
+            initial_value_fn = False
             if component.name in data:
                 initial_value = f', initialize=data["{component.name}"]'
                 # if component.object.value():
@@ -174,18 +176,27 @@ def generate(*, model=None, data=None, outfile=None):
                 # else:
                 #    initial_value = f', initialize={component.object.value()}'
             elif component.object.value():
-                initial_value = f", initialize={to_pyomo(component.object.value())}"
+                if component.object.explicit:
+                    initial_value = f", initialize={component.name}_"
+                    initial_value_fn = True
+                else:
+                    initial_value = f', initialize={to_pyomo(component.object.value())}'
 
             if component.object.is_indexed():
                 index_sets = [
                     "M." + iset.name() for iset in component.object._index_sets()
                 ]
+                indices = [i.name() for i in component.object._indices()]
+                if initial_value_fn:
+                    pyomo_str = f'    def {component.name}_(m_,{",".join(indices)}):\n        return {to_pyomo(component.object.value(), model="m_")}\n'
                 if len(index_sets) == 1:
-                    pyomo_str = f"    M.{component.name} = pyo.Param({index_sets[0]}, mutable={mutable}{initial_value})"
+                    pyomo_str = pyomo_str + f"    M.{component.name} = pyo.Param({index_sets[0]}, mutable={mutable}{initial_value})"
                 else:
-                    pyomo_str = f'    M.{component.name} = pyo.Param({", ".join(index_sets)}, mutable={mutable}{initial_value})'
+                    pyomo_str = pyomo_str + f'    M.{component.name} = pyo.Param({", ".join(index_sets)}, mutable={mutable}{initial_value})'
             else:
-                pyomo_str = f"    M.{component.name} = pyo.Param(mutable={mutable}{initial_value})"
+                if initial_value_fn:
+                    pyomo_str = f'    def {component.name}_(m_):\n        return {to_pyomo(component.object.value(), model="m_")}\n'
+                pyomo_str = pyomo_str + f"    M.{component.name} = pyo.Param(mutable={mutable}{initial_value})"
             components.append(pyomo_str)
 
         elif component.type == "variable":
@@ -249,13 +260,13 @@ def generate(*, model=None, data=None, outfile=None):
                 indices = [i.name() for i in component.object._indices()]
                 conargs = ""
                 if len(index_sets) == 1:
-                    pyomo_str = f'    def {component.name}_(m,{indices[0]}):\n        return {to_pyomo(component.object.expr(), model="m")}\n'
+                    pyomo_str = f'    def {component.name}_(m_,{indices[0]}):\n        return {to_pyomo(component.object.expr(), model="m_")}\n'
                     pyomo_str = (
                         pyomo_str
                         + f"    M.{component.name} = pyo.Constraint({index_sets[0]}{conargs}, rule={component.name}_)"
                     )
                 else:
-                    pyomo_str = f'    def {component.name}_(m,{",".join(indices)}):\n        return {to_pyomo(component.object.expr(), model="m")}\n'
+                    pyomo_str = f'    def {component.name}_(m_,{",".join(indices)}):\n        return {to_pyomo(component.object.expr(), model="m_")}\n'
                     pyomo_str = (
                         pyomo_str
                         + f'    M.{component.name} = pyo.Constraint({", ".join(index_sets)}{conargs}, rule={component.name}_)'

@@ -422,12 +422,12 @@ def generate_testing7(data):
 
     M.c = pyo.Constraint(expr=M.x == 0)
 
-    def cc_(m,i):
-        return m.pp[i] * m.xx[i] == 0
+    def cc_(m_,i):
+        return m_.pp[i] * m_.xx[i] == 0
     M.cc = pyo.Constraint(M.A, rule=cc_)
 
-    def ccc_(m,i,j):
-        return m.ppp[i,j] * m.xxx[i,j] == 0
+    def ccc_(m_,i,j):
+        return m_.ppp[i,j] * m_.xxx[i,j] == 0
     M.ccc = pyo.Constraint(M.A, M.B, rule=ccc_)
 
     return M
@@ -472,7 +472,7 @@ def test_hs060():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -503,7 +503,7 @@ def test_knapsack1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -538,7 +538,7 @@ def test_knapsack2():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -575,7 +575,7 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    # print(generate(model=model, data={"N": "int"}))
+    #print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"N"})
         == """
@@ -609,7 +609,7 @@ def generate_knapsack3(data):
 def test_knapsack4():
     model = models.knapsack4()
 
-    # print(generate(model=model, data={"N": "int"}))
+    #print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
         == """
@@ -638,3 +638,91 @@ def generate_knapsack4(data):
     return M
 """
     )
+
+def test_pmedian1():
+    model = models.pmedian1()
+
+    #print(generate(model=model, data={"N": "int"}))
+    assert (
+        generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_pmedian1(data):
+    M = pyo.ConcreteModel("pmedian1")
+
+    M.N = pyo.RangeSet(0, 9)
+
+    M.M = pyo.RangeSet(0, 9)
+
+    def d_(m_,n,m):
+        return 1.0 + (1.0 / ((n + m) + 1))
+    M.d = pyo.Param(M.N, M.M, mutable=True, initialize=d_)
+
+    M.x = pyo.Var(M.N, M.M, bounds=(0.0,1.0), initialize=0.0)
+
+    M.y = pyo.Var(M.N, bounds=(0.0,1.0), initialize=0.0)
+
+    M._o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
+
+    def single_x_(m_,m):
+        return sum(m_.x[n,m] for n in m_.N) == 1
+    M.single_x = pyo.Constraint(M.M, rule=single_x_)
+
+    def bound_y_(m_,n,m):
+        return m_.x[n,m] - m_.y[n] <= 0
+    M.bound_y = pyo.Constraint(M.N, M.M, rule=bound_y_)
+
+    M.num_facilities = pyo.Constraint(expr=sum(M.y[n] for n in M.N) == 1)
+
+    return M
+"""
+    )
+
+def test_pmedian2():
+    model = models.pmedian2()
+    data={"N": "int"}
+
+    #print(generate(model=model, data=data))
+    assert (
+        generate(model=model, data=data)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_pmedian2(data):
+    M = pyo.ConcreteModel("pmedian2")
+
+    M.N = pyo.RangeSet(0, 9)
+
+    M.M = pyo.RangeSet(0, 9)
+
+    def d_(m_,n,m):
+        return 1.0 + (1.0 / ((n + m) + 1))
+    M.d = pyo.Param(M.N, M.M, mutable=False, initialize=d_)
+
+    M.x = pyo.Var(M.N, M.M, bounds=(0.0,1.0), initialize=0.0)
+
+    M.y = pyo.Var(M.N, bounds=(0.0,1.0), initialize=0.0)
+
+    M._o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
+
+    def single_x_(m_,m):
+        return sum(m_.x[n,m] for n in m_.N) == 1
+    M.single_x = pyo.Constraint(M.M, rule=single_x_)
+
+    def bound_y_(m_,n,m):
+        return m_.x[n,m] - m_.y[n] <= 0
+    M.bound_y = pyo.Constraint(M.N, M.M, rule=bound_y_)
+
+    M.num_facilities = pyo.Constraint(expr=sum(M.y[n] for n in M.N) == 1)
+
+    return M
+"""
+    )
+

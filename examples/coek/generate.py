@@ -10,17 +10,17 @@ testnames = ["small1", "small2", "small3", "small4", "small5", "small6",
                 "testing1", "testing2", "testing4", "testing5", "testing6", "testing7",
                 "simple1", "hs060",
                 "knapsack1", "knapsack2", "knapsack3", "knapsack4",
-                "pmedian", "pmedian_simple"
+                "pmedian1", "pmedian1_simple", "pmedian2"
 ]
 
 namemap = {
-    "pmedian_simple": "pmedian"
+    "pmedian1_simple": "pmedian1"
 }
 
 options = {
     "knapsack3": dict(data={"N":"int"}),
     "knapsack4": dict(data={"value":"std::map<int,double>", "weight":"std::map<int,double>", "capacity":"double", "ITEMS":"std::set<int>"}),
-    "pmedian_simple": dict(loops="simple")
+    "pmedian1_simple": dict(loops="simple")
 }
 
 for name in testnames:

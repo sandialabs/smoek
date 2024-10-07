@@ -25,6 +25,8 @@ testnames = [
     "knapsack2",
     "knapsack3",
     "knapsack4",
+    "pmedian1",
+    "pmedian2",
 ]
 
 data = {

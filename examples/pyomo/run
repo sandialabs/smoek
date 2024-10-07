@@ -25,6 +25,8 @@ from models.knapsack1 import generate_knapsack1
 from models.knapsack2 import generate_knapsack2
 from models.knapsack3 import generate_knapsack3
 from models.knapsack4 import generate_knapsack4
+from models.pmedian1 import generate_pmedian1
+from models.pmedian2 import generate_pmedian2
 
 tests = {
     "small1": generate_small1,
@@ -44,7 +46,9 @@ tests = {
     "knapsack1": generate_knapsack1,
     "knapsack2": generate_knapsack2,
     "knapsack3": generate_knapsack3,
-    "knapsack4": generate_knapsack4
+    "knapsack4": generate_knapsack4,
+    "pmedian1": generate_pmedian1,
+    "pmedian2": generate_pmedian2,
 }
 
 
@@ -67,7 +71,7 @@ if len(sys.argv) == 1:
 if len(sys.argv) == 2:
     testname = sys.argv[1]
     if testname in tests:
-        run(testname)
+        run(testname, quiet=True)
     elif testname == "all":
         for name in tests:
             print("TEST "+name)
