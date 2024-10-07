@@ -63,6 +63,7 @@ class ModelingComponent(NamedComponent):
     def __init__(self, name=None, doc=None):
         super().__init__(name, doc)
         self._forall = None
+        self._explicit = True       # If True, then all indices have been provided for all index sets
 
     def is_component(self):
         return True
@@ -73,14 +74,15 @@ class ModelingComponent(NamedComponent):
     def is_indexed(self):
         return self._forall is not None
 
-    def forall(self, index, In):
+    def forall(self, index, In, explicit=True):
+        self._explicit = self._explicit and explicit
         if self._forall is None:
             self._forall = ForAllObject()
         self._forall.forall(index, In=In)
         return self
 
     def index_set(self, In):
-        return self.forall(index(f"i{len(self._index_sets())}"), In=In)
+        return self.forall(index(f"i{len(self._index_sets())}"), In=In, explicit=False)
 
     def suchthat(self, expr):
         assert self._forall is not None

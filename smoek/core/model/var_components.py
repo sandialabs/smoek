@@ -114,17 +114,18 @@ class ScalarVariable(ModelingComponent, ExprLeaf):
     def etype(self):
         return ExpressionType.variable
 
-    def forall(self, index, In):
+    def forall(self, index, In, explicit=True):
         res = IndexedVariable(
             forall=ForAllObject().forall(index, In),
             name=self.name(),
             domain=self._domain,
             doc=self._doc,
         )
+        res._explicit = self._explicit and explicit
         return res
 
     def index_set(self, In):
-        return self.forall(index(f"i{len(self._index_sets())}"), In=In)
+        return self.forall(index(f"i{len(self._index_sets())}"), In=In, explicit=False)
 
 
 def variable(name=None, domain=Reals, doc=None, forall=None):

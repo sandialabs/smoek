@@ -379,10 +379,10 @@ def model_to_dict(model):
     for k, v in info.items():
         if v.type == "parameter":
             ans["parameters"][k] = str(v.object)
-        elif v.type == "variable":
-            ans["variables"][k] = str(v.object)
         elif v.type == "data":
             ans["data"][k] = str(v.object)
+        elif v.type == "variable":
+            ans["variables"][k] = str(v.object)
         elif v.type == "expression":
             ans["expressions"][k] = str(v.object)
         elif v.type == "index_set":
