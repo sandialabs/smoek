@@ -74,6 +74,10 @@ class ModelingComponent(NamedComponent):
     def is_indexed(self):
         return self._forall is not None
 
+    @property
+    def explicit(self):
+        return self._forall is not None and self._explicit
+
     def forall(self, index, In, explicit=True):
         self._explicit = self._explicit and explicit
         if self._forall is None:
