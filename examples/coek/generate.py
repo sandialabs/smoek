@@ -10,7 +10,7 @@ testnames = ["small1", "small2", "small3", "small4", "small5", "small6",
                 "testing1", "testing2", "testing4", "testing5", "testing6", "testing7",
                 "simple1", "hs060",
                 "knapsack1", "knapsack2", "knapsack3", "knapsack4",
-                "pmedian1", "pmedian1_simple", "pmedian2"
+                "pmedian1", "pmedian2", # "pmedian1_simple"
 ]
 
 namemap = {
