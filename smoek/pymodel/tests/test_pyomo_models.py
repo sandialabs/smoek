@@ -1167,7 +1167,7 @@ def test_pmedian2():
     model = models.pmedian2(5)
     M = generate(model=model)
 
-    M.pprint()
+    #M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
     assert (

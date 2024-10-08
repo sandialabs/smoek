@@ -283,7 +283,7 @@ def generate(*, model=None, data=None):
 
         if component.type == "index":
             globals_[component.name] = pk.index(component.name)
-            setattr(M, component.name, pk.index(component.name))
+            setattr(M, component.name, globals_[component.name])
 
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
@@ -307,12 +307,12 @@ def generate(*, model=None, data=None):
                 setattr(M, component.name, pk.SetOf(data[component.name]))
 
         elif component.type == "parameter" or component.type == "data":
+            ctype = component.type
             index_sets = [
                 getattr(M, iset.name()) for iset in component.object._index_sets()
             ]
             indices = [i.name() for i in component.object._indices()]
 
-            args = []
             kwargs = {}
 
             # name
@@ -327,29 +327,47 @@ def generate(*, model=None, data=None):
             ):
                 kwargs["value"] = component.object.value().value
             elif component.object.value():
-                if component.object.is_indexed():
-                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
-                    # locals_ = {}
-                    exec(rule_str, globals_, locals_)
-                    kwargs["value"] = locals_[f"{component.name}_"](M)
+                if component.object.is_indexed() and component.object.explicit:
+                    rule_str = f"def {component.name}_(m_,{",".join(indices)}):\n    return {to_poek_str(component.object.value())}"
+                    args = [M] + [getattr(M, i.name()) for i in component.object._indices()]
                 else:
                     rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
-                    # locals_ = {}
-                    exec(rule_str, globals_, locals_)
-                    kwargs["value"] = locals_[f"{component.name}_"](M)
+                    args = [M]
+                # locals_ = {}
+                #print("HERE",rule_str)
+                exec(rule_str, globals_, locals_)
+                kwargs["value"] = locals_[f"{component.name}_"](*args)
+                #print("HERE",kwargs['value'].to_list())
 
             if component.object.is_indexed():
-                if len(indices) == 1:
-                    args = [index_sets[0]]
+                if component.object.explicit:
+                    indices = [getattr(M, i.name()) for i in component.object._indices()]
+                    if len(indices) == 1:
+                        args = [pk.Forall(indices[0]).In(index_sets[0])]
+                    else:
+                        tmp = pk.Forall(indices[0]).In(index_sets[0])
+                        for i in range(1, len(index_sets)):
+                            tmp = tmp.Forall(indices[i]).In(index_sets[i])
+                        args = [tmp]
                 else:
-                    tmp = index_sets[0]
-                    for i in range(1, len(index_sets)):
-                        tmp = tmp * index_sets[i]
-                    args = [tmp]
-            # print("HERE", component.name, args, kwargs)
-            globals_[component.name] = param = pk.parameter(*args, **kwargs)
-            setattr(M, component.name, param)
-            M._model.add_parameter(param)
+                    if len(indices) == 1:
+                        args = [index_sets[0]]
+                    else:
+                        tmp = index_sets[0]
+                        for i in range(1, len(index_sets)):
+                            tmp = tmp * index_sets[i]
+                        args = [tmp]
+            else:
+                args = []
+            #print("HERE", component.name, args, kwargs)
+            if component.type == "parameter":
+                globals_[component.name] = param = pk.parameter(*args, **kwargs)
+                setattr(M, component.name, param)
+                M._model.add_parameter(param)
+            else:
+                globals_[component.name] = dat = pk.data(*args, **kwargs)
+                setattr(M, component.name, dat)
+                M._model.add_data(dat)
 
         elif component.type == "variable":
             index_sets = [
@@ -357,6 +375,12 @@ def generate(*, model=None, data=None):
             ]
             indices = [i.name() for i in component.object._indices()]
 
+            if component.object.is_indexed() and component.object.explicit:
+                args = [M] + [getattr(M, i.name()) for i in component.object._indices()]
+                iparams = "," + ",".join(indices)
+            else:
+                args = [M]
+                iparams = ""
             kwargs = {}
             # name
             if component.object.name():
@@ -374,17 +398,17 @@ def generate(*, model=None, data=None):
                     upper = "None"
                 # locals_ = {}
                 exec(
-                    f"def {component.name}_lower_(m_):\n    return {lower}",
+                    f"def {component.name}_lower_(m_{iparams}):\n    return {lower}",
                     globals_,
                     locals_,
                 )
                 exec(
-                    f"def {component.name}_upper_(m_):\n    return {upper}",
+                    f"def {component.name}_upper_(m_{iparams}):\n    return {upper}",
                     globals_,
                     locals_,
                 )
-                kwargs["lb"] = locals_[f"{component.name}_lower_"](M)
-                kwargs["ub"] = locals_[f"{component.name}_upper_"](M)
+                kwargs["lb"] = locals_[f"{component.name}_lower_"](*args)
+                kwargs["ub"] = locals_[f"{component.name}_upper_"](*args)
 
             # value
             if isinstance(
@@ -392,14 +416,12 @@ def generate(*, model=None, data=None):
             ):
                 kwargs["value"] = component.object.value().value
             elif component.object.value():
-                if component.object.is_indexed():
-                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
-                else:
-                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
+                rule_str = f"def {component.name}_(m_{iparams}):\n    return {to_poek_str(component.object.value())}"
                 # locals_ = {}
                 # print(rule_str)
+                #print("X",rule_str)
                 exec(rule_str, globals_, locals_)
-                kwargs["value"] = locals_[f"{component.name}_"](M)
+                kwargs["value"] = locals_[f"{component.name}_"](*args)
 
             # binary or integer
             if component.object.domain().id == Integers.id:
@@ -412,16 +434,26 @@ def generate(*, model=None, data=None):
                 kwargs["fixed"] = component.object.fixed()
 
             if component.object.is_indexed():
-                if len(indices) == 1:
-                    args = [index_sets[0]]
+                if component.object.explicit:
+                    indices = [getattr(M, i.name()) for i in component.object._indices()]
+                    if len(indices) == 1:
+                        args = [pk.Forall(indices[0]).In(index_sets[0])]
+                    else:
+                        tmp = pk.Forall(indices[0]).In(index_sets[0])
+                        for i in range(1, len(index_sets)):
+                            tmp = tmp.Forall(indices[i]).In(index_sets[i])
+                        args = [tmp]
                 else:
-                    tmp = index_sets[0]
-                    for i in range(1, len(index_sets)):
-                        tmp = tmp * index_sets[i]
-                    args = [tmp]
-                var = M._model.add_variable(*args, **kwargs)
+                    if len(indices) == 1:
+                        args = [index_sets[0]]
+                    else:
+                        tmp = index_sets[0]
+                        for i in range(1, len(index_sets)):
+                            tmp = tmp * index_sets[i]
+                        args = [tmp]
             else:
-                var = M._model.add_variable(**kwargs)
+                args = []
+            var = M._model.add_variable(*args, **kwargs)
             globals_[component.name] = var
             setattr(M, component.name, var)
 

@@ -922,7 +922,7 @@ def test_pmedian2():
     model = models.pmedian2()
     data={"d": "std::map<std::tuple<int,int>,double>"}
 
-    print(generate(model=model, data=data))
+    #print(generate(model=model, data=data))
     assert (
         generate(model=model, data=data)
         == """
@@ -977,7 +977,7 @@ def test_pmedian2_simple():
     model = models.pmedian2()
     data={"d": "std::map<std::tuple<int,int>,double>"}
 
-    print(generate(model=model, data=data, loops="simple"))
+    #print(generate(model=model, data=data, loops="simple"))
     assert (
         generate(model=model, data=data, loops="simple")
         == """
