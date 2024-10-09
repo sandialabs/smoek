@@ -1,5 +1,6 @@
 import smoek.core.expr.nodes
 from smoek.core.expr.nodes import ExpressionType
+from smoek.core.data_apis import JSONDataPortal_Coek
 from smoek.core.model.var_components import (
     Reals,
     PositiveReals,
@@ -273,10 +274,22 @@ def generate(*, model=None, data=None):
 
     M = Tmp()
     M._model = pk.compact_model()
+    M._data = data
 
     locals_ = {}
     globals_ = {"pk": pk}
 
+    #
+    # Initialize data resources
+    #
+    if isinstance(data, JSONDataPortal_Coek):
+        dp = pk.DataPortal()
+        dp.load_from_file(data._filename)
+        setattr(M, "dp_", dp)
+
+    #
+    # Construct model components
+    #
     for name in order:
         component = info[name]
         poek_str = None
@@ -326,6 +339,12 @@ def generate(*, model=None, data=None):
                 component.object.value(), smoek.core.expr.nodes.NumberWrapper
             ):
                 kwargs["value"] = component.object.value().value
+            elif isinstance(
+                component.object.value(), smoek.core.expr.nodes.DataWrapper
+            ):
+                assert M._dp.contains(component.object.value().value.key), f"Data '{component.object.value().value.key}' for {ctype} missing in file {M._data._filename}"
+                kwargs["value"] = component.object.value().value.key
+                kwargs["data_portal"] = M._dp
             elif component.object.value():
                 if component.object.is_indexed() and component.object.explicit:
                     rule_str = f"def {component.name}_(m_,{",".join(indices)}):\n    return {to_poek_str(component.object.value())}"
@@ -415,6 +434,12 @@ def generate(*, model=None, data=None):
                 component.object.value(), smoek.core.expr.nodes.NumberWrapper
             ):
                 kwargs["value"] = component.object.value().value
+            elif isinstance(
+                component.object.value(), smoek.core.expr.nodes.DataWrapper
+            ):
+                assert M._dp.contains(component.object.value().value.key), f"Data '{component.object.value().value.key}' for {ctype} missing in file {M._data._filename}"
+                kwargs["value"] = component.object.value().value.key
+                kwargs["data_portal"] = M._dp
             elif component.object.value():
                 rule_str = f"def {component.name}_(m_{iparams}):\n    return {to_poek_str(component.object.value())}"
                 # locals_ = {}

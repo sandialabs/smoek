@@ -319,6 +319,10 @@ def generate(*, model=None, data=None):
                 component.object.value(), smoek.core.expr.nodes.NumberWrapper
             ):
                 kwargs["initialize"] = component.object.value().value
+            elif isinstance(
+                component.object.value(), smoek.core.expr.nodes.DataWrapper
+            ):
+                kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
                     indices = [i.name() for i in component.object._indices()]
@@ -362,6 +366,10 @@ def generate(*, model=None, data=None):
 
             if isinstance(
                 component.object.value(), smoek.core.expr.nodes.NumberWrapper
+            ):
+                kwargs["initialize"] = component.object.value().value
+            elif isinstance(
+                component.object.value(), smoek.core.expr.nodes.DataWrapper
             ):
                 kwargs["initialize"] = component.object.value().value
             elif component.object.value():

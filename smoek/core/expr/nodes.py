@@ -1,5 +1,6 @@
 # TODO: error checking
 
+from smoek.core.data_apis import DataPortalRef
 from enum import StrEnum
 
 
@@ -272,10 +273,27 @@ class NumberWrapper(ExprLeaf):
         return ExpressionType.constant
 
 
+class DataWrapper(ExprLeaf):
+    def __init__(self, ref):
+        self._ref = ref
+
+    @property
+    def value(self):
+        return self._ref.get_data()
+
+    def to_string(self):
+        return "{}".format(self._ref.get_data())
+
+    def etype(self):
+        return ExpressionType.constant
+
+
 def _wrap_expression_if_needed(expr):
     if not isinstance(expr, ExprNode):
         if isinstance(expr, float) or isinstance(expr, int):
             return NumberWrapper(expr)
+        elif isinstance(expr, DataPortalRef):
+            return DataWrapper(expr)
         else:
             raise TypeError(
                 f"unsupported operand type(s) in expression {expr} of type {type(expr)}"
