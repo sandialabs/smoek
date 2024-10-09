@@ -132,7 +132,7 @@ def generate_small5(data):
 
     M.v = pyo.Var(bounds=(-1,3), initialize=3.0)
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M._o = pyo.Objective(expr=(pow(M.x, 2) / 2.0) + (pow(M.x, 2) / M.q))
 
@@ -232,7 +232,7 @@ def generate_testing1(data):
     M.e = pyo.Var(initialize=1.0)
     M.e.fix()
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M._o = pyo.Objective(expr=(3 * M.a) + M.q)
 
@@ -276,7 +276,7 @@ def generate_testing2(data):
     M.b = pyo.Var(bounds=(0,1), initialize=1.0)
     M.b.fix()
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M._o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * ((((-M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin((-pyo.cos(M.a))))
 
@@ -377,9 +377,9 @@ def generate_testing6(data):
 
     M.x = pyo.Var(bounds=(0,1), initialize=0)
 
-    M.p = pyo.Param(mutable=True, initialize=0)
+    M.p = pyo.Param(mutable=True, initialize=0, within=pyo.Reals)
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M.o = pyo.Objective(expr=(((-M.q) * M.x) * M.x) + M.p)
 
@@ -406,11 +406,11 @@ def generate_testing7(data):
 
     M.B = pyo.RangeSet(0, 4)
 
-    M.p = pyo.Param(mutable=True, initialize=0)
+    M.p = pyo.Param(mutable=True, initialize=0, within=pyo.Reals)
 
-    M.pp = pyo.Param(M.A, mutable=True, initialize=0)
+    M.pp = pyo.Param(M.A, mutable=True, initialize=0, within=pyo.Reals)
 
-    M.ppp = pyo.Param(M.A, M.B, mutable=True, initialize=0)
+    M.ppp = pyo.Param(M.A, M.B, mutable=True, initialize=0, within=pyo.Reals)
 
     M.x = pyo.Var()
 
@@ -517,9 +517,9 @@ def generate_knapsack1(data):
 
     M.INDEX = pyo.RangeSet(0, 9)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1.0)
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1.0, within=pyo.Reals)
 
-    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
+    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1, within=pyo.Reals)
 
     M.x = pyo.Var(M.INDEX, bounds=(0.0,1.0))
 
@@ -550,13 +550,13 @@ def pow(a,b):
 def generate_knapsack2(data):
     M = pyo.ConcreteModel("knapsack2")
 
-    M.N = pyo.Param(mutable=True, initialize=1)
+    M.N = pyo.Param(mutable=True, initialize=1, within=pyo.Reals)
 
     M.INDEX = pyo.RangeSet(0, (M.N * 10) - 1)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0), within=pyo.Reals)
 
-    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
+    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1, within=pyo.Reals)
 
     M.x = pyo.Var(M.INDEX, bounds=(0.0,1.0))
 
@@ -587,13 +587,13 @@ def pow(a,b):
 def generate_knapsack3(data):
     M = pyo.ConcreteModel("knapsack3")
 
-    M.N = pyo.Param(mutable=True, initialize=data["N"])
+    M.N = pyo.Param(mutable=True, initialize=data["N"], within=pyo.Reals)
 
     M.INDEX = pyo.RangeSet(0, (M.N * 10) - 1)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0), within=pyo.Reals)
 
-    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
+    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1, within=pyo.Reals)
 
     M.x = pyo.Var(M.INDEX, bounds=(0.0,1.0))
 
@@ -623,11 +623,11 @@ def generate_knapsack4(data):
 
     M.ITEMS = pyo.Set(initialize=data["ITEMS"])
 
-    M.value = pyo.Param(M.ITEMS, mutable=True, initialize=data["value"])
+    M.value = pyo.Param(M.ITEMS, mutable=True, initialize=data["value"], within=pyo.Reals)
 
-    M.weight = pyo.Param(M.ITEMS, mutable=True, initialize=data["weight"])
+    M.weight = pyo.Param(M.ITEMS, mutable=True, initialize=data["weight"], within=pyo.Reals)
 
-    M.capacity = pyo.Param(mutable=True, initialize=data["capacity"])
+    M.capacity = pyo.Param(mutable=True, initialize=data["capacity"], within=pyo.Reals)
 
     M.x = pyo.Var(M.ITEMS, bounds=(0.0,1.0))
 
@@ -660,7 +660,7 @@ def generate_pmedian1(data):
 
     def d_(m_,n,m):
         return 1.0 + (1.0 / ((n + m) + 1))
-    M.d = pyo.Param(M.N, M.M, mutable=True, initialize=d_)
+    M.d = pyo.Param(M.N, M.M, mutable=True, initialize=d_, within=pyo.Reals)
 
     M.x = pyo.Var(M.N, M.M, bounds=(0.0,1.0), initialize=0.0)
 
@@ -704,7 +704,7 @@ def generate_pmedian2(data):
 
     def d_(m_,n,m):
         return 1.0 + (1.0 / ((n + m) + 1))
-    M.d = pyo.Param(M.N, M.M, mutable=False, initialize=d_)
+    M.d = pyo.Param(M.N, M.M, mutable=False, initialize=d_, within=pyo.Reals)
 
     M.x = pyo.Var(M.N, M.M, bounds=(0.0,1.0), initialize=0.0)
 

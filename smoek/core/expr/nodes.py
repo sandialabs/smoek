@@ -282,7 +282,7 @@ class DataWrapper(ExprLeaf):
         return self._ref.get_data()
 
     def to_string(self):
-        return "{}".format(self._ref.get_data())
+        return f'data["{self._ref.key}"]'
 
     def etype(self):
         return ExpressionType.constant
