@@ -243,7 +243,7 @@ def pmedian4(N_=10, P=1, data=None):
         smk.data("d")
         .forall(n, In=N)
         .forall(m, In=M)
-        .value(1.0 + 1.0 / (n + m + 1))
+        .value(data['d'])
     )
 
     x = (
