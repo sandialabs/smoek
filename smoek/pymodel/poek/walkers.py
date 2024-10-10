@@ -342,8 +342,7 @@ def generate(*, model=None, data=None):
             elif isinstance(
                 component.object.value(), smoek.core.expr.nodes.DataWrapper
             ):
-                #assert component.object.value().value.key in M.dp_, f"Data '{component.object.value().value.key}' for {ctype} missing in file {M._data._filename}"
-                kwargs["value"] = component.object.value().value
+                kwargs["value"] = component.object.value()._ref.key
                 kwargs["data_portal"] = M.dp_
             elif component.object.value():
                 if component.object.is_indexed() and component.object.explicit:
@@ -497,7 +496,7 @@ def generate(*, model=None, data=None):
                 # rule_str = f'def {component.name}_(m_):\n    e = {to_poek_str(component.object.expr())}\n    print(e.to_list())\n    return {to_poek_str(component.object.expr())}'
                 rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}"
             # locals_ = {}
-            # print("HERE o",rule_str)
+            #print("HERE o",rule_str)
             exec(rule_str, globals_, locals_)
             # print(locals_[f"{component.name}_"](M).to_list())
             if component.object.sense():
