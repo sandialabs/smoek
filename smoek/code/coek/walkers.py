@@ -169,17 +169,17 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                 coek_str = (
                     f'auto {component.name} = coek::{ctype}("{component.name}")'
                 )
-            if component.object.value():
+            if component.object.value() and not isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
                 coek_str += f".value({to_coek(component.object.value())})"
             coek_str += ';'
             if component.name in data:
                 coek_str += f'\nif (data.contains("{component.name}")) ' + '{\n'
                 coek_str += f'    {data[component.name]} {component.name}_value;\n'
                 coek_str += f'    data.get("{component.name}", {component.name}_value);\n'
-                if component.object.is_indexed():
-                    coek_str += f'    for (auto& [k,v]: {component.name}_value) {component.name}(k).value(v);\n'
-                else:
-                    coek_str += f'    {component.name}.value({component.name}_value);\n'
+                #if component.object.is_indexed():
+                #    coek_str += f'    for (auto& [k,v]: {component.name}_value) {component.name}(k).value(v);\n'
+                #else:
+                coek_str += f'    {component.name}.value({component.name}_value);\n'
                 coek_str += '}'
             components.append(coek_str)
             components.append(f"model.add({component.name});")
