@@ -8,7 +8,7 @@ from smoek.pymodel.poek import generate as generate_poek
 from smoek import JsonDataPortal
 
 sizes = [1000, 3000]
-#sizes = [100]
+#sizes = [10]
 suffixes = ["lp", "nl"]
 exp = ['pyomo', 'poek1', 'poek2']
 #tests = {"pmedian1": pmedian1, "pmedian2": pmedian2, 'pmedian3':pmedian3, 'pmedian4':pmedian4}
@@ -97,7 +97,7 @@ if len(sys.argv) == 2:
     pymodel = sys.argv[1]
 
 if False:
-    run(pymodel, 'pmedian1', 10, 0, 'lp')
+    run('poek2', 'pmedian3', 10, 0, 'lp')
 else:
     for pymodel in exp:
         for test in tests:
