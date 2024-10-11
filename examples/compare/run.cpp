@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     size_t size = atoi(argv[2]);
     std::string output_filename = argv[3];
     bool compact_writer = atoi(argv[4]);
-    std::string jsonfile = "data/" + testname + "_" + std::to_string(size) + ".json";
+    std::string jsonfile = "data/" + testname + ".json";
     if (argc == 6)
         std::string jsonfile = argv[5];
 

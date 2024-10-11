@@ -1,6 +1,7 @@
 import sys
 import os
 import pyomo
+import subprocess
 from pyomo.common.timing import tic, toc
 from smoek_models import pmedian1, pmedian2, pmedian3, pmedian4
 from smoek.pymodel.pyomo import generate as generate_pyomo
@@ -8,100 +9,17 @@ from smoek.pymodel.poek import generate as generate_poek
 from smoek import JsonDataPortal
 
 sizes = [1000, 3000]
-#sizes = [10]
+#sizes = [100]
 suffixes = ["lp", "nl"]
 exp = ['pyomo', 'poek1', 'poek2']
 #tests = {"pmedian1": pmedian1, "pmedian2": pmedian2, 'pmedian3':pmedian3, 'pmedian4':pmedian4}
 tests = {"pmedian1": pmedian1, 'pmedian3':pmedian3}
 ntrials = 1
 
-
-def run_pyomo(test, size, trial, suffix):
-    print("-" * 70)
-    tic(f"Test: pyomo {test} {size} {trial} {suffix}")
-
-    jsonfile = f"data/{test}_{size}.json"
-    if os.path.exists(jsonfile):
-        data = JsonDataPortal(filename=jsonfile)
-    else:
-        data = {}
-    toc(f"Create JSON data portal")
-
-    smoek_model = tests[test](size, data=data)
-    toc("Smoek model generated")
-
-    pyomo_model = generate_pyomo(model=smoek_model, data=data)
-    toc("Pyomo model generated")
-
-    fname = f"{suffix}files/pymodel_pyomo_{test}_{size}_{trial}.{suffix}"
-    pyomo_model.write(fname)
-    toc(f"Writing file {fname}")
-
-def run_poek1(test, size, trial, suffix):
-    print("-" * 70)
-    tic(f"Test: poek1 {test} {size} {trial} {suffix}")
-
-    jsonfile = f"data/{test}_{size}.json"
-    if os.path.exists(jsonfile):
-        data = JsonDataPortal(filename=jsonfile)
-    else:
-        data = {}
-    toc(f"Create JSON data portal")
-
-    smoek_model = tests[test](size, data=data)
-    toc("Smoek model generated")
-
-    poek_model = generate_poek(model=smoek_model, data=data)
-    M = poek_model.expand()
-    toc("Poek model generated")
-
-    fname = f"{suffix}files/pymodel_poek1_{test}_{size}_{trial}.{suffix}"
-    M.write(fname)
-    toc(f"Writing file {fname}")
-
-def run_poek2(test, size, trial):
-    print("-" * 70)
-    tic(f"Test: poek2 {test} {size} {trial} lp")
-
-    jsonfile = f"data/{test}_{size}.json"
-    if os.path.exists(jsonfile):
-        data = JsonDataPortal(filename=jsonfile)
-    else:
-        data = {}
-    toc(f"Create JSON data portal")
-
-    smoek_model = tests[test](size, data=data)
-    toc("Smoek model generated")
-
-    poek_model = generate_poek(model=smoek_model, data=data)
-    toc("Poek model generated")
-
-    fname = f"lpfiles/pymodel_poek2_{test}_{size}_{trial}.lp"
-    poek_model.write(fname)
-    toc(f"Writing file {fname}")
-
-def run(pymodel, test, size, trial, suffix):
-    if pymodel == 'pyomo':
-        run_pyomo(test, size, trial, suffix)
-    elif pymodel == 'poek1':
-        run_poek1(test, size, trial, suffix)
-    elif pymodel == 'poek2':
-        if (suffix == 'lp'):
-            run_poek2(test, size, trial)
-        else:
-            print("-" * 70)
-            print(f"WARNING: cannot run poek2 test using {suffix} suffix.")
-
-pymodel = 'pyomo'
-if len(sys.argv) == 2:
-    pymodel = sys.argv[1]
-
-if False:
-    run('poek2', 'pmedian3', 10, 0, 'lp')
-else:
-    for pymodel in exp:
-        for test in tests:
-            for size in sizes:
-                for trial in range(ntrials):
-                    for suffix in suffixes:
-                        run(pymodel, test, size, trial, suffix)
+for pymodel in exp:
+    for test in tests:
+        for size in sizes:
+            for trial in range(ntrials):
+                for suffix in suffixes:
+                    res = subprocess.run(f"time python run_pymodel.py {pymodel} {test} {size} {trial} {suffix}", shell=True, check=True,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT)
+                    print(res.stdout.decode())
