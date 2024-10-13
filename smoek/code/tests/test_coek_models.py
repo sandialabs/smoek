@@ -528,7 +528,7 @@ def test_simple1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["x", "y", "o", "c1", "c2", "c3"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -570,7 +570,7 @@ def test_hs060():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "x", "o", "c"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -605,7 +605,7 @@ def test_knapsack1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -648,7 +648,7 @@ def test_knapsack2():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -694,7 +694,7 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model, data={"N": "int"}))
+    # print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"N": "int"})
         == """
@@ -745,7 +745,7 @@ def test_knapsack4():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model, data={"N": "int"}))
+    # print(generate(model=model, data={"N": "int"}))
     assert (
         generate(
             model=model,
@@ -778,7 +778,7 @@ auto value = coek::parameter("value", ITEMS);
 if (data.contains("value")) {
     std::map<int,double> value_value;
     data.get("value", value_value);
-    for (auto& [k,v]: value_value) value(k).value(v);
+    value.value(value_value);
 }
 model.add(value);
 
@@ -786,7 +786,7 @@ auto weight = coek::parameter("weight", ITEMS);
 if (data.contains("weight")) {
     std::map<int,double> weight_value;
     data.get("weight", weight_value);
-    for (auto& [k,v]: weight_value) weight(k).value(v);
+    weight.value(weight_value);
 }
 model.add(weight);
 
@@ -816,7 +816,7 @@ return model;
 def test_pmedian1():
     model = models.pmedian1()
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -866,7 +866,7 @@ return model;
 def test_pmedian1_simple():
     model = models.pmedian1()
 
-    #print(generate(model=model, loops="simple"))
+    # print(generate(model=model, loops="simple"))
     assert (
         generate(model=model, loops="simple")
         == """
@@ -920,9 +920,9 @@ return model;
 
 def test_pmedian2():
     model = models.pmedian2()
-    data={"d": "std::map<std::tuple<int,int>,double>"}
+    data = {"d": "std::map<std::tuple<int,int>,double>"}
 
-    #print(generate(model=model, data=data))
+    # print(generate(model=model, data=data))
     assert (
         generate(model=model, data=data)
         == """
@@ -946,7 +946,7 @@ auto d = coek::data("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0
 if (data.contains("d")) {
     std::map<std::tuple<int,int>,double> d_value;
     data.get("d", d_value);
-    for (auto& [k,v]: d_value) d(k).value(v);
+    d.value(d_value);
 }
 model.add(d);
 
@@ -973,11 +973,12 @@ return model;
 """
     )
 
+
 def test_pmedian2_simple():
     model = models.pmedian2()
-    data={"d": "std::map<std::tuple<int,int>,double>"}
+    data = {"d": "std::map<std::tuple<int,int>,double>"}
 
-    #print(generate(model=model, data=data, loops="simple"))
+    # print(generate(model=model, data=data, loops="simple"))
     assert (
         generate(model=model, data=data, loops="simple")
         == """
@@ -1001,7 +1002,7 @@ auto d = coek::data("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0
 if (data.contains("d")) {
     std::map<std::tuple<int,int>,double> d_value;
     data.get("d", d_value);
-    for (auto& [k,v]: d_value) d(k).value(v);
+    d.value(d_value);
 }
 model.add(d);
 
@@ -1032,4 +1033,3 @@ return model;
 }
 """
     )
-

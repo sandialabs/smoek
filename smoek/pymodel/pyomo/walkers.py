@@ -313,7 +313,7 @@ def generate(*, model=None, data=None):
             kwargs = {}
             kwargs["mutable"] = component.type == "parameter"
             kwargs["domain"] = pyo.Reals
-            #print("HERE", component.name, type(data), data)
+            # print("HERE", component.name, type(data), data)
             if component.name in data:
                 kwargs["initialize"] = data[component.name]
             elif isinstance(

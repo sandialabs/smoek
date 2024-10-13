@@ -416,7 +416,7 @@ def test_testing7():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
     assert (
@@ -495,7 +495,7 @@ def test_testing8():
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
     assert (
@@ -530,7 +530,7 @@ def test_testing8():
 """
     )
 
-    #M.print_equations()
+    # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
     assert (
@@ -781,13 +781,14 @@ def test_knapsack4():
 """
     )
 
+
 def test_pmedian1():
     model = models.pmedian1(5)
     m = generate(model=model)
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
     assert (
@@ -827,7 +828,7 @@ def test_pmedian1():
 """
     )
 
-    #M.print_equations()
+    # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
     assert (
@@ -870,13 +871,14 @@ def test_pmedian1():
 """
     )
 
+
 def test_pmedian2():
     model = models.pmedian2(5)
     m = generate(model=model)
     M = m.expand()
     M.generate_names()
 
-    #M.print_values()
+    # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
     assert (
@@ -916,7 +918,7 @@ def test_pmedian2():
 """
     )
 
-    #M.print_equations()
+    # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
     assert (
@@ -958,4 +960,3 @@ def test_pmedian2():
     30:  y[0] + y[1] + y[2] + y[3] + y[4] == 1
 """
     )
-

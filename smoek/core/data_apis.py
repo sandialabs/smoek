@@ -33,7 +33,7 @@ class DataPortalRef(object):
 
     def get_data(self):
         self.dp.load()
-        self.dp._lazyload=False
+        self.dp._lazyload = False
         return self.dp[self.key]
 
 
@@ -58,7 +58,10 @@ class JSONDataPortalBase(collections.UserDict):
         )
 
     def is_parameter(self, name):
-        return self.data is not None and name in self.data and (type(self.data[name]) is not dict or "set_type" not in self.data[name]
+        return (
+            self.data is not None
+            and name in self.data
+            and (type(self.data[name]) is not dict or "set_type" not in self.data[name])
         )
 
     def parameters(self):
@@ -129,7 +132,7 @@ class JSONDataPortalBase(collections.UserDict):
         self._load_data()
 
     def store(self, filename, indent=None):
-        with open(filename, 'w') as OUTPUT:
+        with open(filename, "w") as OUTPUT:
             json.dump(self.data, OUTPUT, indent=indent)
 
 
@@ -322,7 +325,9 @@ class JSONDataPortal_Coek(JSONDataPortalBase):
             return data
 
 
-def JsonDataPortal(*, packed_data=None, filename=None, json_string=None, schema="coek", lazyload=True):
+def JsonDataPortal(
+    *, packed_data=None, filename=None, json_string=None, schema="coek", lazyload=True
+):
     if json_string is not None:
         packed_data = json.loads(json_string)
 
@@ -345,9 +350,9 @@ def load_data_from_json(
         lazyload=lazyload,
     )
 
+
 def store_data_to_json(*, filename=None, schema="coek", indent=None, **kwargs):
     jdp = JsonDataPortal(schema=schema)
-    for k,v in kwargs.items():
+    for k, v in kwargs.items():
         jdp[k] = v
     jdp.store(filename, indent=indent)
-

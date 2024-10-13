@@ -46,11 +46,15 @@ class Objective(ModelingComponent, ExprNode):
         self._sense = sense
         return self
 
-    def minimize(self):
+    def minimize(self, expr=None):
+        if expr is not None:
+            self._expr = expr
         self._sense = True
         return self
 
-    def maximize(self):
+    def maximize(self, expr=None):
+        if expr is not None:
+            self._expr = expr
         self._sense = False
         return self
 

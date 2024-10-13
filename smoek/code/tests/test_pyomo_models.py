@@ -472,7 +472,7 @@ def test_hs060():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "x", "o", "c"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -503,7 +503,7 @@ def test_knapsack1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -538,7 +538,7 @@ def test_knapsack2():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model))
+    # print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -575,7 +575,7 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    #print(generate(model=model, data={"N": "int"}))
+    # print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"N"})
         == """
@@ -609,7 +609,7 @@ def generate_knapsack3(data):
 def test_knapsack4():
     model = models.knapsack4()
 
-    #print(generate(model=model, data={"N": "int"}))
+    # print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
         == """
@@ -639,10 +639,11 @@ def generate_knapsack4(data):
 """
     )
 
+
 def test_pmedian1():
     model = models.pmedian1()
 
-    #print(generate(model=model, data={"N": "int"}))
+    # print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
         == """
@@ -682,11 +683,12 @@ def generate_pmedian1(data):
 """
     )
 
+
 def test_pmedian2():
     model = models.pmedian2()
-    data={"N": "int"}
+    data = {"N": "int"}
 
-    #print(generate(model=model, data=data))
+    # print(generate(model=model, data=data))
     assert (
         generate(model=model, data=data)
         == """
@@ -725,4 +727,3 @@ def generate_pmedian2(data):
     return M
 """
     )
-

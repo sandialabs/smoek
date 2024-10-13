@@ -1031,11 +1031,12 @@ def test_knapsack4():
 """
     )
 
+
 def test_pmedian1():
     model = models.pmedian1(5)
     M = generate(model=model)
 
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
     assert (
@@ -1162,12 +1163,11 @@ def test_pmedian1():
     )
 
 
-
 def test_pmedian2():
     model = models.pmedian2(5)
     M = generate(model=model)
 
-    #M.pprint()
+    # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
     assert (
@@ -1292,5 +1292,3 @@ def test_pmedian2():
 9 Declarations: N M d x y _o single_x bound_y num_facilities
 """
     )
-
-

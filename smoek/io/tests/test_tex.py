@@ -29,7 +29,13 @@ def test_knapsack():
         .doc("maximize value objective")
     )
 
-    M = smk.model(o, [c], [x], "knapsack", "test_knapsack()")
+    M = smk.model(
+        objective=o,
+        constraints=[c],
+        variables=[x],
+        name="knapsack",
+        doc="test_knapsack()",
+    )
     l = model_to_latex_string(M)
     assert (
         l
