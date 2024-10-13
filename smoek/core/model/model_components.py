@@ -39,7 +39,12 @@ class Model(object):
                 cls.__init__(self, *args, **kwds)
                 objective, constraints, variables = _collect_components(self)
                 Model.__init__(
-                    self, objective, constraints, variables, name=tmp.name, doc=tmp.doc
+                    self,
+                    objective,
+                    constraints,
+                    variables,
+                    name=cls.__name__ if tmp.name == "model" else tmp.name,
+                    doc=tmp.doc,
                 )
 
         return SmoekModel
