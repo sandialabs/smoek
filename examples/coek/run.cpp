@@ -15,7 +15,7 @@ auto compact_model = generate(testname, data);
 auto model = compact_model.expand();
 if (not quiet)
     model.print_equations();
-model.write("models/"+testname+".nl");
+model.write("../models/"+testname+".nl");
 }
 
 void run(const std::string& testname, const std::string& jsonfile, bool quiet=false)
@@ -28,7 +28,7 @@ void run(const std::string& testname, const std::string& jsonfile, bool quiet=fa
 
 void run(const std::string& testname, bool quiet=false)
 {
-    std::string jsonfile = "data/" + testname + ".json";
+    std::string jsonfile = "../data/" + testname + ".json";
     run(testname, jsonfile, quiet);
 }
 

@@ -1,1 +1,1 @@
-# smoek.model.pyomo.tests
+# smoek.pymodel.tests

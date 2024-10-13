@@ -1,5 +1,7 @@
 import smoek.core.expr.nodes
+import smoek.core.data_apis
 from smoek.core.expr.nodes import ExpressionType
+from smoek import JsonDataPortal
 import smoek.core.expr.functions
 from smoek.core.utils import (
     BottomUpDepthFirstExpressionWalker,
@@ -62,12 +64,14 @@ class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == "neg":
                 arg = self._stack.pop()
-                if isinstance(arg, smoek.core.expr.nodes.BinaryExprNode) and expr._left.operation in [
+                if isinstance(
+                    expr._arg, smoek.core.expr.nodes.BinaryExprNode
+                ) and expr._arg.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,
                     ExpressionType.div,
-                    ]:
+                ]:
                     ret = f"(-({arg}))"
                 else:
                     ret = f"(-{arg})"
@@ -136,7 +140,8 @@ def generate(*, model=None, data=None, outfile=None):
     """
 
     if data is None:
-        data = {}
+        # An empty data portal is used to 
+        data = JsonDataPortal()
     components = []
 
     info = collect_info(model)
@@ -163,28 +168,41 @@ def generate(*, model=None, data=None, outfile=None):
             components.append(pyomo_str)
 
         elif component.type == "parameter" or component.type == "data":
+            pyomo_str = ""
             mutable = component.type == "parameter"
-            if component.name in data:
+            initial_value = ""
+            within_value = ", within=pyo.Reals"
+            initial_value_fn = False
+            if isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
+                initial_value = f', initialize={to_pyomo(component.object.value())}'
+            elif component.name in data:
                 initial_value = f', initialize=data["{component.name}"]'
                 # if component.object.value():
                 #    initial_value = f', initialize=data["{component.name}"]'
                 # else:
                 #    initial_value = f', initialize={component.object.value()}'
             elif component.object.value():
-                initial_value = f", initialize={to_pyomo(component.object.value())}"
-            else:
-                initial_value = ""
+                if component.object.explicit:
+                    initial_value = f", initialize={component.name}_"
+                    initial_value_fn = True
+                else:
+                    initial_value = f', initialize={to_pyomo(component.object.value())}'
 
             if component.object.is_indexed():
                 index_sets = [
                     "M." + iset.name() for iset in component.object._index_sets()
                 ]
+                indices = [i.name() for i in component.object._indices()]
+                if initial_value_fn:
+                    pyomo_str = f'    def {component.name}_(m_,{",".join(indices)}):\n        return {to_pyomo(component.object.value(), model="m_")}\n'
                 if len(index_sets) == 1:
-                    pyomo_str = f"    M.{component.name} = pyo.Param({index_sets[0]}, mutable={mutable}{initial_value})"
+                    pyomo_str = pyomo_str + f"    M.{component.name} = pyo.Param({index_sets[0]}, mutable={mutable}{initial_value}{within_value})"
                 else:
-                    pyomo_str = f'    M.{component.name} = pyo.Param({", ".join(index_sets)}, mutable={mutable}{initial_value})'
+                    pyomo_str = pyomo_str + f'    M.{component.name} = pyo.Param({", ".join(index_sets)}, mutable={mutable}{initial_value}{within_value})'
             else:
-                pyomo_str = f"    M.{component.name} = pyo.Param(mutable={mutable}{initial_value})"
+                if initial_value_fn:
+                    pyomo_str = f'    def {component.name}_(m_):\n        return {to_pyomo(component.object.value(), model="m_")}\n'
+                pyomo_str = pyomo_str + f"    M.{component.name} = pyo.Param(mutable={mutable}{initial_value}{within_value})"
             components.append(pyomo_str)
 
         elif component.type == "variable":
@@ -248,13 +266,13 @@ def generate(*, model=None, data=None, outfile=None):
                 indices = [i.name() for i in component.object._indices()]
                 conargs = ""
                 if len(index_sets) == 1:
-                    pyomo_str = f'    def {component.name}_(m,{indices[0]}):\n        return {to_pyomo(component.object.expr(), model="m")}\n'
+                    pyomo_str = f'    def {component.name}_(m_,{indices[0]}):\n        return {to_pyomo(component.object.expr(), model="m_")}\n'
                     pyomo_str = (
                         pyomo_str
                         + f"    M.{component.name} = pyo.Constraint({index_sets[0]}{conargs}, rule={component.name}_)"
                     )
                 else:
-                    pyomo_str = f'    def {component.name}_(m,{",".join(indices)}):\n        return {to_pyomo(component.object.expr(), model="m")}\n'
+                    pyomo_str = f'    def {component.name}_(m_,{",".join(indices)}):\n        return {to_pyomo(component.object.expr(), model="m_")}\n'
                     pyomo_str = (
                         pyomo_str
                         + f'    M.{component.name} = pyo.Constraint({", ".join(index_sets)}{conargs}, rule={component.name}_)'

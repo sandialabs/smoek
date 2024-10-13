@@ -26,7 +26,7 @@ def small3():
     x = smk.variable("x").value(1.0)
     y = smk.variable("y").value(1.0)
 
-    o = smk.objective("o").expr(x * y)
+    o = smk.objective("o").expr(-(x * y))
     c = smk.constraint("c").expr(y**2 == 4)
     return smk.model(objective=o, constraints=[c], variables=[x, y], name="small3")
 
@@ -111,10 +111,10 @@ def testing1():
 
 
 def testing2():
-    a = smk.variable("a").lower(0).upper(1).value(0).within(smk.Integers)
+    a = smk.variable("a").lower(0).upper(2).value(0).within(smk.Integers)
     b = smk.variable("b").lower(0).upper(1).value(0).within(smk.Binary)
     q = smk.parameter("q").value(2)
-    b.fix(2.0)
+    b.fix(1.0)
 
     # This forces the use of a Negate term
     e = 3 * a + q + a * a * a * (-a + b + 3 * a + 3 * b) + smk.sin(-smk.cos(a))
@@ -165,8 +165,8 @@ def testing6():
 
 # Confirming logic for indexed components
 def testing7():
-    A = smk.range("A", stop=10)  # 0..9
-    B = smk.range("B", stop=11)  # 0..9
+    A = smk.range("A", stop=3)  # 0..3
+    B = smk.range("B", stop=4)  # 0..4
 
     i = smk.index("i")
     j = smk.index("j")
@@ -196,6 +196,37 @@ def testing7():
 
     return smk.model(
         objective=o, constraints=[c, cc, ccc], variables=[x, xx, xxx], name="testing7"
+    )
+
+
+# Confirming logic when indexed values are used
+def testing8():
+    A = smk.range("A", stop=3)  # 0..3
+    B = smk.range("B", stop=4)  # 0..4
+
+    i = smk.index("i")
+    j = smk.index("j")
+
+    ppp = smk.parameter("ppp").index_set(A).index_set(B).value(1)
+    pp = smk.parameter("pp").forall(i, In=A).value(smk.sum(ppp[i, j]).forall(j, In=B))
+    p = smk.parameter("p").value(smk.sum(pp[i]).forall(i, In=A))
+
+    x = smk.variable("x").value(smk.sum(pp[i]).forall(i, In=A))
+    xx = smk.variable("xx").forall(i, In=A).value(pp[i]).lower(pp[i]).upper(pp[i])
+    xxx = smk.variable("xxx").index_set(A).index_set(B)
+
+    o = smk.objective("o").expr(p * x + smk.sum(xx[i]).forall(i, In=A))
+
+    c = smk.constraint("c").expr(smk.sum(pp[i] * xx[i]).forall(i, In=A) == 0)
+    cc = smk.constraint("cc").expr(pp[i] * xx[i] == 0).forall(i, In=A)
+    ccc = (
+        smk.constraint("ccc")
+        .expr(smk.sum(ppp[i, j] * xxx[i, j]).forall(i, In=A) == 0)
+        .forall(j, In=B)
+    )
+
+    return smk.model(
+        objective=o, constraints=[c, cc, ccc], variables=[xx, xxx], name="testing8"
     )
 
 
@@ -235,7 +266,7 @@ def knapsack1(N=1, name="knapsack1"):
 
     i = smk.index("i")
 
-    INDEX = smk.range("INDEX", stop=N_)  # 0..N-1
+    INDEX = smk.range("INDEX", stop=N_ - 1)  # 0..N-1
 
     w = smk.parameter().name("w").index_set(INDEX).value(1 / capacity)
 
@@ -247,7 +278,7 @@ def knapsack1(N=1, name="knapsack1"):
         smk.objective()
         .name("o")
         .expr(smk.sum(v[i] * x[i]).forall(i, In=INDEX))
-        .minimize()
+        .maximize()
     )
 
     c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i, In=INDEX) <= capacity)
@@ -277,17 +308,124 @@ def knapsack4(name="knapsack4"):
 
     capacity = smk.parameter("capacity")
 
-
     x = smk.variable("x").index_set(ITEMS).bounds(0.0, 1.0)
 
     o = (
         smk.objective()
         .name("o")
         .expr(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
-        .minimize()
+        .maximize()
     )
 
-    c = smk.constraint("c").expr(smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity)
+    c = smk.constraint("c").expr(
+        smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity
+    )
 
     return smk.model(objective=o, constraints=[c], variables=[x], name=name)
 
+
+def pmedian1(N_=10, P=1):
+
+    # N_ - Locations
+    M_ = N_  # Customers
+    # P_ - Facilities
+
+    n = smk.index("n")
+    m = smk.index("m")
+    N = smk.range("N", stop=N_ - 1)  # 0..N_-1
+    M = smk.range("M", stop=M_ - 1)  # 0..M_-1
+
+    d = (
+        smk.parameter("d")
+        .forall(n, In=N)
+        .forall(m, In=M)
+        .value(1.0 + 1.0 / (n + m + 1))
+    )
+
+    x = (
+        smk.variable("x")
+        .index_set(N)
+        .index_set(M)
+        .bounds(0.0, 1.0)
+        .value(0.0)
+        .within(smk.Binary)
+    )
+    y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
+
+    # obj
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+
+    # single_x
+    c1 = (
+        smk.constraint("single_x")
+        .expr(smk.sum(x[n, m]).forall(n, In=N) == 1)
+        .forall(m, In=M)
+    )
+
+    # bound_y
+    c2 = (
+        smk.constraint("bound_y")
+        .expr(x[n, m] - y[n] <= 0)
+        .forall(n, In=N)
+        .forall(m, In=M)
+    )
+
+    # num_facilities
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+
+    return smk.model(
+        objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian1"
+    )
+
+def pmedian2(N_=10, P=1):
+
+    # N_ - Locations
+    M_ = N_  # Customers
+    # P_ - Facilities
+
+    n = smk.index("n")
+    m = smk.index("m")
+    N = smk.range("N", stop=N_ - 1)  # 0..N_-1
+    M = smk.range("M", stop=M_ - 1)  # 0..M_-1
+
+    d = (
+        smk.data("d")
+        .forall(n, In=N)
+        .forall(m, In=M)
+        .value(1.0 + 1.0 / (n + m + 1))
+    )
+
+    x = (
+        smk.variable("x")
+        .index_set(N)
+        .index_set(M)
+        .bounds(0.0, 1.0)
+        .value(0.0)
+        .within(smk.Binary)
+    )
+    y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
+
+    # obj
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+
+    # single_x
+    c1 = (
+        smk.constraint("single_x")
+        .expr(smk.sum(x[n, m]).forall(n, In=N) == 1)
+        .forall(m, In=M)
+    )
+
+    # bound_y
+    c2 = (
+        smk.constraint("bound_y")
+        .expr(x[n, m] - y[n] <= 0)
+        .forall(n, In=N)
+        .forall(m, In=M)
+    )
+
+    # num_facilities
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+
+    return smk.model(
+        objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian2"
+    )

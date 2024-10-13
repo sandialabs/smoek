@@ -9,19 +9,26 @@ if not os.path.exists("models"):
 testnames = ["small1", "small2", "small3", "small4", "small5", "small6",
                 "testing1", "testing2", "testing4", "testing5", "testing6", "testing7",
                 "simple1", "hs060",
-                "knapsack1", "knapsack2", "knapsack3", "knapsack4"
+                "knapsack1", "knapsack2", "knapsack3", "knapsack4",
+                "pmedian1", "pmedian2", # "pmedian1_simple"
 ]
 
-data = {
-    "knapsack3": {"N":"int"},
-    "knapsack4": {"value":"std::map<int,double>", "weight":"std::map<int,double>", "capacity":"double", "ITEMS":"std::set<int>"},
+namemap = {
+    "pmedian1_simple": "pmedian1"
+}
+
+options = {
+    "knapsack3": dict(data={"N":"int"}),
+    "knapsack4": dict(data={"value":"std::map<int,double>", "weight":"std::map<int,double>", "capacity":"double", "ITEMS":"std::set<int>"}),
+    "pmedian1_simple": dict(loops="simple")
 }
 
 for name in testnames:
     print(f"GENERATING models/{name}.cpp")
-    model = getattr(models, name)()
-    data_option = data.get(name,{}) 
-    generate(model=model, outfile=f"models/{name}.cpp", data=data_option)
+    testname = namemap.get(name,name)
+    model = getattr(models, testname)()
+    other_options = options.get(name,{}) 
+    generate(model=model, outfile=f"models/{name}.cpp", model_name=name, **other_options)
 
 with open("models/smoek_generate.cpp",'w') as OUTPUT:
     generate_fn = "\n".join(f'if (testname == "{name}") return generate_{name}(data);' for name in testnames)

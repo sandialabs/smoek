@@ -1,4 +1,5 @@
 import smoek.core.expr.nodes
+from smoek.core.expr.nodes import ExpressionType
 import smoek.core.expr.functions
 from smoek.core.utils import (
     BottomUpDepthFirstExpressionWalker,
@@ -50,7 +51,7 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
         elif isinstance(expr, smoek.core.expr.functions.UnaryExprNode):
             if expr.operation == smoek.core.expr.nodes.ExpressionType.neg:
                 arg = self._stack.pop()
-                if isinstance(arg, smoek.core.expr.nodes.BinaryExprNode) and expr._left.operation in [
+                if isinstance(expr._arg, smoek.core.expr.nodes.BinaryExprNode) and expr._arg.operation in [
                     ExpressionType.add,
                     ExpressionType.sub,
                     ExpressionType.mul,
@@ -89,8 +90,8 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
             for pair in expr._forall._index_set_pairs:
                 index = str(pair.index)
                 index_set = pair.set.name()
-                forall.append(f"coek::Forall({index}).In({index_set})")
-            ret = f"coek::Sum({body}, {'.'.join(forall)})"
+                forall.append(f"Forall({index}).In({index_set})")
+            ret = f"coek::Sum({body}, coek::{'.'.join(forall)})"
             self._stack.append(ret)
 
         # elif isinstance(expr, smoek.core.expr.functions.ProdExprNode):
@@ -113,7 +114,7 @@ def to_coek(expr, decl={}):
     return SmoekToCoekWalker().walk(expr, decl)
 
 
-def generate(*, model=None, data=None, outfile=None, compact=True):
+def generate(*, model=None, data=None, outfile=None, model_name=None, loops="compact"):
     """
     Generate a C++ code that generates a Coek model described by smoek.
 
@@ -151,39 +152,48 @@ def generate(*, model=None, data=None, outfile=None, compact=True):
                     coek_str += f'    {component.name} = coek::SetOf({component.name}_value);\n' + '}'
             components.append(coek_str)
 
-        elif component.type == "parameter":
+        elif component.type == "parameter" or component.type == "data":
+            ctype = component.type
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
-                if len(index_sets) == 1:
-                    coek_str = f'auto {component.name} = coek::parameter("{component.name}", {index_sets[0]})'
+                indices = [i.name() for i in component.object._indices()]
+                if component.object.explicit:
+                    tmp = []
+                    for i,index_set in enumerate(index_sets):
+                        index = indices[i]
+                        tmp.append(f"Forall({index}).In({index_set})")
+                    coek_str = f'auto {component.name} = coek::{ctype}("{component.name}", coek::{".".join(tmp)})'
                 else:
-                    coek_str = f'auto {component.name} = coek::parameter("{component.name}", {"*".join(index_sets)})'
+                    coek_str = f'auto {component.name} = coek::{ctype}("{component.name}", {"*".join(index_sets)})'
             else:
                 coek_str = (
-                    f'auto {component.name} = coek::parameter("{component.name}")'
+                    f'auto {component.name} = coek::{ctype}("{component.name}")'
                 )
-            if component.object.value():
+            if component.object.value() and not isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
                 coek_str += f".value({to_coek(component.object.value())})"
             coek_str += ';'
             if component.name in data:
                 coek_str += f'\nif (data.contains("{component.name}")) ' + '{\n'
                 coek_str += f'    {data[component.name]} {component.name}_value;\n'
                 coek_str += f'    data.get("{component.name}", {component.name}_value);\n'
-                coek_str += f'    {component.name}.value({component.name}_value);\n' + '}'
+                #if component.object.is_indexed():
+                #    coek_str += f'    for (auto& [k,v]: {component.name}_value) {component.name}(k).value(v);\n'
+                #else:
+                coek_str += f'    {component.name}.value({component.name}_value);\n'
+                coek_str += '}'
             components.append(coek_str)
-
-        elif component.type == "data":
-            if component.object.is_indexed():
-                pass
-            else:
-                pass
-            components.append(coek_str)
+            components.append(f"model.add({component.name});")
 
         elif component.type == "variable":
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
-                if len(index_sets) == 1:
-                    coek_str = f'auto {component.name} = coek::variable("{component.name}", {index_sets[0]})'
+                indices = [i.name() for i in component.object._indices()]
+                if component.object.explicit:
+                    tmp = []
+                    for i,index_set in enumerate(index_sets):
+                        index = indices[i]
+                        tmp.append(f"Forall({index}).In({index_set})")
+                    coek_str = f'auto {component.name} = coek::variable("{component.name}", coek::{".".join(tmp)})'
                 else:
                     coek_str = f'auto {component.name} = coek::variable("{component.name}", {"*".join(index_sets)})'
                 if component.object.lower():
@@ -228,14 +238,22 @@ def generate(*, model=None, data=None, outfile=None, compact=True):
             if component.object.is_indexed():
                 index_sets = [iset.name() for iset in component.object._index_sets()]
                 indices = [i.name() for i in component.object._indices()]
-                tmp = []
-                for i,index_set in enumerate(index_sets):
-                    index = indices[i]
-                    tmp.append(f"Forall({index}).In({index_set})")
-                coek_str = f'auto {component.name} = coek::constraint("{component.name}", {".".join(tmp)})'
-                if compact:
+                if loops=="compact":
+                    tmp = []
+                    for i,index_set in enumerate(index_sets):
+                        index = indices[i]
+                        tmp.append(f"Forall({index}).In({index_set})")
+                    coek_str = f'auto {component.name} = coek::constraint("{component.name}", coek::{".".join(tmp)})'
                     coek_str = coek_str + f".expr({to_coek(component.object.expr())})"
                     coek_str = coek_str + ";"
+                elif loops=="simple":
+                    coek_str = f'auto {component.name} = coek::constraint("{component.name}", {"*".join(index_sets)});\n'
+                    indent=""
+                    for i,index_set in enumerate(index_sets):
+                        index = indices[i]
+                        coek_str = coek_str + f"{indent}for(auto {index}: coek::range({index_set}.size()))\n"
+                        indent = indent + "  "
+                    coek_str = coek_str + f"{indent}{component.name}({",".join(indices)}) = {to_coek(component.object.expr())};"
             else:
                 coek_str = f'auto {component.name} = coek::constraint("{component.name}").expr({to_coek(component.object.expr())});'
             components.append(coek_str)
@@ -248,14 +266,16 @@ def generate(*, model=None, data=None, outfile=None, compact=True):
 
     add_components = "\n".join(components)
     data_arg = "" if data is None or len(data) == 0 else "data"
+    if model_name is None:
+        model_name = model.name
     code = f"""
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
-coek::CompactModel generate_{model.name}(const coek::DataPortal& {data_arg})
+coek::CompactModel generate_{model_name}(const coek::DataPortal& {data_arg})
 \u007b
 coek::CompactModel model;
-model.name("{model.name}");
+model.name("{model_name}");
 
 {add_components}
 return model;

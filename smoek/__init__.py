@@ -9,7 +9,7 @@ from smoek.core.expr.functions import sum, prod, sin, cos, tan, log, sqrt
 from smoek.core.model.components import index
 from smoek.core.model.set_components import index_set, set, range, sequence
 from smoek.core.model.data_components import parameter, data
-from smoek.core.model.var_components import variable, binary_variable, Domain
+from smoek.core.model.var_components import variable, binary_variable
 from smoek.core.model.var_components import (
     Reals,
     PositiveReals,
@@ -34,7 +34,7 @@ from smoek.core.utils import (
     valid_order,
 )
 
-from smoek.core.data_apis import load_data_from_json
+from smoek.core.data_apis import load_data_from_json, store_data_to_json, JsonDataPortal
 
 import smoek.io
 import smoek.diff

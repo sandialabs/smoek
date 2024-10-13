@@ -76,7 +76,7 @@ def generate_small3(data):
 
     M.y = pyo.Var(initialize=1.0)
 
-    M.o = pyo.Objective(expr=M.x * M.y)
+    M.o = pyo.Objective(expr=(-(M.x * M.y)))
 
     M.c = pyo.Constraint(expr=pow(M.y, 2) == 4)
 
@@ -132,7 +132,7 @@ def generate_small5(data):
 
     M.v = pyo.Var(bounds=(-1,3), initialize=3.0)
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M._o = pyo.Objective(expr=(pow(M.x, 2) / 2.0) + (pow(M.x, 2) / M.q))
 
@@ -229,10 +229,10 @@ def generate_testing1(data):
 
     M._v3 = pyo.Var(bounds=(None,0))
 
-    M.e = pyo.Var()
+    M.e = pyo.Var(initialize=1.0)
     M.e.fix()
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M._o = pyo.Objective(expr=(3 * M.a) + M.q)
 
@@ -271,11 +271,12 @@ def pow(a,b):
 def generate_testing2(data):
     M = pyo.ConcreteModel("testing2")
 
-    M.a = pyo.Var(bounds=(0,1), initialize=0)
+    M.a = pyo.Var(bounds=(0,2), initialize=0)
 
-    M.b = pyo.Var(bounds=(0,1), initialize=0)
+    M.b = pyo.Var(bounds=(0,1), initialize=1.0)
+    M.b.fix()
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M._o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * ((((-M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin((-pyo.cos(M.a))))
 
@@ -376,9 +377,9 @@ def generate_testing6(data):
 
     M.x = pyo.Var(bounds=(0,1), initialize=0)
 
-    M.p = pyo.Param(mutable=True, initialize=0)
+    M.p = pyo.Param(mutable=True, initialize=0, within=pyo.Reals)
 
-    M.q = pyo.Param(mutable=True, initialize=2)
+    M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
     M.o = pyo.Objective(expr=(((-M.q) * M.x) * M.x) + M.p)
 
@@ -401,15 +402,15 @@ def pow(a,b):
 def generate_testing7(data):
     M = pyo.ConcreteModel("testing7")
 
-    M.A = pyo.RangeSet(0, 10)
+    M.A = pyo.RangeSet(0, 3)
 
-    M.B = pyo.RangeSet(0, 11)
+    M.B = pyo.RangeSet(0, 4)
 
-    M.p = pyo.Param(mutable=True, initialize=0)
+    M.p = pyo.Param(mutable=True, initialize=0, within=pyo.Reals)
 
-    M.pp = pyo.Param(M.A, mutable=True, initialize=0)
+    M.pp = pyo.Param(M.A, mutable=True, initialize=0, within=pyo.Reals)
 
-    M.ppp = pyo.Param(M.A, M.B, mutable=True, initialize=0)
+    M.ppp = pyo.Param(M.A, M.B, mutable=True, initialize=0, within=pyo.Reals)
 
     M.x = pyo.Var()
 
@@ -421,12 +422,12 @@ def generate_testing7(data):
 
     M.c = pyo.Constraint(expr=M.x == 0)
 
-    def cc_(m,i):
-        return m.pp[i] * m.xx[i] == 0
+    def cc_(m_,i):
+        return m_.pp[i] * m_.xx[i] == 0
     M.cc = pyo.Constraint(M.A, rule=cc_)
 
-    def ccc_(m,i,j):
-        return m.ppp[i,j] * m.xxx[i,j] == 0
+    def ccc_(m_,i,j):
+        return m_.ppp[i,j] * m_.xxx[i,j] == 0
     M.ccc = pyo.Constraint(M.A, M.B, rule=ccc_)
 
     return M
@@ -471,7 +472,7 @@ def test_hs060():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -502,7 +503,7 @@ def test_knapsack1():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -514,11 +515,11 @@ def pow(a,b):
 def generate_knapsack1(data):
     M = pyo.ConcreteModel("knapsack1")
 
-    M.INDEX = pyo.RangeSet(0, 10)
+    M.INDEX = pyo.RangeSet(0, 9)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1.0)
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1.0, within=pyo.Reals)
 
-    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
+    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1, within=pyo.Reals)
 
     M.x = pyo.Var(M.INDEX, bounds=(0.0,1.0))
 
@@ -537,7 +538,7 @@ def test_knapsack2():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    # print(generate(model=model))
+    #print(generate(model=model))
     assert (
         generate(model=model)
         == """
@@ -549,13 +550,13 @@ def pow(a,b):
 def generate_knapsack2(data):
     M = pyo.ConcreteModel("knapsack2")
 
-    M.N = pyo.Param(mutable=True, initialize=1)
+    M.N = pyo.Param(mutable=True, initialize=1, within=pyo.Reals)
 
-    M.INDEX = pyo.RangeSet(0, M.N * 10)
+    M.INDEX = pyo.RangeSet(0, (M.N * 10) - 1)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0), within=pyo.Reals)
 
-    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
+    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1, within=pyo.Reals)
 
     M.x = pyo.Var(M.INDEX, bounds=(0.0,1.0))
 
@@ -574,7 +575,7 @@ def test_knapsack3():
     # order = smk.valid_order(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
-    # print(generate(model=model, data={"N": "int"}))
+    #print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"N"})
         == """
@@ -586,13 +587,13 @@ def pow(a,b):
 def generate_knapsack3(data):
     M = pyo.ConcreteModel("knapsack3")
 
-    M.N = pyo.Param(mutable=True, initialize=data["N"])
+    M.N = pyo.Param(mutable=True, initialize=data["N"], within=pyo.Reals)
 
-    M.INDEX = pyo.RangeSet(0, M.N * 10)
+    M.INDEX = pyo.RangeSet(0, (M.N * 10) - 1)
 
-    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0))
+    M.w = pyo.Param(M.INDEX, mutable=True, initialize=1 / ((M.N * 10) / 10.0), within=pyo.Reals)
 
-    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1)
+    M.v = pyo.Param(M.INDEX, mutable=True, initialize=1, within=pyo.Reals)
 
     M.x = pyo.Var(M.INDEX, bounds=(0.0,1.0))
 
@@ -608,7 +609,7 @@ def generate_knapsack3(data):
 def test_knapsack4():
     model = models.knapsack4()
 
-    # print(generate(model=model, data={"N": "int"}))
+    #print(generate(model=model, data={"N": "int"}))
     assert (
         generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
         == """
@@ -622,11 +623,11 @@ def generate_knapsack4(data):
 
     M.ITEMS = pyo.Set(initialize=data["ITEMS"])
 
-    M.value = pyo.Param(M.ITEMS, mutable=True, initialize=data["value"])
+    M.value = pyo.Param(M.ITEMS, mutable=True, initialize=data["value"], within=pyo.Reals)
 
-    M.weight = pyo.Param(M.ITEMS, mutable=True, initialize=data["weight"])
+    M.weight = pyo.Param(M.ITEMS, mutable=True, initialize=data["weight"], within=pyo.Reals)
 
-    M.capacity = pyo.Param(mutable=True, initialize=data["capacity"])
+    M.capacity = pyo.Param(mutable=True, initialize=data["capacity"], within=pyo.Reals)
 
     M.x = pyo.Var(M.ITEMS, bounds=(0.0,1.0))
 
@@ -637,3 +638,91 @@ def generate_knapsack4(data):
     return M
 """
     )
+
+def test_pmedian1():
+    model = models.pmedian1()
+
+    #print(generate(model=model, data={"N": "int"}))
+    assert (
+        generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_pmedian1(data):
+    M = pyo.ConcreteModel("pmedian1")
+
+    M.N = pyo.RangeSet(0, 9)
+
+    M.M = pyo.RangeSet(0, 9)
+
+    def d_(m_,n,m):
+        return 1.0 + (1.0 / ((n + m) + 1))
+    M.d = pyo.Param(M.N, M.M, mutable=True, initialize=d_, within=pyo.Reals)
+
+    M.x = pyo.Var(M.N, M.M, bounds=(0.0,1.0), initialize=0.0)
+
+    M.y = pyo.Var(M.N, bounds=(0.0,1.0), initialize=0.0)
+
+    M._o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
+
+    def single_x_(m_,m):
+        return sum(m_.x[n,m] for n in m_.N) == 1
+    M.single_x = pyo.Constraint(M.M, rule=single_x_)
+
+    def bound_y_(m_,n,m):
+        return m_.x[n,m] - m_.y[n] <= 0
+    M.bound_y = pyo.Constraint(M.N, M.M, rule=bound_y_)
+
+    M.num_facilities = pyo.Constraint(expr=sum(M.y[n] for n in M.N) == 1)
+
+    return M
+"""
+    )
+
+def test_pmedian2():
+    model = models.pmedian2()
+    data={"N": "int"}
+
+    #print(generate(model=model, data=data))
+    assert (
+        generate(model=model, data=data)
+        == """
+import pyomo.environ as pyo
+
+def pow(a,b):
+    return a**b
+
+def generate_pmedian2(data):
+    M = pyo.ConcreteModel("pmedian2")
+
+    M.N = pyo.RangeSet(0, 9)
+
+    M.M = pyo.RangeSet(0, 9)
+
+    def d_(m_,n,m):
+        return 1.0 + (1.0 / ((n + m) + 1))
+    M.d = pyo.Param(M.N, M.M, mutable=False, initialize=d_, within=pyo.Reals)
+
+    M.x = pyo.Var(M.N, M.M, bounds=(0.0,1.0), initialize=0.0)
+
+    M.y = pyo.Var(M.N, bounds=(0.0,1.0), initialize=0.0)
+
+    M._o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
+
+    def single_x_(m_,m):
+        return sum(m_.x[n,m] for n in m_.N) == 1
+    M.single_x = pyo.Constraint(M.M, rule=single_x_)
+
+    def bound_y_(m_,n,m):
+        return m_.x[n,m] - m_.y[n] <= 0
+    M.bound_y = pyo.Constraint(M.N, M.M, rule=bound_y_)
+
+    M.num_facilities = pyo.Constraint(expr=sum(M.y[n] for n in M.N) == 1)
+
+    return M
+"""
+    )
+
