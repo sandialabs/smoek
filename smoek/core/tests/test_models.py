@@ -1172,7 +1172,7 @@ def test_pmedian1():
     model = models.pmedian1()
 
     repn = smk.model_to_dict(model)
-    #print(repn)
+    # print(repn)
     assert repn == {
         "constraints": {
             "single_x": ["==", ["sum", "forall n in N", "x[n, m]"], "1"],
@@ -1209,11 +1209,12 @@ def test_pmedian1():
         "num_facilities",
     ]
 
+
 def test_pmedian2():
     model = models.pmedian2()
 
     repn = smk.model_to_dict(model)
-    #print(repn)
+    # print(repn)
     assert repn == {
         "constraints": {
             "single_x": ["==", ["sum", "forall n in N", "x[n, m]"], "1"],

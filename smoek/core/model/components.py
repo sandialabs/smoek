@@ -63,7 +63,9 @@ class ModelingComponent(NamedComponent):
     def __init__(self, name=None, doc=None):
         super().__init__(name, doc)
         self._forall = None
-        self._explicit = True       # If True, then all indices have been provided for all index sets
+        self._explicit = (
+            True  # If True, then all indices have been provided for all index sets
+        )
 
     def is_component(self):
         return True

@@ -24,7 +24,7 @@ from smoek.core.model.var_components import (
 
 from smoek.core.model.constr_components import constraint
 from smoek.core.model.expressions import objective, maximize, minimize
-from smoek.core.model.model_components import model
+from smoek.core.model.model_components import model, Model
 
 from smoek.core.utils import (
     expr_to_list,

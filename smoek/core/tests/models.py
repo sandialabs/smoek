@@ -4,13 +4,26 @@
 import smoek as smk
 
 
-def small1():
+def Xsmall1():
     x = smk.variable("x").value(1.0)
     y = smk.variable("y").value(1.0)
 
     o = smk.objective("o").expr(x**2)
     c = smk.constraint("c").expr(y**2 == 4)
     return smk.model(objective=o, constraints=[c], variables=[x, y], name="small1")
+
+
+def small1():
+    @smk.model(name="small1")
+    class small1:
+
+        x = smk.variable("x").value(1.0)
+        y = smk.variable("y").value(1.0)
+
+        o = smk.objective("o").expr(x**2)
+        c = smk.constraint("c").expr(y**2 == 4)
+
+    return small1()
 
 
 def small2():
@@ -377,6 +390,7 @@ def pmedian1(N_=10, P=1):
         objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian1"
     )
 
+
 def pmedian2(N_=10, P=1):
 
     # N_ - Locations
@@ -388,12 +402,7 @@ def pmedian2(N_=10, P=1):
     N = smk.range("N", stop=N_ - 1)  # 0..N_-1
     M = smk.range("M", stop=M_ - 1)  # 0..M_-1
 
-    d = (
-        smk.data("d")
-        .forall(n, In=N)
-        .forall(m, In=M)
-        .value(1.0 + 1.0 / (n + m + 1))
-    )
+    d = smk.data("d").forall(n, In=N).forall(m, In=M).value(1.0 + 1.0 / (n + m + 1))
 
     x = (
         smk.variable("x")
