@@ -778,7 +778,7 @@ auto value = coek::parameter("value", ITEMS);
 if (data.contains("value")) {
     std::map<int,double> value_value;
     data.get("value", value_value);
-    for (auto& [k,v]: value_value) value(k).value(v);
+    value.value(value_value);
 }
 model.add(value);
 
@@ -786,7 +786,7 @@ auto weight = coek::parameter("weight", ITEMS);
 if (data.contains("weight")) {
     std::map<int,double> weight_value;
     data.get("weight", weight_value);
-    for (auto& [k,v]: weight_value) weight(k).value(v);
+    weight.value(weight_value);
 }
 model.add(weight);
 
@@ -946,7 +946,7 @@ auto d = coek::data("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0
 if (data.contains("d")) {
     std::map<std::tuple<int,int>,double> d_value;
     data.get("d", d_value);
-    for (auto& [k,v]: d_value) d(k).value(v);
+    d.value(d_value);
 }
 model.add(d);
 
@@ -1001,7 +1001,7 @@ auto d = coek::data("d", coek::Forall(n).In(N).Forall(m).In(M)).value(1.0 + (1.0
 if (data.contains("d")) {
     std::map<std::tuple<int,int>,double> d_value;
     data.get("d", d_value);
-    for (auto& [k,v]: d_value) d(k).value(v);
+    d.value(d_value);
 }
 model.add(d);
 
