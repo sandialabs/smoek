@@ -42,30 +42,32 @@ def knapsack3():
 
 def knapsack4(name="knapsack4"):
 
-    ITEMS = smk.set("ITEMS")
+    @smk.model
+    class knapsack4:
 
-    i = smk.index("i")
+        ITEMS = smk.set("ITEMS")
 
-    value = smk.parameter("value").index_set(ITEMS)
+        i = smk.index("i")
 
-    weight = smk.parameter("weight").index_set(ITEMS)
+        value = smk.parameter("value").index_set(ITEMS)
 
-    capacity = smk.parameter("capacity")
+        weight = smk.parameter("weight").index_set(ITEMS)
 
-    x = smk.variable("x").index_set(ITEMS).bounds(0.0, 1.0)
+        capacity = smk.parameter("capacity")
 
-    o = (
-        smk.objective()
-        .name("o")
-        .expr(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
-        .maximize()
-    )
+        x = smk.variable("x").index_set(ITEMS).bounds(0.0, 1.0)
 
-    c = smk.constraint("c").expr(
-        smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity
-    )
+        o = (
+            smk.objective()
+            .name("o")
+            .maximize(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
+        )
 
-    return smk.model(objective=o, constraints=[c], variables=[x], name=name)
+        c = smk.constraint("c").expr(
+            smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity
+        )
+
+    return knapsack4()
 
 
 def pmedian1(N_=10, P=1, data=None):
