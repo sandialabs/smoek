@@ -41,8 +41,8 @@ def test_knapsack():
         l
         == """\\begin{subequations}
 \\begin{align}
-& \\text{min} && (\\sum_{\\forall_{(i) \\in A}} ({v_{i}} \\cdot {x_{i}})) &&& \\\\
-& \\text{s.t.} &&{\\sum_{\\forall_{(i) \\in A}} ({w_{i}} \\cdot {x_{i}})} \\leq {\\bar w}, &&& 
+& \\text{min} && \\sum_{\\forall_{i \\in A}} ({v_{i}} \\cdot {x_{i}}) &&& \\\\
+& \\text{s.t.} &&{\\sum_{\\forall_{i \\in A}} ({w_{i}} \\cdot {x_{i}})} \\leq {\\bar w}, &&& 
 \\\\
 &&&x \\in \\{0, 1\\}^{|A|}&&&
 \\end{align}
