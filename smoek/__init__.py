@@ -35,6 +35,7 @@ from smoek.core.utils import (
 )
 
 from smoek.core.data_apis import load_data_from_json, store_data_to_json, JsonDataPortal
+DataPortal = JsonDataPortal
 
 import smoek.io
 import smoek.diff
