@@ -19,6 +19,8 @@ tests = {"pmedian1": pmedian1, 'pmedian3':pmedian3}
 testdata = {'pmedian1':{}, 'pmedian3':dict(d="std::map<std::tuple<int,int>,double>")}
 ntrials = 1
 
+if len(sys.argv) > 1:
+    codes = [sys.argv[1]]
 for code in codes:
     for test in tests:
         for size in sizes:

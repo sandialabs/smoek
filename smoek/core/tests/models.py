@@ -14,7 +14,7 @@ def Xsmall1():
 
 
 def small1():
-    @smk.model()
+    @smk.model
     class small1:
 
         x = smk.variable("x").value(1.0)
@@ -311,7 +311,7 @@ def knapsack3():
 
 def knapsack4():
 
-    @smk.model()
+    @smk.model
     class knapsack4:
         ITEMS = smk.set("ITEMS")
 
@@ -340,7 +340,7 @@ def knapsack4():
 
 def pmedian1(N_=10, P=1):
 
-    @smk.model()
+    @smk.model
     class pmedian1:
         # N_ - Locations
         M_ = N_  # Customers
@@ -402,7 +402,7 @@ def pmedian1(N_=10, P=1):
 
 def pmedian2(N_=10, P=1):
 
-    @smk.model()
+    @smk.model
     class pmedian2:
         # N_ - Locations
         M_ = N_  # Customers
@@ -465,7 +465,7 @@ def sp1():
     @smk.stochastic_model
     class sp1:
 
-        @smk.model()
+        @smk.model
         class stage1:
             x1 = smk.variable().lower(40)
             x2 = smk.variable().lower(40)
@@ -473,7 +473,7 @@ def sp1():
             o = smk.objective().minimize(100 * x1 + 150 * x2)
             c = smk.constraint().expr(x1 + x2 <= 120)
 
-        @smk.model()
+        @smk.model
         class stage2:
 
             q1 = smk.uncertain()

@@ -54,9 +54,11 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
 
     @staticmethod
     def forall_object_to_latex_string(forall_obj):
-        indices_string = (
-            "(" + ",".join([i.to_string() for i in forall_obj.indices_list()]) + ")"
-        )
+        indices = [i.to_string() for i in forall_obj.indices_list()]
+        if len(indices) == 1:
+            indices_string = indices[0]
+        else:
+            indices_string = "(" + ",".join(indices) + ")"
         set_strings = " \\times ".join([s.name() for s in forall_obj.sets_list()])
         return rf"\forall_{{{indices_string} \in {set_strings}}}"
 
@@ -103,7 +105,7 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             self._stack.append(ret)
         elif isinstance(expr, Objective):
             body = self._stack.pop()
-            ret = rf"({body})"
+            ret = rf"{body}"
             self._stack.append(ret)
         else:
             raise NotImplementedError(

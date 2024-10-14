@@ -16,6 +16,8 @@ exp = ['pyomo', 'poek1', 'poek2']
 tests = {"pmedian1": pmedian1, 'pmedian3':pmedian3}
 ntrials = 1
 
+if len(sys.argv) > 1:
+    exp = [sys.argv[1]]
 for pymodel in exp:
     for test in tests:
         for size in sizes:
