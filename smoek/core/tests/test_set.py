@@ -22,7 +22,7 @@ def test_index_set_function():
 
     i = index("i")
     I = index_set("I")
-    f = forall(i, In=I)
+    f = forall(i in I)
     II = index_set("II", forall=f)
     assert type(II) == Set
     assert II.is_indexed()
@@ -57,7 +57,7 @@ def test_scalar_set():
 def test_indexed_set():
     i = index("i")
     I = index_set("I")
-    f = forall(i, In=I)
+    f = forall(i in I)
     s = index_set(forall=f)
     assert s._forall is f
 
@@ -83,7 +83,7 @@ def test_multi_indexed_set():
     I = index_set("I")
     j = index("j")
     J = index_set("J")
-    s = index_set().forall(i, In=I).forall(j, In=J)
+    s = index_set().forall(i in I).forall(j in J)
     sij = s[i, j]
     assert type(sij) is ComponentIndicesNode
     assert sij._component is s

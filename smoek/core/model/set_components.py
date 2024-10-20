@@ -1,4 +1,5 @@
 from smoek.core.expr.nodes import ExprLeaf, _wrap_expression_if_needed
+from smoek.core.expr.forall import ForAllObject, IndexSetPair
 from .components import ModelingComponent, NamedComponent, index
 
 
@@ -6,15 +7,15 @@ from .components import ModelingComponent, NamedComponent, index
 # i.e.
 # i = index()
 # I = set()
-# s = set(i).forall(i, in = I)
+# s = set(i).forall(i in I)
 #
 # WEH: We would want to do this for other indexed components as well, right?
 #
-# v = variable(i,j).forall(i, In=I).forall(j, In=J)
+# v = variable(i,j).forall(i in I).forall(j in J)
 #
 #   vs
 #
-# v = variable.forall(i, In=I).forall(j, In=J)
+# v = variable.forall(i in I).forall(j in J)
 
 
 class Set(ModelingComponent):
@@ -31,6 +32,10 @@ class Set(ModelingComponent):
     @property
     def size(self):
         return self._size
+
+    def __contains__(self, index):
+        ForAllObject._latest.append(IndexSetPair(index, self))
+        return True
 
 
 def set(name=None, *, forall=None, doc=None):

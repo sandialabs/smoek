@@ -80,15 +80,15 @@ class ModelingComponent(NamedComponent):
     def explicit(self):
         return self._forall is not None and self._explicit
 
-    def forall(self, index, In, explicit=True):
+    def forall(self, iset_pair, explicit=True):
         self._explicit = self._explicit and explicit
         if self._forall is None:
             self._forall = ForAllObject()
-        self._forall.forall(index, In=In)
+        self._forall.forall(iset_pair)
         return self
 
-    def index_set(self, In):
-        return self.forall(index(f"i{len(self._index_sets())}"), In=In, explicit=False)
+    def index_set(self, iset):
+        return self.forall(index(f"i{len(self._index_sets())}") in iset, explicit=False)
 
     def suchthat(self, expr):
         assert self._forall is not None

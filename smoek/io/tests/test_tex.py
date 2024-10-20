@@ -8,24 +8,24 @@ currdir = str(Path(__file__).parent.absolute())
 def test_knapsack():
     i = smk.index("i")
     A = smk.index_set("A", doc=r"set of all items")
-    v = smk.parameter("v").forall(i, In=A).doc(r"value of item $i$")
-    w = smk.parameter("w").forall(i, In=A).doc(r"weight of item $i$")
+    v = smk.parameter("v").forall(i in A).doc(r"value of item $i$")
+    w = smk.parameter("w").forall(i in A).doc(r"weight of item $i$")
     w_max = smk.parameter(r"\bar w").doc(r"maximum weight")
     x = (
         smk.binary_variable("x")
-        .forall(i, In=A)
+        .forall(i in A)
         .doc("indicator variable for item selection")
     )
 
     c = (
         smk.constraint("max_w_con")
-        .expr(smk.sum(w[i] * x[i]).forall(i, In=A) <= w_max)
+        .expr(smk.sum(w[i] * x[i]).forall(i in A) <= w_max)
         .doc(r"weight limit")
     )
 
     o = (
         smk.objective("obj")
-        .expr(smk.sum(v[i] * x[i]).forall(i, In=A))
+        .expr(smk.sum(v[i] * x[i]).forall(i in A))
         .doc("maximize value objective")
     )
 

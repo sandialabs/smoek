@@ -20,6 +20,7 @@ def _smoek_model(cls, name=None, doc=""):
                 name=cls.__name__ if name is None else name,
                 doc=doc,
             )
+
     return SmoekModel
 
 

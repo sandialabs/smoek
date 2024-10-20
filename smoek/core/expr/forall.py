@@ -22,12 +22,19 @@ class IndexSetPair(object):
 
 
 class ForAllObject(object):
+
+    _latest = []
+
     def __init__(self):
         self._index_set_pairs = list()
         self._filter_expressions = list()
 
     def forall(self, index, In=None):
-        self._index_set_pairs.append(IndexSetPair(index, In))
+        if index is True:
+            assert len(ForAllObject._latest) > 0
+            self._index_set_pairs.append(ForAllObject._latest.pop())
+        else:
+            self._index_set_pairs.append(IndexSetPair(index, In))
         return self
 
     def suchthat(self, expr):
