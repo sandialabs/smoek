@@ -19,7 +19,7 @@ def test_mul_errors():
 
     i = index("i")
     I = index_set("I")
-    v = variable(forall=forall(i, In=I))
+    v = variable(forall=forall(i in I))
     s = variable()
     with pytest.raises(TypeError) as excinfo:
         foo = v * s

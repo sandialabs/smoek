@@ -12,7 +12,7 @@ def test_variable_function():
 
     i = index("i")
     I = index_set("I")
-    f = forall(i, In=I)
+    f = forall(i in I)
 
     v = variable(forall=f)
     assert type(v) is IndexedVariable
@@ -41,7 +41,7 @@ def test_scalar_var_in_expression():
 def test_indexed_var():
     i = index("i")
     I = index_set("I")
-    f = forall(i, In=I)
+    f = forall(i in I)
 
     # test name
     v = variable(forall=f)

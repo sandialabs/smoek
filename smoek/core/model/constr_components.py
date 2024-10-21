@@ -13,9 +13,9 @@ class Constraint(ModelingComponent):
         self._expr = expr
         return self
 
-    def forall(self, iset_pair):
+    def forall(self, *iset_pairs):
         # TODO: assert index are present in ComponentIndicesNode in self._expr
-        return super().forall(iset_pair)
+        return super().forall(*iset_pairs)
 
     def to_string(self):
         from smoek.core.utils import expr_to_string

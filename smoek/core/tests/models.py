@@ -199,12 +199,10 @@ def testing7():
     c = smk.constraint("c").expr(x == 0)
     cc = smk.constraint("cc").expr(pp[i] * xx[i] == 0).forall(i in A)
     ccc = (
-        smk.constraint("ccc")
-        .expr(ppp[i, j] * xxx[i, j] == 0)
+        smk.constraint("ccc").expr(ppp[i, j] * xxx[i, j] == 0)
         # .forall((i,j) in A*B)        # TODO
         # .forall(i, j in A*B)         # TODO?
-        .forall(i in A)
-        .forall(j in B)
+        .forall(i in A, j in B)
     )
 
     return smk.model(
@@ -351,12 +349,7 @@ def pmedian1(N_=10, P=1):
         N = smk.range("N", stop=N_ - 1)  # 0..N_-1
         M = smk.range("M", stop=M_ - 1)  # 0..M_-1
 
-        d = (
-            smk.parameter("d")
-            .forall(n in N)
-            .forall(m in M)
-            .value(1.0 + 1.0 / (n + m + 1))
-        )
+        d = smk.parameter("d").forall(n in N, m in M).value(1.0 + 1.0 / (n + m + 1))
 
         x = (
             smk.variable("x")
@@ -375,9 +368,7 @@ def pmedian1(N_=10, P=1):
         )
 
         # obj
-        o = smk.objective().minimize(
-            smk.sum(d[n, m] * x[n, m]).forall(n in N).forall(m in M)
-        )
+        o = smk.objective().minimize(smk.sum(d[n, m] * x[n, m]).forall(n in N, m in M))
 
         # single_x
         c1 = (
@@ -387,12 +378,7 @@ def pmedian1(N_=10, P=1):
         )
 
         # bound_y
-        c2 = (
-            smk.constraint("bound_y")
-            .expr(x[n, m] - y[n] <= 0)
-            .forall(n in N)
-            .forall(m in M)
-        )
+        c2 = smk.constraint("bound_y").expr(x[n, m] - y[n] <= 0).forall(n in N, m in M)
 
         # num_facilities
         c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n in N) == P)
@@ -413,7 +399,7 @@ def pmedian2(N_=10, P=1):
         N = smk.range("N", stop=N_ - 1)  # 0..N_-1
         M = smk.range("M", stop=M_ - 1)  # 0..M_-1
 
-        d = smk.data("d").forall(n in N).forall(m in M).value(1.0 + 1.0 / (n + m + 1))
+        d = smk.data("d").forall(n in N, m in M).value(1.0 + 1.0 / (n + m + 1))
 
         x = (
             smk.variable("x")
@@ -432,9 +418,7 @@ def pmedian2(N_=10, P=1):
         )
 
         # obj
-        o = smk.objective().minimize(
-            smk.sum(d[n, m] * x[n, m]).forall(n in N).forall(m in M)
-        )
+        o = smk.objective().minimize(smk.sum(d[n, m] * x[n, m]).forall(n in N, m in M))
 
         # single_x
         c1 = (
@@ -444,12 +428,7 @@ def pmedian2(N_=10, P=1):
         )
 
         # bound_y
-        c2 = (
-            smk.constraint("bound_y")
-            .expr(x[n, m] - y[n] <= 0)
-            .forall(n in N)
-            .forall(m in M)
-        )
+        c2 = smk.constraint("bound_y").expr(x[n, m] - y[n] <= 0).forall(n in N, m in M)
 
         # num_facilities
         c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n in N) == P)

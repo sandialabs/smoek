@@ -29,12 +29,24 @@ class ForAllObject(object):
         self._index_set_pairs = list()
         self._filter_expressions = list()
 
-    def forall(self, index, In=None):
-        if index is True:
-            assert len(ForAllObject._latest) > 0
-            self._index_set_pairs.append(ForAllObject._latest.pop())
+    def forall(self, *index):
+        assert len(index) > 0
+        if index[0] is True:
+            assert len(ForAllObject._latest) == len(index), f"Expected only {len(index)} items in _latest but saw {len(ForAllObject._latest)}"
+            index = ForAllObject._latest
+            ForAllObject._latest = []
+
+        assert (
+            len(ForAllObject._latest) == 0
+        ), f"Latest len: {len(ForAllObject._latest)},  Index Type: {type(index[0])}"
+        if type(index) is list:
+            for iset_pair in index:
+                self._index_set_pairs.append(iset_pair)
+        elif isinstance(index, IndexSetPair):
+            self._index_set_pairs.append(index)
         else:
-            self._index_set_pairs.append(IndexSetPair(index, In))
+            assert False, "Unexpected type for forall(): {type(index)}"
+            # self._index_set_pairs.append(IndexSetPair(index, In))
         return self
 
     def suchthat(self, expr):
@@ -57,5 +69,5 @@ class ForAllObject(object):
         return ret
 
 
-def forall(index, In=None):
-    return ForAllObject().forall(index, In=In)
+def forall(*index):
+    return ForAllObject().forall(*index)

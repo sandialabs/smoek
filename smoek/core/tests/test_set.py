@@ -83,7 +83,7 @@ def test_multi_indexed_set():
     I = index_set("I")
     j = index("j")
     J = index_set("J")
-    s = index_set().forall(i in I).forall(j in J)
+    s = index_set().forall(i in I, j in J)
     sij = s[i, j]
     assert type(sij) is ComponentIndicesNode
     assert sij._component is s

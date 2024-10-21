@@ -8,10 +8,10 @@ class SumExprNode(ExprNode):
         self._expr = expr
         self._forall = None
 
-    def forall(self, index, In=None):
+    def forall(self, *index):
         if self._forall is None:
             self._forall = ForAllObject()
-        self._forall.forall(index, In=In)
+        self._forall.forall(*index)
         return self
 
 
@@ -25,10 +25,10 @@ class ProdExprNode(ExprNode):
         self._expr = expr
         self._forall = None
 
-    def forall(self, index, In=None):
+    def forall(self, *index):
         if self._forall is None:
             self._forall = ForAllObject()
-        self._forall.forall(index, In=In)
+        self._forall.forall(*index)
         return self
 
 

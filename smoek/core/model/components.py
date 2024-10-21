@@ -80,11 +80,11 @@ class ModelingComponent(NamedComponent):
     def explicit(self):
         return self._forall is not None and self._explicit
 
-    def forall(self, iset_pair, explicit=True):
+    def forall(self, *iset_pairs, explicit=True):
         self._explicit = self._explicit and explicit
         if self._forall is None:
             self._forall = ForAllObject()
-        self._forall.forall(iset_pair)
+        self._forall.forall(*iset_pairs)
         return self
 
     def index_set(self, iset):

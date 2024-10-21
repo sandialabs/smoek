@@ -11,11 +11,11 @@ from .components import ModelingComponent, NamedComponent, index
 #
 # WEH: We would want to do this for other indexed components as well, right?
 #
-# v = variable(i,j).forall(i in I).forall(j in J)
+# v = variable(i,j).forall(i in I, j in J)
 #
 #   vs
 #
-# v = variable.forall(i in I).forall(j in J)
+# v = variable.forall(i in I, j in J)
 
 
 class Set(ModelingComponent):
