@@ -158,44 +158,44 @@ model.add(v);
 auto q = coek::parameter("q").value(2);
 model.add(q);
 
-auto _o = coek::objective("_o").expr((coek::pow(x, 2) / 2.0) + (coek::pow(x, 2) / q));
-model.add(_o);
+auto o = coek::objective("o").expr((coek::pow(x, 2) / 2.0) + (coek::pow(x, 2) / q));
+model.add(o);
 
-auto _c0 = coek::constraint("_c0").expr((0.5 * v) * (x - y) == 2);
-model.add(_c0);
+auto c_0_ = coek::constraint("c_0_").expr((0.5 * v) * (x - y) == 2);
+model.add(c_0_);
 
-auto _c1 = coek::constraint("_c1").expr((v / 2.0) * (x - y) == 2);
-model.add(_c1);
+auto c_1_ = coek::constraint("c_1_").expr((v / 2.0) * (x - y) == 2);
+model.add(c_1_);
 
-auto _c2 = coek::constraint("_c2").expr((v * (x - y)) / 2.0 == 2);
-model.add(_c2);
+auto c_2_ = coek::constraint("c_2_").expr((v * (x - y)) / 2.0 == 2);
+model.add(c_2_);
 
-auto _c3 = coek::constraint("_c3").expr(v * ((x / 2.0) - (y / 2.0)) == 2);
-model.add(_c3);
+auto c_3_ = coek::constraint("c_3_").expr(v * ((x / 2.0) - (y / 2.0)) == 2);
+model.add(c_3_);
 
-auto _c4 = coek::constraint("_c4").expr((v * (x - y)) * 0.5 == 2);
-model.add(_c4);
+auto c_4_ = coek::constraint("c_4_").expr((v * (x - y)) * 0.5 == 2);
+model.add(c_4_);
 
-auto _c5 = coek::constraint("_c5").expr(v * (x - y) == 4.0);
-model.add(_c5);
+auto c_5_ = coek::constraint("c_5_").expr(v * (x - y) == 4.0);
+model.add(c_5_);
 
-auto _c6 = coek::constraint("_c6").expr(((1 / q) * v) * (x - y) == 2);
-model.add(_c6);
+auto c_6_ = coek::constraint("c_6_").expr(((1 / q) * v) * (x - y) == 2);
+model.add(c_6_);
 
-auto _c7 = coek::constraint("_c7").expr((v / q) * (x - y) == 2);
-model.add(_c7);
+auto c_7_ = coek::constraint("c_7_").expr((v / q) * (x - y) == 2);
+model.add(c_7_);
 
-auto _c8 = coek::constraint("_c8").expr((v * (x - y)) / q == 2);
-model.add(_c8);
+auto c_8_ = coek::constraint("c_8_").expr((v * (x - y)) / q == 2);
+model.add(c_8_);
 
-auto _c9 = coek::constraint("_c9").expr(v * ((x / 2.0) - (y / q)) == 2);
-model.add(_c9);
+auto c_9_ = coek::constraint("c_9_").expr(v * ((x / 2.0) - (y / q)) == 2);
+model.add(c_9_);
 
-auto _c10 = coek::constraint("_c10").expr((v * (x - y)) * (1 / q) == 2);
-model.add(_c10);
+auto c_10_ = coek::constraint("c_10_").expr((v * (x - y)) * (1 / q) == 2);
+model.add(c_10_);
 
-auto _c11 = coek::constraint("_c11").expr(v * (x - y) == 2 * q);
-model.add(_c11);
+auto c_11_ = coek::constraint("c_11_").expr(v * (x - y) == 2 * q);
+model.add(c_11_);
 
 return model;
 }
@@ -217,38 +217,38 @@ coek::CompactModel generate_small6(const coek::DataPortal& )
 coek::CompactModel model;
 model.name("small6");
 
-auto _v0 = coek::variable("_v0").lower(-1).upper(1).value(1);
-model.add(_v0);
+auto x = coek::variable("x").lower(-1).upper(1).value(1);
+model.add(x);
 
-auto _v1 = coek::variable("_v1").lower(-1).upper(2).value(2);
-model.add(_v1);
+auto y = coek::variable("y").lower(-1).upper(2).value(2);
+model.add(y);
 
-auto _v2 = coek::variable("_v2").lower(-1).upper(3).value(3);
-model.add(_v2);
+auto v = coek::variable("v").lower(-1).upper(3).value(3);
+model.add(v);
 
-auto _v3 = coek::variable("_v3").value(2);
-model.add(_v3);
+auto p = coek::variable("p").value(2);
+model.add(p);
 
-auto _o = coek::objective("_o").expr(_v0);
-model.add(_o);
+auto o = coek::objective("o").expr(x);
+model.add(o);
 
-auto _c0 = coek::constraint("_c0").expr(((1 / _v3) * _v2) * (_v0 - _v1) == 2);
-model.add(_c0);
+auto c_0_ = coek::constraint("c_0_").expr(((1 / p) * v) * (x - y) == 2);
+model.add(c_0_);
 
-auto _c1 = coek::constraint("_c1").expr((_v2 / _v3) * (_v0 - _v1) == 2);
-model.add(_c1);
+auto c_1_ = coek::constraint("c_1_").expr((v / p) * (x - y) == 2);
+model.add(c_1_);
 
-auto _c2 = coek::constraint("_c2").expr((_v2 * (_v0 - _v1)) / _v3 == 2);
-model.add(_c2);
+auto c_2_ = coek::constraint("c_2_").expr((v * (x - y)) / p == 2);
+model.add(c_2_);
 
-auto _c3 = coek::constraint("_c3").expr(_v2 * ((_v0 / _v3) - (_v1 / _v3)) == 2);
-model.add(_c3);
+auto c_3_ = coek::constraint("c_3_").expr(v * ((x / p) - (y / p)) == 2);
+model.add(c_3_);
 
-auto _c4 = coek::constraint("_c4").expr((_v2 * (_v0 - _v1)) * (1 / _v3) == 2);
-model.add(_c4);
+auto c_4_ = coek::constraint("c_4_").expr((v * (x - y)) * (1 / p) == 2);
+model.add(c_4_);
 
-auto _c5 = coek::constraint("_c5").expr(_v2 * (_v0 - _v1) == 2 * _v3);
-model.add(_c5);
+auto c_5_ = coek::constraint("c_5_").expr(v * (x - y) == 2 * p);
+model.add(c_5_);
 
 return model;
 }
@@ -276,11 +276,11 @@ model.add(a);
 auto b = coek::variable("b").lower(0).upper(1).value(0);
 model.add(b);
 
-auto _v2 = coek::variable("_v2").lower(0);
-model.add(_v2);
+auto c = coek::variable("c").lower(0);
+model.add(c);
 
-auto _v3 = coek::variable("_v3").upper(0);
-model.add(_v3);
+auto d = coek::variable("d").upper(0);
+model.add(d);
 
 auto e = coek::variable("e").value(1.0);
 model.add(e);
@@ -288,32 +288,32 @@ model.add(e);
 auto q = coek::parameter("q").value(2);
 model.add(q);
 
-auto _o = coek::objective("_o").expr((3 * a) + q);
-model.add(_o);
+auto o = coek::objective("o").expr((3 * a) + q);
+model.add(o);
 
-auto _c0 = coek::constraint("_c0").expr(((3 * b) + q) - a <= 0);
-model.add(_c0);
+auto C_0_ = coek::constraint("C_0_").expr(((3 * b) + q) - a <= 0);
+model.add(C_0_);
 
-auto _c1 = coek::constraint("_c1").expr((3 * b) + b == 0);
-model.add(_c1);
+auto C_1_ = coek::constraint("C_1_").expr((3 * b) + b == 0);
+model.add(C_1_);
 
-auto _c2 = coek::constraint("_c2").expr(((((3 * b) * a) + q) + (b * b)) + (b * b) == 0);
-model.add(_c2);
+auto C_2_ = coek::constraint("C_2_").expr(((((3 * b) * a) + q) + (b * b)) + (b * b) == 0);
+model.add(C_2_);
 
-auto _c3 = coek::constraint("_c3").expr(((((3 * b) * b) + q) - (a * b)) - (a * a) <= 0);
-model.add(_c3);
+auto C_3_ = coek::constraint("C_3_").expr(((((3 * b) * b) + q) - (a * b)) - (a * a) <= 0);
+model.add(C_3_);
 
-auto _c4 = coek::constraint("_c4").expr(coek::inequality(-7, ((((3 * b) * b) + q) - (a * b)) - (a * a), 7));
-model.add(_c4);
+auto C_4_ = coek::constraint("C_4_").expr(coek::inequality(-7, ((((3 * b) * b) + q) - (a * b)) - (a * a), 7));
+model.add(C_4_);
 
-auto _c5 = coek::constraint("_c5").expr(_v2 + _v3 == 0);
-model.add(_c5);
+auto C_5_ = coek::constraint("C_5_").expr(c + d == 0);
+model.add(C_5_);
 
-auto _c6 = coek::constraint("_c6").expr(e + (3 * _v3) == 1);
-model.add(_c6);
+auto C_6_ = coek::constraint("C_6_").expr(e + (3 * d) == 1);
+model.add(C_6_);
 
-auto _c7 = coek::constraint("_c7").expr(coek::inequality(7, ((3 * b) + q) - a, 7));
-model.add(_c7);
+auto C_7_ = coek::constraint("C_7_").expr(coek::inequality(7, ((3 * b) + q) - a, 7));
+model.add(C_7_);
 
 return model;
 }
@@ -344,8 +344,8 @@ model.add(b);
 auto q = coek::parameter("q").value(2);
 model.add(q);
 
-auto _o = coek::objective("_o").expr((((3 * a) + q) + (((a * a) * a) * ((((-a) + b) + (3 * a)) + (3 * b)))) + coek::sin((-coek::cos(a))));
-model.add(_o);
+auto o = coek::objective("o").expr((((3 * a) + q) + (((a * a) * a) * ((((-a) + b) + (3 * a)) + (3 * b)))) + coek::sin((-coek::cos(a))));
+model.add(o);
 
 return model;
 }
@@ -394,11 +394,11 @@ model.add(a);
 auto b = coek::variable("b").lower(0).upper(1).value(0);
 model.add(b);
 
-auto _o = coek::objective("_o").expr((a + coek::cos(x)) + coek::cos(y));
-model.add(_o);
+auto o = coek::objective("o").expr((a + coek::cos(x)) + coek::cos(y));
+model.add(o);
 
-auto _c0 = coek::constraint("_c0").expr((b + coek::cos(y)) + coek::cos(z) == 1);
-model.add(_c0);
+auto c = coek::constraint("c").expr((b + coek::cos(y)) + coek::cos(z) == 1);
+model.add(c);
 
 return model;
 }
@@ -845,8 +845,8 @@ model.add(x);
 auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
 model.add(y);
 
-auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
-model.add(_o);
+auto o = coek::objective("o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
+model.add(o);
 
 auto single_x = coek::constraint("single_x", coek::Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
 model.add(single_x);
@@ -895,8 +895,8 @@ model.add(x);
 auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
 model.add(y);
 
-auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
-model.add(_o);
+auto o = coek::objective("o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
+model.add(o);
 
 auto single_x = coek::constraint("single_x", M);
 for(auto m: coek::range(M.size()))
@@ -956,8 +956,8 @@ model.add(x);
 auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
 model.add(y);
 
-auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
-model.add(_o);
+auto o = coek::objective("o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
+model.add(o);
 
 auto single_x = coek::constraint("single_x", coek::Forall(m).In(M)).expr(coek::Sum(x(n, m), coek::Forall(n).In(N)) == 1);
 model.add(single_x);
@@ -1012,8 +1012,8 @@ model.add(x);
 auto y = coek::variable("y", N).lower(0.0).upper(1.0).value(0.0);
 model.add(y);
 
-auto _o = coek::objective("_o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
-model.add(_o);
+auto o = coek::objective("o").expr(coek::Sum(d(n, m) * x(n, m), coek::Forall(n).In(N).Forall(m).In(M)));
+model.add(o);
 
 auto single_x = coek::constraint("single_x", M);
 for(auto m: coek::range(M.size()))

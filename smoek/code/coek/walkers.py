@@ -114,6 +114,9 @@ def to_coek(expr, decl={}):
     return SmoekToCoekWalker().walk(expr, decl)
 
 
+def _name(name):
+    return name.replace('[','_').replace(']','_')
+
 def generate(*, model=None, data=None, outfile=None, model_name=None, loops="compact"):
     """
     Generate a C++ code that generates a Coek model described by smoek.
@@ -133,23 +136,23 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
         coek_str = None
 
         if component.type == "index":
-            coek_str = f'auto {component.name} = coek::set_element("{component.name}");'
+            coek_str = f'auto {_name(component.name)} = coek::set_element("{_name(component.name)}");'
             components.append(coek_str)
 
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
-                coek_str = f"auto {component.name} = coek::RangeSet(0, {to_coek(component.object._N)});"
+                coek_str = f"auto {_name(component.name)} = coek::RangeSet(0, {to_coek(component.object._N)});"
             elif isinstance(
                 component.object, smoek.core.model.set_components.SequenceSet
             ):
-                coek_str = f"auto {component.name} = coek::RangeSet({to_coek(component.object._start)}, {to_coek(component.object._stop)}+1);"
+                coek_str = f"auto {_name(component.name)} = coek::RangeSet({to_coek(component.object._start)}, {to_coek(component.object._stop)}+1);"
             else:
-                coek_str = f"coek::ConcreteSet {component.name};"
+                coek_str = f"coek::ConcreteSet {_name(component.name)};"
                 if component.name in data:
-                    coek_str += f'\nif (data.contains("{component.name}")) ' + '{\n'
-                    coek_str += f'    {data[component.name]} {component.name}_value;\n'
-                    coek_str += f'    data.get("{component.name}", {component.name}_value);\n'
-                    coek_str += f'    {component.name} = coek::SetOf({component.name}_value);\n' + '}'
+                    coek_str += f'\nif (data.contains("{_name(component.name)}")) ' + '{\n'
+                    coek_str += f'    {data[component.name]} {_name(component.name)}_value;\n'
+                    coek_str += f'    data.get("{_name(component.name)}", {_name(component.name)}_value);\n'
+                    coek_str += f'    {_name(component.name)} = coek::SetOf({_name(component.name)}_value);\n' + '}'
             components.append(coek_str)
 
         elif component.type == "parameter" or component.type == "data":
@@ -162,27 +165,27 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                     for i,index_set in enumerate(index_sets):
                         index = indices[i]
                         tmp.append(f"Forall({index}).In({index_set})")
-                    coek_str = f'auto {component.name} = coek::{ctype}("{component.name}", coek::{".".join(tmp)})'
+                    coek_str = f'auto {_name(component.name)} = coek::{ctype}("{_name(component.name)}", coek::{".".join(tmp)})'
                 else:
-                    coek_str = f'auto {component.name} = coek::{ctype}("{component.name}", {"*".join(index_sets)})'
+                    coek_str = f'auto {_name(component.name)} = coek::{ctype}("{_name(component.name)}", {"*".join(index_sets)})'
             else:
                 coek_str = (
-                    f'auto {component.name} = coek::{ctype}("{component.name}")'
+                    f'auto {_name(component.name)} = coek::{ctype}("{_name(component.name)}")'
                 )
             if component.object.value() and not isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
                 coek_str += f".value({to_coek(component.object.value())})"
             coek_str += ';'
             if component.name in data:
-                coek_str += f'\nif (data.contains("{component.name}")) ' + '{\n'
-                coek_str += f'    {data[component.name]} {component.name}_value;\n'
-                coek_str += f'    data.get("{component.name}", {component.name}_value);\n'
+                coek_str += f'\nif (data.contains("{_name(component.name)}")) ' + '{\n'
+                coek_str += f'    {data[component.name]} {_name(component.name)}_value;\n'
+                coek_str += f'    data.get("{_name(component.name)}", {_name(component.name)}_value);\n'
                 #if component.object.is_indexed():
-                #    coek_str += f'    for (auto& [k,v]: {component.name}_value) {component.name}(k).value(v);\n'
+                #    coek_str += f'    for (auto& [k,v]: {_name(component.name)}_value) {_name(component.name)}(k).value(v);\n'
                 #else:
-                coek_str += f'    {component.name}.value({component.name}_value);\n'
+                coek_str += f'    {_name(component.name)}.value({_name(component.name)}_value);\n'
                 coek_str += '}'
             components.append(coek_str)
-            components.append(f"model.add({component.name});")
+            components.append(f"model.add({_name(component.name)});")
 
         elif component.type == "variable":
             if component.object.is_indexed():
@@ -193,9 +196,9 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                     for i,index_set in enumerate(index_sets):
                         index = indices[i]
                         tmp.append(f"Forall({index}).In({index_set})")
-                    coek_str = f'auto {component.name} = coek::variable("{component.name}", coek::{".".join(tmp)})'
+                    coek_str = f'auto {_name(component.name)} = coek::variable("{_name(component.name)}", coek::{".".join(tmp)})'
                 else:
-                    coek_str = f'auto {component.name} = coek::variable("{component.name}", {"*".join(index_sets)})'
+                    coek_str = f'auto {_name(component.name)} = coek::variable("{_name(component.name)}", {"*".join(index_sets)})'
                 if component.object.lower():
                     coek_str += f".lower({to_coek(component.object.lower())})"
                 if component.object.upper():
@@ -204,7 +207,7 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                     coek_str += f".value({to_coek(component.object.value())})"
                 coek_str += ";"
             else:
-                coek_str = f'auto {component.name} = coek::variable("{component.name}")'
+                coek_str = f'auto {_name(component.name)} = coek::variable("{_name(component.name)}")'
                 if component.object.lower():
                     coek_str += f".lower({to_coek(component.object.lower())})"
                 if component.object.upper():
@@ -213,7 +216,7 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                     coek_str += f".value({to_coek(component.object.value())})"
                 coek_str += ";"
             components.append(coek_str)
-            components.append(f"model.add({component.name});")
+            components.append(f"model.add({_name(component.name)});")
 
         elif component.type == "expression":
             if component.object.is_indexed():
@@ -223,16 +226,16 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                 # setattr(M, component.name, pyo.Expression(expr=to_pyomo(component.object.expr()), mutable=False))
                 pass
             components.append(coek_str)
-            components.append(f"model.add({component.name});")
+            components.append(f"model.add({_name(component.name)});")
 
         elif component.type == "objective":
             if component.object.is_indexed():
                 # setattr(M, component.name, pyo.Expression(initialize=component.object.data()), mutable=False)
                 pass
             else:
-                coek_str = f'auto {component.name} = coek::objective("{component.name}").expr({to_coek(component.object.expr())});'
+                coek_str = f'auto {_name(component.name)} = coek::objective("{_name(component.name)}").expr({to_coek(component.object.expr())});'
             components.append(coek_str)
-            components.append(f"model.add({component.name});")
+            components.append(f"model.add({_name(component.name)});")
 
         elif component.type == "constraint":
             if component.object.is_indexed():
@@ -243,21 +246,21 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                     for i,index_set in enumerate(index_sets):
                         index = indices[i]
                         tmp.append(f"Forall({index}).In({index_set})")
-                    coek_str = f'auto {component.name} = coek::constraint("{component.name}", coek::{".".join(tmp)})'
+                    coek_str = f'auto {_name(component.name)} = coek::constraint("{_name(component.name)}", coek::{".".join(tmp)})'
                     coek_str = coek_str + f".expr({to_coek(component.object.expr())})"
                     coek_str = coek_str + ";"
                 elif loops=="simple":
-                    coek_str = f'auto {component.name} = coek::constraint("{component.name}", {"*".join(index_sets)});\n'
+                    coek_str = f'auto {_name(component.name)} = coek::constraint("{_name(component.name)}", {"*".join(index_sets)});\n'
                     indent=""
                     for i,index_set in enumerate(index_sets):
                         index = indices[i]
                         coek_str = coek_str + f"{indent}for(auto {index}: coek::range({index_set}.size()))\n"
                         indent = indent + "  "
-                    coek_str = coek_str + f"{indent}{component.name}({",".join(indices)}) = {to_coek(component.object.expr())};"
+                    coek_str = coek_str + f"{indent}{_name(component.name)}({",".join(indices)}) = {to_coek(component.object.expr())};"
             else:
-                coek_str = f'auto {component.name} = coek::constraint("{component.name}").expr({to_coek(component.object.expr())});'
+                coek_str = f'auto {_name(component.name)} = coek::constraint("{_name(component.name)}").expr({to_coek(component.object.expr())});'
             components.append(coek_str)
-            components.append(f"model.add({component.name});")
+            components.append(f"model.add({_name(component.name)});")
 
         if coek_str is None or components[-1] is None:              # pragma: nocover
             print("ERROR", component.name, component.type)
