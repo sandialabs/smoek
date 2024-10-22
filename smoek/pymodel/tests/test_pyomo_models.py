@@ -150,49 +150,49 @@ def test_small5():
         None :    -1 :   2.0 :     2 : False : False :  Reals
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : x**2/2.0 + x**2/q
 
 12 Constraint Declarations
-    _c0 : Size=1, Index=None, Active=True
+    c[0] : Size=1, Index=None, Active=True
         Key  : Lower : Body          : Upper : Active
         None :   2.0 : 0.5*v*(x - y) :   2.0 :   True
-    _c1 : Size=1, Index=None, Active=True
-        Key  : Lower : Body          : Upper : Active
-        None :   2.0 : 0.5*v*(x - y) :   2.0 :   True
-    _c10 : Size=1, Index=None, Active=True
+    c[10] : Size=1, Index=None, Active=True
         Key  : Lower : Body            : Upper : Active
         None :   2.0 : v*(x - y)*(1/q) :   2.0 :   True
-    _c11 : Size=1, Index=None, Active=True
+    c[11] : Size=1, Index=None, Active=True
         Key  : Lower : Body      : Upper : Active
         None :   2*q : v*(x - y) :   2*q :   True
-    _c2 : Size=1, Index=None, Active=True
+    c[1] : Size=1, Index=None, Active=True
+        Key  : Lower : Body          : Upper : Active
+        None :   2.0 : 0.5*v*(x - y) :   2.0 :   True
+    c[2] : Size=1, Index=None, Active=True
         Key  : Lower : Body          : Upper : Active
         None :   2.0 : v*(x - y)/2.0 :   2.0 :   True
-    _c3 : Size=1, Index=None, Active=True
+    c[3] : Size=1, Index=None, Active=True
         Key  : Lower : Body              : Upper : Active
         None :   2.0 : v*(0.5*x - 0.5*y) :   2.0 :   True
-    _c4 : Size=1, Index=None, Active=True
+    c[4] : Size=1, Index=None, Active=True
         Key  : Lower : Body          : Upper : Active
         None :   2.0 : v*(x - y)*0.5 :   2.0 :   True
-    _c5 : Size=1, Index=None, Active=True
+    c[5] : Size=1, Index=None, Active=True
         Key  : Lower : Body      : Upper : Active
         None :   4.0 : v*(x - y) :   4.0 :   True
-    _c6 : Size=1, Index=None, Active=True
+    c[6] : Size=1, Index=None, Active=True
         Key  : Lower : Body          : Upper : Active
         None :   2.0 : 1/q*v*(x - y) :   2.0 :   True
-    _c7 : Size=1, Index=None, Active=True
+    c[7] : Size=1, Index=None, Active=True
         Key  : Lower : Body          : Upper : Active
         None :   2.0 : 1/q*v*(x - y) :   2.0 :   True
-    _c8 : Size=1, Index=None, Active=True
+    c[8] : Size=1, Index=None, Active=True
         Key  : Lower : Body        : Upper : Active
         None :   2.0 : v*(x - y)/q :   2.0 :   True
-    _c9 : Size=1, Index=None, Active=True
+    c[9] : Size=1, Index=None, Active=True
         Key  : Lower : Body              : Upper : Active
         None :   2.0 : v*(0.5*x - 1/q*y) :   2.0 :   True
 
-17 Declarations: x y v q _o _c0 _c1 _c2 _c3 _c4 _c5 _c6 _c7 _c8 _c9 _c10 _c11
+17 Declarations: x y v q o c[0] c[1] c[2] c[3] c[4] c[5] c[6] c[7] c[8] c[9] c[10] c[11]
 """
     )
 
@@ -206,45 +206,45 @@ def test_small6():
     assert (
         out.getvalue()
         == """4 Var Declarations
-    _v0 : Size=1, Index=None
-        Key  : Lower : Value : Upper : Fixed : Stale : Domain
-        None :    -1 :     1 :     1 : False : False :  Reals
-    _v1 : Size=1, Index=None
-        Key  : Lower : Value : Upper : Fixed : Stale : Domain
-        None :    -1 :     2 :     2 : False : False :  Reals
-    _v2 : Size=1, Index=None
-        Key  : Lower : Value : Upper : Fixed : Stale : Domain
-        None :    -1 :     3 :     3 : False : False :  Reals
-    _v3 : Size=1, Index=None
+    p : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :     2 :  None :  True : False :  Reals
+    v : Size=1, Index=None
+        Key  : Lower : Value : Upper : Fixed : Stale : Domain
+        None :    -1 :     3 :     3 : False : False :  Reals
+    x : Size=1, Index=None
+        Key  : Lower : Value : Upper : Fixed : Stale : Domain
+        None :    -1 :     1 :     1 : False : False :  Reals
+    y : Size=1, Index=None
+        Key  : Lower : Value : Upper : Fixed : Stale : Domain
+        None :    -1 :     2 :     2 : False : False :  Reals
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
-        None :   True : minimize :        _v0
+        None :   True : minimize :          x
 
 6 Constraint Declarations
-    _c0 : Size=1, Index=None, Active=True
-        Key  : Lower : Body                  : Upper : Active
-        None :   2.0 : 1/_v3*_v2*(_v0 - _v1) :   2.0 :   True
-    _c1 : Size=1, Index=None, Active=True
-        Key  : Lower : Body                : Upper : Active
-        None :   2.0 : _v2/_v3*(_v0 - _v1) :   2.0 :   True
-    _c2 : Size=1, Index=None, Active=True
-        Key  : Lower : Body                : Upper : Active
-        None :   2.0 : _v2*(_v0 - _v1)/_v3 :   2.0 :   True
-    _c3 : Size=1, Index=None, Active=True
-        Key  : Lower : Body                    : Upper : Active
-        None :   2.0 : _v2*(_v0/_v3 - _v1/_v3) :   2.0 :   True
-    _c4 : Size=1, Index=None, Active=True
-        Key  : Lower : Body                    : Upper : Active
-        None :   2.0 : _v2*(_v0 - _v1)*(1/_v3) :   2.0 :   True
-    _c5 : Size=1, Index=None, Active=True
-        Key  : Lower : Body                    : Upper : Active
-        None :   0.0 : 2*_v3 - _v2*(_v0 - _v1) :   0.0 :   True
+    c[0] : Size=1, Index=None, Active=True
+        Key  : Lower : Body          : Upper : Active
+        None :   2.0 : 1/p*v*(x - y) :   2.0 :   True
+    c[1] : Size=1, Index=None, Active=True
+        Key  : Lower : Body        : Upper : Active
+        None :   2.0 : v/p*(x - y) :   2.0 :   True
+    c[2] : Size=1, Index=None, Active=True
+        Key  : Lower : Body        : Upper : Active
+        None :   2.0 : v*(x - y)/p :   2.0 :   True
+    c[3] : Size=1, Index=None, Active=True
+        Key  : Lower : Body          : Upper : Active
+        None :   2.0 : v*(x/p - y/p) :   2.0 :   True
+    c[4] : Size=1, Index=None, Active=True
+        Key  : Lower : Body            : Upper : Active
+        None :   2.0 : v*(x - y)*(1/p) :   2.0 :   True
+    c[5] : Size=1, Index=None, Active=True
+        Key  : Lower : Body            : Upper : Active
+        None :   0.0 : 2*p - v*(x - y) :   0.0 :   True
 
-11 Declarations: _v0 _v1 _v2 _v3 _o _c0 _c1 _c2 _c3 _c4 _c5
+11 Declarations: x y v p o c[0] c[1] c[2] c[3] c[4] c[5]
 """
     )
 
@@ -263,54 +263,54 @@ def test_testing1():
         None :     2
 
 5 Var Declarations
-    _v2 : Size=1, Index=None
-        Key  : Lower : Value : Upper : Fixed : Stale : Domain
-        None :     0 :  None :  None : False :  True :  Reals
-    _v3 : Size=1, Index=None
-        Key  : Lower : Value : Upper : Fixed : Stale : Domain
-        None :  None :  None :     0 : False :  True :  Reals
     a : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :     0 :     0 :     1 : False : False : Integers
     b : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :     0 :     0 :     1 : False : False : Binary
+    c : Size=1, Index=None
+        Key  : Lower : Value : Upper : Fixed : Stale : Domain
+        None :     0 :  None :  None : False :  True :  Reals
+    d : Size=1, Index=None
+        Key  : Lower : Value : Upper : Fixed : Stale : Domain
+        None :  None :  None :     0 : False :  True :  Reals
     e : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None :  True : False :  Reals
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : 3*a + q
 
 8 Constraint Declarations
-    _c0 : Size=1, Index=None, Active=True
+    C[0] : Size=1, Index=None, Active=True
         Key  : Lower : Body        : Upper : Active
         None :  -Inf : 3*b + q - a :   0.0 :   True
-    _c1 : Size=1, Index=None, Active=True
+    C[1] : Size=1, Index=None, Active=True
         Key  : Lower : Body    : Upper : Active
         None :   0.0 : 3*b + b :   0.0 :   True
-    _c2 : Size=1, Index=None, Active=True
+    C[2] : Size=1, Index=None, Active=True
         Key  : Lower : Body                  : Upper : Active
         None :   0.0 : 3*b*a + q + b*b + b*b :   0.0 :   True
-    _c3 : Size=1, Index=None, Active=True
+    C[3] : Size=1, Index=None, Active=True
         Key  : Lower : Body                  : Upper : Active
         None :  -Inf : 3*b*b + q - a*b - a*a :   0.0 :   True
-    _c4 : Size=1, Index=None, Active=True
+    C[4] : Size=1, Index=None, Active=True
         Key  : Lower : Body                  : Upper : Active
         None :  -7.0 : 3*b*b + q - a*b - a*a :   7.0 :   True
-    _c5 : Size=1, Index=None, Active=True
-        Key  : Lower : Body      : Upper : Active
-        None :   0.0 : _v2 + _v3 :   0.0 :   True
-    _c6 : Size=1, Index=None, Active=True
-        Key  : Lower : Body      : Upper : Active
-        None :   1.0 : e + 3*_v3 :   1.0 :   True
-    _c7 : Size=1, Index=None, Active=True
+    C[5] : Size=1, Index=None, Active=True
+        Key  : Lower : Body  : Upper : Active
+        None :   0.0 : c + d :   0.0 :   True
+    C[6] : Size=1, Index=None, Active=True
+        Key  : Lower : Body    : Upper : Active
+        None :   1.0 : e + 3*d :   1.0 :   True
+    C[7] : Size=1, Index=None, Active=True
         Key  : Lower : Body        : Upper : Active
         None :   7.0 : 3*b + q - a :   7.0 :   True
 
-15 Declarations: a b _v2 _v3 e q _o _c0 _c1 _c2 _c3 _c4 _c5 _c6 _c7
+15 Declarations: a b c d e q o C[0] C[1] C[2] C[3] C[4] C[5] C[6] C[7]
 """
     )
 
@@ -337,11 +337,11 @@ def test_testing2():
         None :     0 :   1.0 :     1 :  True : False : Binary
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : 3*a + q + a*a*a*(- a + b + 3*a + 3*b) + sin(- cos(a))
 
-4 Declarations: a b q _o
+4 Declarations: a b q o
 """
     )
 
@@ -386,16 +386,16 @@ def test_testing4():
         None :     0 :     0 :     1 : False : False : Binary
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : a + cos(x) + cos(y)
 
 1 Constraint Declarations
-    _c0 : Size=1, Index=None, Active=True
+    c : Size=1, Index=None, Active=True
         Key  : Lower : Body                : Upper : Active
         None :   1.0 : b + cos(y) + cos(z) :   1.0 :   True
 
-7 Declarations: x y z a b _o _c0
+7 Declarations: x y z a b o c
 """
     )
 
@@ -1115,7 +1115,7 @@ def test_pmedian1():
           4 :   0.0 :   0.0 :   1.0 : False : False : Binary
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : d[0,0]*x[0,0] + d[0,1]*x[0,1] + d[0,2]*x[0,2] + d[0,3]*x[0,3] + d[0,4]*x[0,4] + d[1,0]*x[1,0] + d[1,1]*x[1,1] + d[1,2]*x[1,2] + d[1,3]*x[1,3] + d[1,4]*x[1,4] + d[2,0]*x[2,0] + d[2,1]*x[2,1] + d[2,2]*x[2,2] + d[2,3]*x[2,3] + d[2,4]*x[2,4] + d[3,0]*x[3,0] + d[3,1]*x[3,1] + d[3,2]*x[3,2] + d[3,3]*x[3,3] + d[3,4]*x[3,4] + d[4,0]*x[4,0] + d[4,1]*x[4,1] + d[4,2]*x[4,2] + d[4,3]*x[4,3] + d[4,4]*x[4,4]
 
@@ -1158,7 +1158,7 @@ def test_pmedian1():
           3 :   1.0 : x[0,3] + x[1,3] + x[2,3] + x[3,3] + x[4,3] :   1.0 :   True
           4 :   1.0 : x[0,4] + x[1,4] + x[2,4] + x[3,4] + x[4,4] :   1.0 :   True
 
-9 Declarations: N M d x y _o single_x bound_y num_facilities
+9 Declarations: N M d x y o single_x bound_y num_facilities
 """
     )
 
@@ -1246,7 +1246,7 @@ def test_pmedian2():
           4 :   0.0 :   0.0 :   1.0 : False : False : Binary
 
 1 Objective Declarations
-    _o : Size=1, Index=None, Active=True
+    o : Size=1, Index=None, Active=True
         Key  : Active : Sense    : Expression
         None :   True : minimize : 2.0*x[0,0] + 1.5*x[0,1] + 1.3333333333333333*x[0,2] + 1.25*x[0,3] + 1.2*x[0,4] + 1.5*x[1,0] + 1.3333333333333333*x[1,1] + 1.25*x[1,2] + 1.2*x[1,3] + 1.1666666666666667*x[1,4] + 1.3333333333333333*x[2,0] + 1.25*x[2,1] + 1.2*x[2,2] + 1.1666666666666667*x[2,3] + 1.1428571428571428*x[2,4] + 1.25*x[3,0] + 1.2*x[3,1] + 1.1666666666666667*x[3,2] + 1.1428571428571428*x[3,3] + 1.125*x[3,4] + 1.2*x[4,0] + 1.1666666666666667*x[4,1] + 1.1428571428571428*x[4,2] + 1.125*x[4,3] + 1.1111111111111112*x[4,4]
 
@@ -1289,6 +1289,6 @@ def test_pmedian2():
           3 :   1.0 : x[0,3] + x[1,3] + x[2,3] + x[3,3] + x[4,3] :   1.0 :   True
           4 :   1.0 : x[0,4] + x[1,4] + x[2,4] + x[3,4] + x[4,4] :   1.0 :   True
 
-9 Declarations: N M d x y _o single_x bound_y num_facilities
+9 Declarations: N M d x y o single_x bound_y num_facilities
 """
     )

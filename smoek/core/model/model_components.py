@@ -1,5 +1,8 @@
 from typing import List, Dict
+from .components import NamedComponent, Index
 from .var_components import ScalarVariable, IndexedVariable
+from .data_components import Parameter, Data
+from .set_components import Set
 from .constr_components import Constraint
 from .var_components import ScalarVariable, IndexedVariable
 from .constr_components import Constraint
@@ -21,11 +24,23 @@ def _smoek_model(cls, name=None, doc=""):
                 doc=doc,
             )
 
+        def __setattr__(self, name, value):
+            if isinstance(value, NamedComponent) and name not in [
+                "objective",
+                "constraints",
+                "variables",
+                "name",
+                "doc",
+            ]:
+                value.name(name)
+            super(SmoekModel, self).__setattr__(name, value)
+
     return SmoekModel
 
 
 class Model(object):
     def __init__(self, objective, constraints, variables, name=None, doc=""):
+        # TODO - Use '_' variables for non-public Model data
         self.objective = objective
         self.constraints: List[Constraint] = constraints
         self.variables: List[ScalarVariable | IndexedVariable] = variables
@@ -53,6 +68,11 @@ class Model(object):
         return _smoek_model(cls, name=name_, doc=self.doc)
 
 
+def _set_name(obj, name):
+    if obj.name() is None:
+        obj.name(name)
+
+
 def _collect_components(obj):
     objective = None
     constraints = []
@@ -61,13 +81,34 @@ def _collect_components(obj):
     for k in dir(obj):
         if k.startswith("_"):
             continue
+        if k in ["objective", "constraints", "variables", "doc", "name"]:
+            continue
+
         v = getattr(obj, k)
         if isinstance(v, Objective):
+            _set_name(v, k)
             objective = v
         elif isinstance(v, Constraint):
+            _set_name(v, k)
             constraints.append(v)
+        elif type(v) is list:
+            for i, item in enumerate(v):
+                assert isinstance(
+                    item, Constraint
+                ), f"Unexpected list element {type(item)}"
+                _set_name(item, f"{k}[{i}]")
+                constraints.append(item)
         elif isinstance(v, ScalarVariable) or isinstance(v, IndexedVariable):
+            _set_name(v, k)
             variables.append(v)
+        elif isinstance(v, Parameter):
+            _set_name(v, k)
+        elif isinstance(v, Data):
+            _set_name(v, k)
+        elif isinstance(v, Set):
+            _set_name(v, k)
+        elif isinstance(v, Index):
+            _set_name(v, k)
 
     return objective, constraints, variables
 

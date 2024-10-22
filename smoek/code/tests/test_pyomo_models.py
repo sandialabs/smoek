@@ -134,31 +134,31 @@ def generate_small5(data):
 
     M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
-    M._o = pyo.Objective(expr=(pow(M.x, 2) / 2.0) + (pow(M.x, 2) / M.q))
+    M.o = pyo.Objective(expr=(pow(M.x, 2) / 2.0) + (pow(M.x, 2) / M.q))
 
-    M._c0 = pyo.Constraint(expr=(0.5 * M.v) * (M.x - M.y) == 2)
+    M.c_0_ = pyo.Constraint(expr=(0.5 * M.v) * (M.x - M.y) == 2)
 
-    M._c1 = pyo.Constraint(expr=(M.v / 2.0) * (M.x - M.y) == 2)
+    M.c_1_ = pyo.Constraint(expr=(M.v / 2.0) * (M.x - M.y) == 2)
 
-    M._c2 = pyo.Constraint(expr=(M.v * (M.x - M.y)) / 2.0 == 2)
+    M.c_2_ = pyo.Constraint(expr=(M.v * (M.x - M.y)) / 2.0 == 2)
 
-    M._c3 = pyo.Constraint(expr=M.v * ((M.x / 2.0) - (M.y / 2.0)) == 2)
+    M.c_3_ = pyo.Constraint(expr=M.v * ((M.x / 2.0) - (M.y / 2.0)) == 2)
 
-    M._c4 = pyo.Constraint(expr=(M.v * (M.x - M.y)) * 0.5 == 2)
+    M.c_4_ = pyo.Constraint(expr=(M.v * (M.x - M.y)) * 0.5 == 2)
 
-    M._c5 = pyo.Constraint(expr=M.v * (M.x - M.y) == 4.0)
+    M.c_5_ = pyo.Constraint(expr=M.v * (M.x - M.y) == 4.0)
 
-    M._c6 = pyo.Constraint(expr=((1 / M.q) * M.v) * (M.x - M.y) == 2)
+    M.c_6_ = pyo.Constraint(expr=((1 / M.q) * M.v) * (M.x - M.y) == 2)
 
-    M._c7 = pyo.Constraint(expr=(M.v / M.q) * (M.x - M.y) == 2)
+    M.c_7_ = pyo.Constraint(expr=(M.v / M.q) * (M.x - M.y) == 2)
 
-    M._c8 = pyo.Constraint(expr=(M.v * (M.x - M.y)) / M.q == 2)
+    M.c_8_ = pyo.Constraint(expr=(M.v * (M.x - M.y)) / M.q == 2)
 
-    M._c9 = pyo.Constraint(expr=M.v * ((M.x / 2.0) - (M.y / M.q)) == 2)
+    M.c_9_ = pyo.Constraint(expr=M.v * ((M.x / 2.0) - (M.y / M.q)) == 2)
 
-    M._c10 = pyo.Constraint(expr=(M.v * (M.x - M.y)) * (1 / M.q) == 2)
+    M.c_10_ = pyo.Constraint(expr=(M.v * (M.x - M.y)) * (1 / M.q) == 2)
 
-    M._c11 = pyo.Constraint(expr=M.v * (M.x - M.y) == 2 * M.q)
+    M.c_11_ = pyo.Constraint(expr=M.v * (M.x - M.y) == 2 * M.q)
 
     return M
 """
@@ -179,28 +179,28 @@ def pow(a,b):
 def generate_small6(data):
     M = pyo.ConcreteModel("small6")
 
-    M._v0 = pyo.Var(bounds=(-1,1), initialize=1)
+    M.x = pyo.Var(bounds=(-1,1), initialize=1)
 
-    M._v1 = pyo.Var(bounds=(-1,2), initialize=2)
+    M.y = pyo.Var(bounds=(-1,2), initialize=2)
 
-    M._v2 = pyo.Var(bounds=(-1,3), initialize=3)
+    M.v = pyo.Var(bounds=(-1,3), initialize=3)
 
-    M._v3 = pyo.Var(initialize=2)
-    M._v3.fix()
+    M.p = pyo.Var(initialize=2)
+    M.p.fix()
 
-    M._o = pyo.Objective(expr=M._v0)
+    M.o = pyo.Objective(expr=M.x)
 
-    M._c0 = pyo.Constraint(expr=((1 / M._v3) * M._v2) * (M._v0 - M._v1) == 2)
+    M.c_0_ = pyo.Constraint(expr=((1 / M.p) * M.v) * (M.x - M.y) == 2)
 
-    M._c1 = pyo.Constraint(expr=(M._v2 / M._v3) * (M._v0 - M._v1) == 2)
+    M.c_1_ = pyo.Constraint(expr=(M.v / M.p) * (M.x - M.y) == 2)
 
-    M._c2 = pyo.Constraint(expr=(M._v2 * (M._v0 - M._v1)) / M._v3 == 2)
+    M.c_2_ = pyo.Constraint(expr=(M.v * (M.x - M.y)) / M.p == 2)
 
-    M._c3 = pyo.Constraint(expr=M._v2 * ((M._v0 / M._v3) - (M._v1 / M._v3)) == 2)
+    M.c_3_ = pyo.Constraint(expr=M.v * ((M.x / M.p) - (M.y / M.p)) == 2)
 
-    M._c4 = pyo.Constraint(expr=(M._v2 * (M._v0 - M._v1)) * (1 / M._v3) == 2)
+    M.c_4_ = pyo.Constraint(expr=(M.v * (M.x - M.y)) * (1 / M.p) == 2)
 
-    M._c5 = pyo.Constraint(expr=M._v2 * (M._v0 - M._v1) == 2 * M._v3)
+    M.c_5_ = pyo.Constraint(expr=M.v * (M.x - M.y) == 2 * M.p)
 
     return M
 """
@@ -225,32 +225,32 @@ def generate_testing1(data):
 
     M.b = pyo.Var(bounds=(0,1), initialize=0)
 
-    M._v2 = pyo.Var(bounds=(0,None))
+    M.c = pyo.Var(bounds=(0,None))
 
-    M._v3 = pyo.Var(bounds=(None,0))
+    M.d = pyo.Var(bounds=(None,0))
 
     M.e = pyo.Var(initialize=1.0)
     M.e.fix()
 
     M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
-    M._o = pyo.Objective(expr=(3 * M.a) + M.q)
+    M.o = pyo.Objective(expr=(3 * M.a) + M.q)
 
-    M._c0 = pyo.Constraint(expr=((3 * M.b) + M.q) - M.a <= 0)
+    M.C_0_ = pyo.Constraint(expr=((3 * M.b) + M.q) - M.a <= 0)
 
-    M._c1 = pyo.Constraint(expr=(3 * M.b) + M.b == 0)
+    M.C_1_ = pyo.Constraint(expr=(3 * M.b) + M.b == 0)
 
-    M._c2 = pyo.Constraint(expr=((((3 * M.b) * M.a) + M.q) + (M.b * M.b)) + (M.b * M.b) == 0)
+    M.C_2_ = pyo.Constraint(expr=((((3 * M.b) * M.a) + M.q) + (M.b * M.b)) + (M.b * M.b) == 0)
 
-    M._c3 = pyo.Constraint(expr=((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a) <= 0)
+    M.C_3_ = pyo.Constraint(expr=((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a) <= 0)
 
-    M._c4 = pyo.Constraint(expr=pyo.inequality(-7, ((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a), 7))
+    M.C_4_ = pyo.Constraint(expr=pyo.inequality(-7, ((((3 * M.b) * M.b) + M.q) - (M.a * M.b)) - (M.a * M.a), 7))
 
-    M._c5 = pyo.Constraint(expr=M._v2 + M._v3 == 0)
+    M.C_5_ = pyo.Constraint(expr=M.c + M.d == 0)
 
-    M._c6 = pyo.Constraint(expr=M.e + (3 * M._v3) == 1)
+    M.C_6_ = pyo.Constraint(expr=M.e + (3 * M.d) == 1)
 
-    M._c7 = pyo.Constraint(expr=pyo.inequality(7, ((3 * M.b) + M.q) - M.a, 7))
+    M.C_7_ = pyo.Constraint(expr=pyo.inequality(7, ((3 * M.b) + M.q) - M.a, 7))
 
     return M
 """
@@ -278,7 +278,7 @@ def generate_testing2(data):
 
     M.q = pyo.Param(mutable=True, initialize=2, within=pyo.Reals)
 
-    M._o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * ((((-M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin((-pyo.cos(M.a))))
+    M.o = pyo.Objective(expr=(((3 * M.a) + M.q) + (((M.a * M.a) * M.a) * ((((-M.a) + M.b) + (3 * M.a)) + (3 * M.b)))) + pyo.sin((-pyo.cos(M.a))))
 
     return M
 """
@@ -329,9 +329,9 @@ def generate_testing4(data):
 
     M.b = pyo.Var(bounds=(0,1), initialize=0)
 
-    M._o = pyo.Objective(expr=(M.a + pyo.cos(M.x)) + pyo.cos(M.y))
+    M.o = pyo.Objective(expr=(M.a + pyo.cos(M.x)) + pyo.cos(M.y))
 
-    M._c0 = pyo.Constraint(expr=(M.b + pyo.cos(M.y)) + pyo.cos(M.z) == 1)
+    M.c = pyo.Constraint(expr=(M.b + pyo.cos(M.y)) + pyo.cos(M.z) == 1)
 
     return M
 """
@@ -469,7 +469,7 @@ def generate_simple1(data):
 def test_hs060():
     model = models.hs060()
 
-    # order = smk.valid_order(smk.collect_info(model))
+    # order = smk.validorder(smk.collect_info(model))
     # assert order == ["N", "x", "o", "c"]
 
     # print(generate(model=model))
@@ -500,7 +500,7 @@ def generate_hs060(data):
 def test_knapsack1():
     model = models.knapsack1(1)
 
-    # order = smk.valid_order(smk.collect_info(model))
+    # order = smk.validorder(smk.collect_info(model))
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model))
@@ -535,7 +535,7 @@ def generate_knapsack1(data):
 def test_knapsack2():
     model = models.knapsack2(1)
 
-    # order = smk.valid_order(smk.collect_info(model))
+    # order = smk.validorder(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model))
@@ -572,7 +572,7 @@ def generate_knapsack2(data):
 def test_knapsack3():
     model = models.knapsack3()
 
-    # order = smk.valid_order(smk.collect_info(model))
+    # order = smk.validorder(smk.collect_info(model))
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model, data={"N": "int"}))
@@ -667,7 +667,7 @@ def generate_pmedian1(data):
 
     M.y = pyo.Var(M.N, bounds=(0.0,1.0), initialize=0.0)
 
-    M._o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
+    M.o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
 
     def single_x_(m_,m):
         return sum(m_.x[n,m] for n in m_.N) == 1
@@ -712,7 +712,7 @@ def generate_pmedian2(data):
 
     M.y = pyo.Var(M.N, bounds=(0.0,1.0), initialize=0.0)
 
-    M._o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
+    M.o = pyo.Objective(expr=sum(M.d[n,m] * M.x[n,m] for n in M.N for m in M.M))
 
     def single_x_(m_,m):
         return sum(m_.x[n,m] for n in m_.N) == 1
