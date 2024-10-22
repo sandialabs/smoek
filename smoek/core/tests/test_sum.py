@@ -21,7 +21,7 @@ def test_sum_errors():
     # TODO: We should have special error for this case - it is likely common
     i = index("i")
     I = index_set("I")
-    v = variable(forall=forall(i, In=I))
+    v = variable(forall=forall(i in I))
     s = variable()
     with pytest.raises(TypeError) as excinfo:
         foo = v + s

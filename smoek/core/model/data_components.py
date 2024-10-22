@@ -14,8 +14,8 @@ class Parameter(ModelingComponent, ExprLeaf):
         self._value = _wrap_expression_if_needed(value)
         return self
 
-    def index_set(self, In):
-        return self.forall(index(f"i{len(self._index_sets())}"), In=In, explicit=False)
+    def index_set(self, iset):
+        return self.forall(index(f"i{len(self._index_sets())}") in iset, explicit=False)
 
 
 def parameter(name=None, doc=None):
@@ -33,8 +33,8 @@ class Data(ModelingComponent, ExprLeaf):
         self._value = _wrap_expression_if_needed(value)
         return self
 
-    def index_set(self, In):
-        return self.forall(index(f"i{len(self._index_sets())}"), In=In, explicit=False)
+    def index_set(self, iset):
+        return self.forall(index(f"i{len(self._index_sets())}") in iset, explicit=False)
 
 
 def data(name=None, doc=None):

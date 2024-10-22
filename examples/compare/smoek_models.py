@@ -21,11 +21,11 @@ def knapsack1(N=1, name="knapsack1"):
     o = (
         smk.objective()
         .name("o")
-        .expr(smk.sum(v[i] * x[i]).forall(i, In=INDEX))
+        .expr(smk.sum(v[i] * x[i]).forall(i in INDEX))
         .maximize()
     )
 
-    c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i, In=INDEX) <= capacity)
+    c = smk.constraint("c").expr(smk.sum(w[i] * x[i]).forall(i in INDEX) <= capacity)
 
     return smk.model(objective=o, constraints=[c], variables=[x], name=name)
 
@@ -60,11 +60,11 @@ def knapsack4(name="knapsack4"):
         o = (
             smk.objective()
             .name("o")
-            .maximize(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
+            .maximize(smk.sum(value[i] * x[i]).forall(i in ITEMS))
         )
 
         c = smk.constraint("c").expr(
-            smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity
+            smk.sum(weight[i] * x[i]).forall(i in ITEMS) <= capacity
         )
 
     return knapsack4()
@@ -83,8 +83,8 @@ def pmedian1(N_=10, P=1, data=None):
 
     d = (
         smk.parameter("d")
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
         .value(1.0 + 1.0 / (n + m + 1))
     )
 
@@ -99,25 +99,25 @@ def pmedian1(N_=10, P=1, data=None):
     y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
 
     # obj
-    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n in N).forall(m in M))
 
     # single_x
     c1 = (
         smk.constraint("single_x")
-        .expr(smk.sum(x[n, m]).forall(n, In=N) == 1)
-        .forall(m, In=M)
+        .expr(smk.sum(x[n, m]).forall(n in N) == 1)
+        .forall(m in M)
     )
 
     # bound_y
     c2 = (
         smk.constraint("bound_y")
         .expr(x[n, m] - y[n] <= 0)
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
     )
 
     # num_facilities
-    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n in N) == P)
 
     return smk.model(
         objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian1"
@@ -136,8 +136,8 @@ def pmedian2(N_=10, P=1, data=None):
 
     d = (
         smk.data("d")
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
         .value(1.0 + 1.0 / (n + m + 1))
     )
 
@@ -152,25 +152,25 @@ def pmedian2(N_=10, P=1, data=None):
     y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
 
     # obj
-    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n in N).forall(m in M))
 
     # single_x
     c1 = (
         smk.constraint("single_x")
-        .expr(smk.sum(x[n, m]).forall(n, In=N) == 1)
-        .forall(m, In=M)
+        .expr(smk.sum(x[n, m]).forall(n in N) == 1)
+        .forall(m in M)
     )
 
     # bound_y
     c2 = (
         smk.constraint("bound_y")
         .expr(x[n, m] - y[n] <= 0)
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
     )
 
     # num_facilities
-    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n in N) == P)
 
     return smk.model(
         objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian2"
@@ -190,8 +190,8 @@ def pmedian3(N_=10, P=1, data=None):
 
     d = (
         smk.parameter("d")
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
         .value(data['d'])
     )
 
@@ -206,25 +206,25 @@ def pmedian3(N_=10, P=1, data=None):
     y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
 
     # obj
-    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n in N).forall(m in M))
 
     # single_x
     c1 = (
         smk.constraint("single_x")
-        .expr(smk.sum(x[n, m]).forall(n, In=N) == 1)
-        .forall(m, In=M)
+        .expr(smk.sum(x[n, m]).forall(n in N) == 1)
+        .forall(m in M)
     )
 
     # bound_y
     c2 = (
         smk.constraint("bound_y")
         .expr(x[n, m] - y[n] <= 0)
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
     )
 
     # num_facilities
-    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n in N) == P)
 
     return smk.model(
         objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian3"
@@ -243,8 +243,8 @@ def pmedian4(N_=10, P=1, data=None):
 
     d = (
         smk.data("d")
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
         .value(data['d'])
     )
 
@@ -259,25 +259,25 @@ def pmedian4(N_=10, P=1, data=None):
     y = smk.variable("y").index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
 
     # obj
-    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n, In=N).forall(m, In=M))
+    o = smk.objective().expr(smk.sum(d[n, m] * x[n, m]).forall(n in N).forall(m in M))
 
     # single_x
     c1 = (
         smk.constraint("single_x")
-        .expr(smk.sum(x[n, m]).forall(n, In=N) == 1)
-        .forall(m, In=M)
+        .expr(smk.sum(x[n, m]).forall(n in N) == 1)
+        .forall(m in M)
     )
 
     # bound_y
     c2 = (
         smk.constraint("bound_y")
         .expr(x[n, m] - y[n] <= 0)
-        .forall(n, In=N)
-        .forall(m, In=M)
+        .forall(n in N)
+        .forall(m in M)
     )
 
     # num_facilities
-    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n, In=N) == P)
+    c3 = smk.constraint("num_facilities").expr(smk.sum(y[n]).forall(n in N) == P)
 
     return smk.model(
         objective=o, constraints=[c1, c2, c3], variables=[x, y], name="pmedian4"
