@@ -49,6 +49,10 @@ if pyomo_available:
     }
 
 
+def _name(name):
+    return name.replace('[','_').replace(']','_')
+
+
 class SmoekToPyomoExprWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
@@ -327,12 +331,12 @@ def generate(*, model=None, data=None):
             elif component.object.value():
                 if component.object.is_indexed():
                     indices = [i.name() for i in component.object._indices()]
-                    rule_str = f'def {component.name}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
+                    rule_str = f'def {_name(component.name)}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
                 else:
-                    rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.value())}"
+                    rule_str = f"def {_name(component.name)}_(m_):\n    return {to_pyomo_str(component.object.value())}"
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
-                kwargs["initialize"] = locals_[f"{component.name}_"]
+                kwargs["initialize"] = locals_[f"{_name(component.name)}_"]
 
             if component.object.is_indexed():
                 setattr(M, component.name, pyo.Param(*index_sets, **kwargs))
@@ -356,14 +360,14 @@ def generate(*, model=None, data=None):
                 else:
                     upper = "None"
                 if component.object.is_indexed():
-                    rule_str = f'def {component.name}_bounds_(m_,{",".join(indices)}):\n    return {lower},{upper}'
+                    rule_str = f'def {_name(component.name)}_bounds_(m_,{",".join(indices)}):\n    return {lower},{upper}'
                 else:
                     rule_str = (
-                        f"def {component.name}_bounds_(m_):\n    return {lower},{upper}"
+                        f"def {_name(component.name)}_bounds_(m_):\n    return {lower},{upper}"
                     )
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
-                kwargs["bounds"] = locals_[f"{component.name}_bounds_"]
+                kwargs["bounds"] = locals_[f"{_name(component.name)}_bounds_"]
 
             if isinstance(
                 component.object.value(), smoek.core.expr.nodes.NumberWrapper
@@ -375,12 +379,12 @@ def generate(*, model=None, data=None):
                 kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
-                    rule_str = f'def {component.name}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
+                    rule_str = f'def {_name(component.name)}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.value())}'
                 else:
-                    rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.value())}"
+                    rule_str = f"def {_name(component.name)}_(m_):\n    return {to_pyomo_str(component.object.value())}"
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
-                kwargs["initialize"] = locals_[f"{component.name}_"]
+                kwargs["initialize"] = locals_[f"{_name(component.name)}_"]
             kwargs["domain"] = domain[component.object.domain().id]
 
             if component.object.is_indexed():
@@ -404,11 +408,11 @@ def generate(*, model=None, data=None):
                 # TODO
                 pass
             else:
-                rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.expr())}"
+                rule_str = f"def {_name(component.name)}_(m_):\n    return {to_pyomo_str(component.object.expr())}"
             locals_ = {}
             exec(rule_str, {"pyo": pyo}, locals_)
             setattr(
-                M, component.name, pyo.Objective(rule=locals_[f"{component.name}_"])
+                M, component.name, pyo.Objective(rule=locals_[f"{_name(component.name)}_"])
             )
 
         elif component.type == "constraint":
@@ -418,17 +422,17 @@ def generate(*, model=None, data=None):
             if component.object.is_indexed():
                 indices = [i.name() for i in component.object._indices()]
                 if len(index_sets) == 1:
-                    rule_str = f"def {component.name}_(m_,{indices[0]}):\n    return {to_pyomo_str(component.object.expr())}"
+                    rule_str = f"def {_name(component.name)}_(m_,{indices[0]}):\n    return {to_pyomo_str(component.object.expr())}"
                 else:
-                    rule_str = f'def {component.name}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.expr())}'
+                    rule_str = f'def {_name(component.name)}_(m_,{",".join(indices)}):\n    return {to_pyomo_str(component.object.expr())}'
             else:
-                rule_str = f"def {component.name}_(m_):\n    return {to_pyomo_str(component.object.expr())}"
+                rule_str = f"def {_name(component.name)}_(m_):\n    return {to_pyomo_str(component.object.expr())}"
             locals_ = {}
             exec(rule_str, {"pyo": pyo}, locals_)
             setattr(
                 M,
                 component.name,
-                pyo.Constraint(*index_sets, rule=locals_[f"{component.name}_"]),
+                pyo.Constraint(*index_sets, rule=locals_[f"{_name(component.name)}_"]),
             )
 
     return M

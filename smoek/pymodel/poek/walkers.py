@@ -44,6 +44,10 @@ if poek_available:
     }
 
 
+def _name(name):
+    return name.replace('[','_').replace(']','_')
+
+
 class SmoekToPoekExprWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
@@ -346,15 +350,15 @@ def generate(*, model=None, data=None):
                 kwargs["data_portal"] = M.dp_
             elif component.object.value():
                 if component.object.is_indexed() and component.object.explicit:
-                    rule_str = f"def {component.name}_(m_,{",".join(indices)}):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {_name(component.name)}_(m_,{",".join(indices)}):\n    return {to_poek_str(component.object.value())}"
                     args = [M] + [getattr(M, i.name()) for i in component.object._indices()]
                 else:
-                    rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.value())}"
                     args = [M]
                 # locals_ = {}
                 #print("HERE",rule_str)
                 exec(rule_str, globals_, locals_)
-                kwargs["value"] = locals_[f"{component.name}_"](*args)
+                kwargs["value"] = locals_[f"{_name(component.name)}_"](*args)
                 #print("HERE",kwargs['value'].to_list())
 
             if component.object.is_indexed():
@@ -416,17 +420,17 @@ def generate(*, model=None, data=None):
                     upper = "None"
                 # locals_ = {}
                 exec(
-                    f"def {component.name}_lower_(m_{iparams}):\n    return {lower}",
+                    f"def {_name(component.name)}_lower_(m_{iparams}):\n    return {lower}",
                     globals_,
                     locals_,
                 )
                 exec(
-                    f"def {component.name}_upper_(m_{iparams}):\n    return {upper}",
+                    f"def {_name(component.name)}_upper_(m_{iparams}):\n    return {upper}",
                     globals_,
                     locals_,
                 )
-                kwargs["lb"] = locals_[f"{component.name}_lower_"](*args)
-                kwargs["ub"] = locals_[f"{component.name}_upper_"](*args)
+                kwargs["lb"] = locals_[f"{_name(component.name)}_lower_"](*args)
+                kwargs["ub"] = locals_[f"{_name(component.name)}_upper_"](*args)
 
             # value
             if isinstance(
@@ -440,12 +444,12 @@ def generate(*, model=None, data=None):
                 kwargs["value"] = component.object.value().value.key
                 kwargs["data_portal"] = M.dp_
             elif component.object.value():
-                rule_str = f"def {component.name}_(m_{iparams}):\n    return {to_poek_str(component.object.value())}"
+                rule_str = f"def {_name(component.name)}_(m_{iparams}):\n    return {to_poek_str(component.object.value())}"
                 # locals_ = {}
                 # print(rule_str)
                 #print("X",rule_str)
                 exec(rule_str, globals_, locals_)
-                kwargs["value"] = locals_[f"{component.name}_"](*args)
+                kwargs["value"] = locals_[f"{_name(component.name)}_"](*args)
 
             # binary or integer
             if component.object.domain().id == Integers.id:
@@ -493,16 +497,16 @@ def generate(*, model=None, data=None):
                 # TODO
                 pass
             else:
-                # rule_str = f'def {component.name}_(m_):\n    e = {to_poek_str(component.object.expr())}\n    print(e.to_list())\n    return {to_poek_str(component.object.expr())}'
-                rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}"
+                # rule_str = f'def {_name(component.name)}_(m_):\n    e = {to_poek_str(component.object.expr())}\n    print(e.to_list())\n    return {to_poek_str(component.object.expr())}'
+                rule_str = f"def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.expr())}"
             # locals_ = {}
             #print("HERE o",rule_str)
             exec(rule_str, globals_, locals_)
-            # print(locals_[f"{component.name}_"](M).to_list())
+            # print(locals_[f"{_name(component.name)}_"](M).to_list())
             if component.object.sense():
-                M._model.add_objective(locals_[f"{component.name}_"](M), True)
+                M._model.add_objective(locals_[f"{_name(component.name)}_"](M), True)
             else:
-                M._model.add_objective(locals_[f"{component.name}_"](M), False)
+                M._model.add_objective(locals_[f"{_name(component.name)}_"](M), False)
 
         elif component.type == "constraint":
             index_sets = [iset.name() for iset in component.object._index_sets()]
@@ -512,17 +516,17 @@ def generate(*, model=None, data=None):
                 for i, index_set in enumerate(index_sets):
                     index = indices[i]
                     tmp.append(f"Forall({index}).In(m_.{index_set})")
-                rule_str = f'def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}, pk.{".".join(tmp)}'
+                rule_str = f'def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.expr())}, pk.{".".join(tmp)}'
                 # locals_ = {}
                 # print(rule_str)
                 exec(rule_str, globals_, locals_)
-                con_, context_ = locals_[f"{component.name}_"](M)
+                con_, context_ = locals_[f"{_name(component.name)}_"](M)
                 M._model.add_constraint(con_, context_)
             else:
-                rule_str = f"def {component.name}_(m_):\n    return {to_poek_str(component.object.expr())}"
+                rule_str = f"def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.expr())}"
                 # locals_ = {}
                 # print(rule_str)
                 exec(rule_str, globals_, locals_)
-                M._model.add_constraint(locals_[f"{component.name}_"](M))
+                M._model.add_constraint(locals_[f"{_name(component.name)}_"](M))
 
     return M._model

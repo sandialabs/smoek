@@ -8,6 +8,9 @@ from smoek.core.utils import (
 )
 
 
+def _name(name):
+    return name.replace('[','_').replace(']','_')
+
 class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
         super().__init__()
@@ -113,9 +116,6 @@ class SmoekToCoekWalker(BottomUpDepthFirstExpressionWalker[str]):
 def to_coek(expr, decl={}):
     return SmoekToCoekWalker().walk(expr, decl)
 
-
-def _name(name):
-    return name.replace('[','_').replace(']','_')
 
 def generate(*, model=None, data=None, outfile=None, model_name=None, loops="compact"):
     """
