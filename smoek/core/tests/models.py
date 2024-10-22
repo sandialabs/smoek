@@ -216,8 +216,7 @@ def testing7():
         c = smk.constraint().expr(x == 0)
         cc = smk.constraint().expr(pp[i] * xx[i] == 0).forall(i in A)
         ccc = (
-            smk.constraint()
-            .expr(ppp[i, j] * xxx[i, j] == 0)
+            smk.constraint().expr(ppp[i, j] * xxx[i, j] == 0)
             # .forall((i,j) in A*B)        # TODO
             .forall(i in A, j in B)
         )
@@ -307,9 +306,7 @@ def knapsack1(N=1, name="knapsack1"):
 
         o = smk.objective().maximize(smk.sum(v[i] * x[i]).forall(i in INDEX))
 
-        c = smk.constraint().expr(
-            smk.sum(w[i] * x[i]).forall(i in INDEX) <= capacity
-        )
+        c = smk.constraint().expr(smk.sum(w[i] * x[i]).forall(i in INDEX) <= capacity)
 
     return knapsack()
 
@@ -340,10 +337,7 @@ def knapsack4():
 
         x = smk.variable().index_set(ITEMS).bounds(0.0, 1.0)
 
-        o = (
-            smk.objective()
-            .maximize(smk.sum(value[i] * x[i]).forall(i in ITEMS))
-        )
+        o = smk.objective().maximize(smk.sum(value[i] * x[i]).forall(i in ITEMS))
 
         c = smk.constraint().expr(
             smk.sum(weight[i] * x[i]).forall(i in ITEMS) <= capacity
@@ -380,9 +374,7 @@ def pmedian1(N_=10, P=1):
         o = smk.objective().minimize(smk.sum(d[n, m] * x[n, m]).forall(n in N, m in M))
 
         single_x = (
-            smk.constraint()
-            .expr(smk.sum(x[n, m]).forall(n in N) == 1)
-            .forall(m in M)
+            smk.constraint().expr(smk.sum(x[n, m]).forall(n in N) == 1).forall(m in M)
         )
 
         bound_y = smk.constraint().expr(x[n, m] - y[n] <= 0).forall(n in N, m in M)
@@ -421,9 +413,7 @@ def pmedian2(N_=10, P=1):
         o = smk.objective().minimize(smk.sum(d[n, m] * x[n, m]).forall(n in N, m in M))
 
         single_x = (
-            smk.constraint()
-            .expr(smk.sum(x[n, m]).forall(n in N) == 1)
-            .forall(m in M)
+            smk.constraint().expr(smk.sum(x[n, m]).forall(n in N) == 1).forall(m in M)
         )
 
         bound_y = smk.constraint().expr(x[n, m] - y[n] <= 0).forall(n in N, m in M)

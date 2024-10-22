@@ -32,7 +32,9 @@ class ForAllObject(object):
     def forall(self, *index):
         assert len(index) > 0
         if index[0] is True:
-            assert len(ForAllObject._latest) == len(index), f"Expected only {len(index)} items in _latest but saw {len(ForAllObject._latest)}"
+            assert len(ForAllObject._latest) == len(
+                index
+            ), f"Expected only {len(index)} items in _latest but saw {len(ForAllObject._latest)}"
             index = ForAllObject._latest
             ForAllObject._latest = []
 
