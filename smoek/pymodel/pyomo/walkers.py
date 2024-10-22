@@ -50,7 +50,7 @@ if pyomo_available:
 
 
 def _name(name):
-    return name.replace('[','_').replace(']','_')
+    return name.replace("[", "_").replace("]", "_")
 
 
 class SmoekToPyomoExprWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -362,9 +362,7 @@ def generate(*, model=None, data=None):
                 if component.object.is_indexed():
                     rule_str = f'def {_name(component.name)}_bounds_(m_,{",".join(indices)}):\n    return {lower},{upper}'
                 else:
-                    rule_str = (
-                        f"def {_name(component.name)}_bounds_(m_):\n    return {lower},{upper}"
-                    )
+                    rule_str = f"def {_name(component.name)}_bounds_(m_):\n    return {lower},{upper}"
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
                 kwargs["bounds"] = locals_[f"{_name(component.name)}_bounds_"]
@@ -412,7 +410,9 @@ def generate(*, model=None, data=None):
             locals_ = {}
             exec(rule_str, {"pyo": pyo}, locals_)
             setattr(
-                M, component.name, pyo.Objective(rule=locals_[f"{_name(component.name)}_"])
+                M,
+                component.name,
+                pyo.Objective(rule=locals_[f"{_name(component.name)}_"]),
             )
 
         elif component.type == "constraint":

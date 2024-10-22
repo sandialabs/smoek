@@ -9,8 +9,10 @@ from smoek.core.utils import (
     valid_order,
 )
 
+
 def _name(name):
-    return name.replace('[','_').replace(']','_')
+    return name.replace("[", "_").replace("]", "_")
+
 
 class SmoekToPyomoWalker(BottomUpDepthFirstExpressionWalker[str]):
     def __init__(self):
@@ -240,9 +242,7 @@ def generate(*, model=None, data=None, outfile=None):
                 else:
                     varargs = ""
                 if len(index_sets) == 1:
-                    pyomo_str = (
-                        f"    M.{_name(component.name)} = pyo.Var({index_sets[0]}{varargs})"
-                    )
+                    pyomo_str = f"    M.{_name(component.name)} = pyo.Var({index_sets[0]}{varargs})"
                 else:
                     pyomo_str = f'    M.{_name(component.name)} = pyo.Var({", ".join(index_sets)}{varargs})'
             else:
