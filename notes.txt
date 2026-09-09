@@ -1,4 +1,0 @@
-notes:
-- we need to be able to support numpy arrays of data - I think we should just have a matrix class that "wraps" it in some way.
-
-- 
