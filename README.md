@@ -2,7 +2,7 @@ A lightweight optimization modeling library.
 
 --------------------------------------------------------------------------------
 
-[![Pytest Tests](https://github.com/sandialabs/smoek/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/sandialabs/smoek/actions/workflows/pytest.yml?query=branch%3Amain)
+%[![Pytest Tests](https://github.com/sandialabs/smoek/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/sandialabs/smoek/actions/workflows/pytest.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/sandialabs/smoek/branch/main/graph/badge.svg)](https://codecov.io/gh/sandialabs/smoek)
 [![Documentation Status](https://readthedocs.org/projects/smoek/badge/?version=latest)](http://smoek.readthedocs.org/en/latest/)
 [![GitHub contributors](https://img.shields.io/github/contributors/sandialabs/smoek.svg)](https://github.com/sandialabs/smoek/graphs/contributors)
