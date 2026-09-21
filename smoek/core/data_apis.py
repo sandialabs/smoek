@@ -330,8 +330,8 @@ def JsonDataPortal(
 
     if schema == "coek":
         return JSONDataPortal_Coek(packed_data, filename=filename, lazyload=lazyload)
-    elif schema == "pyomo":
-        return JSONDataPortal_Pyomo(packed_data, filename=filename, lazyload=lazyload)
+    #elif schema == "pyomo":
+    #    return JSONDataPortal_Pyomo(packed_data, filename=filename, lazyload=lazyload)
 
     raise ValueError("Unexpected JSON schema: " + schema)
 
