@@ -1,8 +1,9 @@
-
 import pyomo.environ as pyo
 
-def pow(a,b):
+
+def pow(a, b):
     return a**b
+
 
 def generate_knapsack(data):
     M = pyo.ConcreteModel("knapsack")
@@ -15,7 +16,7 @@ def generate_knapsack(data):
 
     M.capacity = pyo.Param(mutable=True, within=pyo.Reals)
 
-    M.x = pyo.Var(M.ITEMS, bounds=(0.0,1.0))
+    M.x = pyo.Var(M.ITEMS, bounds=(0.0, 1.0))
 
     M.o = pyo.Objective(expr=sum(M.value[i] * M.x[i] for i in M.ITEMS))
 

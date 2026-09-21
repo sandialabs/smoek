@@ -8,7 +8,7 @@ from smoek.pymodel.pyomo import generate as generate_pyomo
 from smoek.pymodel.poek import generate as generate_poek
 from smoek import JsonDataPortal
 
-tests = {"pmedian1": pmedian1, 'pmedian3':pmedian3}
+tests = {"pmedian1": pmedian1, "pmedian3": pmedian3}
 
 
 def run_pyomo(test, size, trial, suffix):
@@ -32,6 +32,7 @@ def run_pyomo(test, size, trial, suffix):
     pyomo_model.write(fname)
     toc(f"Writing file {fname}")
 
+
 def run_poek1(test, size, trial, suffix):
     print("-" * 70)
     tic(f"Test: poek1 {test} {size} {trial} {suffix}")
@@ -54,6 +55,7 @@ def run_poek1(test, size, trial, suffix):
     M.write(fname)
     toc(f"Writing file {fname}")
 
+
 def run_poek2(test, size, trial):
     print("-" * 70)
     tic(f"Test: poek2 {test} {size} {trial} lp")
@@ -75,19 +77,21 @@ def run_poek2(test, size, trial):
     poek_model.write(fname)
     toc(f"Writing file {fname}")
 
+
 def run(pymodel, test, size, trial, suffix):
-    if pymodel == 'pyomo':
+    if pymodel == "pyomo":
         run_pyomo(test, size, trial, suffix)
-    elif pymodel == 'poek1':
+    elif pymodel == "poek1":
         run_poek1(test, size, trial, suffix)
-    elif pymodel == 'poek2':
-        if (suffix == 'lp'):
+    elif pymodel == "poek2":
+        if suffix == "lp":
             run_poek2(test, size, trial)
         else:
             print("-" * 70)
             print(f"WARNING: cannot run poek2 test using {suffix} suffix.")
     else:
-        print("Unknown pymodel: "+pymodel)
+        print("Unknown pymodel: " + pymodel)
+
 
 assert len(sys.argv) == 6, "run_pymodel.py <pymodel> <test> <size> <trial> <suffix>"
 pymodel = sys.argv[1]
@@ -98,4 +102,3 @@ suffix = sys.argv[5]
 
 with PauseGC() as pgc:
     run(pymodel, test, size, trial, suffix)
-

@@ -1,7 +1,6 @@
 import smoek as smk
 from smoek.diff.symbolic_diff import ReverseSDWalker
 
-
 i = smk.index("i")
 I = smk.index_set("I")
 x = smk.variable(name="x").forall(i, In=I)

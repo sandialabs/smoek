@@ -9,11 +9,11 @@ from smoek.pymodel.poek import generate as generate_poek
 from smoek import JsonDataPortal
 
 sizes = [1000, 3000]
-#sizes = [100]
+# sizes = [100]
 suffixes = ["lp", "nl"]
-exp = ['pyomo', 'poek1', 'poek2']
-#tests = {"pmedian1": pmedian1, "pmedian2": pmedian2, 'pmedian3':pmedian3, 'pmedian4':pmedian4}
-tests = {"pmedian1": pmedian1, 'pmedian3':pmedian3}
+exp = ["pyomo", "poek1", "poek2"]
+# tests = {"pmedian1": pmedian1, "pmedian2": pmedian2, 'pmedian3':pmedian3, 'pmedian4':pmedian4}
+tests = {"pmedian1": pmedian1, "pmedian3": pmedian3}
 ntrials = 1
 
 if len(sys.argv) > 1:
@@ -23,5 +23,11 @@ for pymodel in exp:
         for size in sizes:
             for trial in range(ntrials):
                 for suffix in suffixes:
-                    res = subprocess.run(f"time python run_pymodel.py {pymodel} {test} {size} {trial} {suffix}", shell=True, check=True,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT)
+                    res = subprocess.run(
+                        f"time python run_pymodel.py {pymodel} {test} {size} {trial} {suffix}",
+                        shell=True,
+                        check=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                    )
                     print(res.stdout.decode())

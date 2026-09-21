@@ -28,15 +28,10 @@ c1 = (
     .forall(j, In=J)
 )
 
-c2 = (
-    smk.constraint(expr=M[i, j] / x[j] <= v[i] * z[i], name="c2")
-    .forall(i, In=I)
-    .forall(j, In=J)
-)
+c2 = smk.constraint(expr=M[i, j] / x[j] <= v[i] * z[i], name="c2").forall(i, In=I).forall(j, In=J)
 
 c3 = smk.constraint(
-    expr=smk.sin(3) / smk.sum(v[i] ** 2 + x[j] ** 2).forall(i, In=I).forall(j, In=J)
-    <= 100,
+    expr=smk.sin(3) / smk.sum(v[i] ** 2 + x[j] ** 2).forall(i, In=I).forall(j, In=J) <= 100,
     name="c3",
 )
 

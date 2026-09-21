@@ -11,20 +11,25 @@ from smoek.code.pyomo import generate as generate_pyomo
 from smoek.code.coek import generate as generate_coek
 from smoek import JsonDataPortal
 
-tests = {"pmedian1": pmedian1, 'pmedian3':pmedian3}
-testdata = {'pmedian1':{}, 'pmedian3':dict(d="std::map<std::tuple<int,int>,double>")}
+tests = {"pmedian1": pmedian1, "pmedian3": pmedian3}
+testdata = {"pmedian1": {}, "pmedian3": dict(d="std::map<std::tuple<int,int>,double>")}
 
 
 def collect_coek_models():
     if os.path.exists("models/smoek_generate.cpp"):
         os.remove("models/smoek_generate.cpp")
     os.chdir("models")
-    testnames = [fname.split('.')[0] for fname in glob.glob("*.cpp")]
+    testnames = [fname.split(".")[0] for fname in glob.glob("*.cpp")]
     os.chdir("..")
 
-    with open("models/smoek_generate.cpp",'w') as OUTPUT:
-        generate_fn = "\n".join(f'if (testname == "{name}") return generate_{name}(data);' for name in testnames)
-        generate_decl = "\n".join(f'coek::CompactModel generate_{name}(const coek::DataPortal& data);' for name in testnames)
+    with open("models/smoek_generate.cpp", "w") as OUTPUT:
+        generate_fn = "\n".join(
+            f'if (testname == "{name}") return generate_{name}(data);' for name in testnames
+        )
+        generate_decl = "\n".join(
+            f"coek::CompactModel generate_{name}(const coek::DataPortal& data);"
+            for name in testnames
+        )
 
         testnames_set = f'std::set<std::string> testnames_set = {{ {",".join('"'+name+'"' for name in testnames)} }};'
 
@@ -63,10 +68,10 @@ def run_pyomo(test, size, trial, suffix):
     generate_pyomo(model=smoek_model, outfile=f"models/pyomo_{test}_{size}.py")
     toc(f"Pyomo model written: models/pyomo_{test}_{size}.py")
 
-    if 'models' in sys.modules:
-        del sys.modules['models']
-    if f'models.pyomo_{test}_{size}' in sys.modules:
-        del sys.modules[f'models.pyomo_{test}_{size}']
+    if "models" in sys.modules:
+        del sys.modules["models"]
+    if f"models.pyomo_{test}_{size}" in sys.modules:
+        del sys.modules[f"models.pyomo_{test}_{size}"]
     module = importlib.import_module(f"models.pyomo_{test}_{size}")
     generate = getattr(module, f"generate_{test}")
     toc(f"Imported models/pyomo_{test}_{size}")
@@ -78,10 +83,11 @@ def run_pyomo(test, size, trial, suffix):
 
     pyomo_model = generate(data)
     toc("Pyomo model generated")
-    
+
     fname = f"{suffix}files/code_pyomo_{test}_{size}_{trial}.{suffix}"
     pyomo_model.write(fname)
     toc(f"Writing file {fname}")
+
 
 def run_coek1(test, size, trial, suffix):
     print("-" * 70)
@@ -94,20 +100,46 @@ def run_coek1(test, size, trial, suffix):
     smoek_model = tests[test](size, data=data)
     toc("Smoek model generated")
 
-    generate_coek(model=smoek_model, model_name=f"{test}_{size}", outfile=f"models/{test}_{size}.cpp", data=testdata[test])
+    generate_coek(
+        model=smoek_model,
+        model_name=f"{test}_{size}",
+        outfile=f"models/{test}_{size}.cpp",
+        data=testdata[test],
+    )
     toc(f"Coek model written: models/{test}_{size}.cpp")
 
     collect_coek_models()
-    res = subprocess.run("cmake ..", cwd="build", shell=True, check=True,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT)
-    print('\t'+res.stdout.decode().replace('\n','\n\t'))
-    res = subprocess.run("make", cwd="build", shell=True, check=True,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT)
-    print('\t'+res.stdout.decode().replace('\n','\n\t'))
+    res = subprocess.run(
+        "cmake ..",
+        cwd="build",
+        shell=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    print("\t" + res.stdout.decode().replace("\n", "\n\t"))
+    res = subprocess.run(
+        "make",
+        cwd="build",
+        shell=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    print("\t" + res.stdout.decode().replace("\n", "\n\t"))
     toc(f"Compiling runner")
 
     fname = f"{suffix}files/code_coek1_{test}_{size}_{trial}.{suffix}"
-    res = subprocess.run(f"build/run {test}_{size} {size} {fname} 1 {jsonfile}", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print('\t'+res.stdout.decode().replace('\n','\n\t'))
+    res = subprocess.run(
+        f"build/run {test}_{size} {size} {fname} 1 {jsonfile}",
+        shell=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    print("\t" + res.stdout.decode().replace("\n", "\n\t"))
     toc(f"Writing file {fname}")
+
 
 def run_coek2(test, size, trial):
     print("-" * 70)
@@ -120,28 +152,54 @@ def run_coek2(test, size, trial):
     smoek_model = tests[test](size, data=data)
     toc("Smoek model generated")
 
-    generate_coek(model=smoek_model, model_name=f"{test}_{size}", outfile=f"models/{test}_{size}.cpp", data=testdata[test])
+    generate_coek(
+        model=smoek_model,
+        model_name=f"{test}_{size}",
+        outfile=f"models/{test}_{size}.cpp",
+        data=testdata[test],
+    )
     toc("Coek model written: models/{test}_{size}.cpp")
 
     collect_coek_models()
-    res = subprocess.run("cmake ..", cwd="build", shell=True, check=True,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT)
-    print('\t'+res.stdout.decode().replace('\n','\n\t'))
-    res = subprocess.run("make", cwd="build", shell=True, check=True,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT)
-    print('\t'+res.stdout.decode().replace('\n','\n\t'))
+    res = subprocess.run(
+        "cmake ..",
+        cwd="build",
+        shell=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    print("\t" + res.stdout.decode().replace("\n", "\n\t"))
+    res = subprocess.run(
+        "make",
+        cwd="build",
+        shell=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    print("\t" + res.stdout.decode().replace("\n", "\n\t"))
     toc(f"Compiling runner")
 
     fname = f"lpfiles/code_coek2_{test}_{size}_{trial}.lp"
-    res = subprocess.run(f"build/run {test}_{size} {size} {fname} 0 {jsonfile}", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print('\t'+res.stdout.decode().replace('\n','\n\t'))
+    res = subprocess.run(
+        f"build/run {test}_{size} {size} {fname} 0 {jsonfile}",
+        shell=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    print("\t" + res.stdout.decode().replace("\n", "\n\t"))
     toc(f"Writing file {fname}")
 
+
 def run(code, test, size, trial, suffix):
-    if code == 'pyomo':
+    if code == "pyomo":
         run_pyomo(test, size, trial, suffix)
-    elif code == 'coek1':
+    elif code == "coek1":
         run_coek1(test, size, trial, suffix)
-    elif code == 'coek2':
-        if (suffix == 'lp'):
+    elif code == "coek2":
+        if suffix == "lp":
             run_coek2(test, size, trial)
         else:
             print("-" * 70)
@@ -157,4 +215,3 @@ suffix = sys.argv[5]
 
 with PauseGC() as pgc:
     run(pymodel, test, size, trial, suffix)
-
