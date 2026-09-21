@@ -11,11 +11,7 @@ def test_knapsack():
     v = smk.parameter("v").forall(i in A).doc(r"value of item $i$")
     w = smk.parameter("w").forall(i in A).doc(r"weight of item $i$")
     w_max = smk.parameter(r"\bar w").doc(r"maximum weight")
-    x = (
-        smk.binary_variable("x")
-        .forall(i in A)
-        .doc("indicator variable for item selection")
-    )
+    x = smk.binary_variable("x").forall(i in A).doc("indicator variable for item selection")
 
     c = (
         smk.constraint("max_w_con")
@@ -37,9 +33,7 @@ def test_knapsack():
         doc="test_knapsack()",
     )
     l = model_to_latex_string(M)
-    assert (
-        l
-        == """\\begin{subequations}
+    assert l == """\\begin{subequations}
 \\begin{align}
 & \\text{min} && \\sum_{\\forall_{i \\in A}} ({v_{i}} \\cdot {x_{i}}) &&& \\\\
 & \\text{s.t.} &&{\\sum_{\\forall_{i \\in A}} ({w_{i}} \\cdot {x_{i}})} \\leq {\\bar w}, &&& 
@@ -47,4 +41,3 @@ def test_knapsack():
 &&&x \\in \\{0, 1\\}^{|A|}&&&
 \\end{align}
 \\end{subequations}"""
-    )
