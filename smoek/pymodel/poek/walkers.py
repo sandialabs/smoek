@@ -350,7 +350,7 @@ def generate(*, model=None, data=None):
                 kwargs["data_portal"] = M.dp_
             elif component.object.value():
                 if component.object.is_indexed() and component.object.explicit:
-                    rule_str = f"def {_name(component.name)}_(m_,{",".join(indices)}):\n    return {to_poek_str(component.object.value())}"
+                    rule_str = f"def {_name(component.name)}_(m_,{','.join(indices)}):\n    return {to_poek_str(component.object.value())}"
                     args = [M] + [getattr(M, i.name()) for i in component.object._indices()]
                 else:
                     rule_str = f"def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.value())}"
