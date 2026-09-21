@@ -2,7 +2,6 @@ from smoek.core.expr.nodes import ExprLeaf, _wrap_expression_if_needed
 from smoek.core.expr.forall import ForAllObject, IndexSetPair
 from .components import ModelingComponent, NamedComponent, index
 
-
 # Conceptually it might make sense to pass index to set constructor,
 # i.e.
 # i = index()

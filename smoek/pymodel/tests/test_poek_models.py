@@ -4,7 +4,8 @@ import smoek as smk
 from smoek.core.tests import models
 from smoek.pymodel.poek import generate, poek_available
 
-if_poek_available=pytest.mark.skipif(not poek_available, reason="Poek not installed")
+if_poek_available = pytest.mark.skipif(not poek_available, reason="Poek not installed")
+
 
 @if_poek_available
 def test_small1():
@@ -16,27 +17,21 @@ def test_small1():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 2
+    assert out.getvalue() == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( pow(x, 2) )
   Constraints
     0:  pow(y, 2) == 4
 """
-    )
 
 
 @if_poek_available
@@ -49,27 +44,21 @@ def test_small2():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 2
+    assert out.getvalue() == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( x )
   Constraints
     0:  pow(y, 2) == 4
 """
-    )
 
 
 @if_poek_available
@@ -82,27 +71,21 @@ def test_small3():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 2
+    assert out.getvalue() == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( - ((x)*(y)) )
   Constraints
     0:  pow(y, 2) == 4
 """
-    )
 
 
 @if_poek_available
@@ -115,27 +98,21 @@ def test_small4():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 2
+    assert out.getvalue() == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 1 -1e+100 1e+100 0
    1:  y 1 -1e+100 1e+100 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( pow(y, 2) )
   Constraints
     0:  (y)*(x) == 4
 """
-    )
 
 
 @if_poek_available
@@ -148,22 +125,17 @@ def test_small5():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 3
+    assert out.getvalue() == """Model Variables: 3
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  v 3 -1 3 0
    1:  x 1 -1 1 0
    2:  y 2 -1 2 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( (pow(x, 2))/(2) + (pow(x, 2))/(q) )
   Constraints
@@ -180,7 +152,6 @@ def test_small5():
     10:  ((v)*(x + -1*y))*((1)/(q)) == 2
     11:  (v)*(x + -1*y) == (2)*(q)
 """
-    )
 
 
 @if_poek_available
@@ -193,23 +164,18 @@ def test_small6():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 4
+    assert out.getvalue() == """Model Variables: 4
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  p 2 -1e+100 1e+100 1
    1:  v 3 -1 3 0
    2:  x 1 -1 1 0
    3:  y 2 -1 2 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( x )
   Constraints
@@ -220,7 +186,6 @@ def test_small6():
     4:  ((v)*(x + -1*y))*((1)/(p)) == 2
     5:  (v)*(x + -1*y) + -2*p == 0
 """
-    )
 
 
 @if_poek_available
@@ -233,9 +198,7 @@ def test_testing1():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 5
+    assert out.getvalue() == """Model Variables: 5
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  a 0 0 1 0
    1:  b 0 0 1 0
@@ -243,14 +206,11 @@ def test_testing1():
    3:  d nan -1e+100 0 0
    4:  e 1 -1e+100 1e+100 1
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  max( 3*a + q )
   Constraints
@@ -263,7 +223,6 @@ def test_testing1():
     6:  e + 3*d == 1
     7:  7 <= 3*b + q + -1*a <= 7
 """
-    )
 
 
 @if_poek_available
@@ -276,26 +235,20 @@ def test_testing2():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 2
+    assert out.getvalue() == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  a 0 0 2 0
    1:  b 1 0 1 1
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( 3*a + q + (((a)*(a))*(a))*(-1*a + b + 3*a + 3*b) + sin(- (cos(a))) )
   Constraints
 """
-    )
 
 
 # TODO: smk.expression()
@@ -309,20 +262,14 @@ def XXtest_testing3():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """
+    assert out.getvalue() == """
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """
+    assert out.getvalue() == """
 """
-    )
 
 
 @if_poek_available
@@ -335,9 +282,7 @@ def test_testing4():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 5
+    assert out.getvalue() == """Model Variables: 5
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  a 0 0 1 0
    1:  b 0 0 1 0
@@ -345,20 +290,16 @@ def test_testing4():
    3:  y 0 0 1 0
    4:  z 0 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( a + cos(x) + cos(y) )
   Constraints
     0:  b + cos(y) + cos(z) == 1
 """
-    )
 
 
 @if_poek_available
@@ -371,25 +312,19 @@ def test_testing5():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 1
+    assert out.getvalue() == """Model Variables: 1
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan 2 2 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( x )
   Constraints
 """
-    )
 
 
 @if_poek_available
@@ -402,25 +337,19 @@ def test_testing6():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 1
+    assert out.getvalue() == """Model Variables: 1
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 0 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( ((- (q))*(x))*(x) + p )
   Constraints
 """
-    )
 
 
 @if_poek_available
@@ -433,9 +362,7 @@ def test_testing7():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 25
+    assert out.getvalue() == """Model Variables: 25
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan -1e+100 1e+100 0
    1:  xx[0] nan -1e+100 1e+100 0
@@ -463,14 +390,11 @@ def test_testing7():
    23:  xxx[3,3] nan -1e+100 1e+100 0
    24:  xxx[3,4] nan -1e+100 1e+100 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( (p)*(x) )
   Constraints
@@ -500,7 +424,6 @@ def test_testing7():
     23:  (ppp[3,3])*(xxx[3,3]) == 0
     24:  (ppp[3,4])*(xxx[3,4]) == 0
 """
-    )
 
 
 @if_poek_available
@@ -513,9 +436,7 @@ def test_testing8():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 25
+    assert out.getvalue() == """Model Variables: 25
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x 20 -1e+100 1e+100 0
    1:  xx[0] 5 5 5 0
@@ -543,14 +464,11 @@ def test_testing8():
    23:  xxx[3,3] nan -1e+100 1e+100 0
    24:  xxx[3,4] nan -1e+100 1e+100 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( (p)*(x) + xx[0] + xx[1] + xx[2] + xx[3] )
   Constraints
@@ -565,7 +483,6 @@ def test_testing8():
     8:  (ppp[0,3])*(xxx[0,3]) + (ppp[1,3])*(xxx[1,3]) + (ppp[2,3])*(xxx[2,3]) + (ppp[3,3])*(xxx[3,3]) == 0
     9:  (ppp[0,4])*(xxx[0,4]) + (ppp[1,4])*(xxx[1,4]) + (ppp[2,4])*(xxx[2,4]) + (ppp[3,4])*(xxx[3,4]) == 0
 """
-    )
 
 
 @if_poek_available
@@ -578,21 +495,16 @@ def test_simple1():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 2
+    assert out.getvalue() == """Model Variables: 2
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x nan 0 1 0
    1:  y nan 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( x + y )
   Constraints
@@ -600,7 +512,6 @@ def test_simple1():
     1:  2*x + y <= 1
     2:  1 <= y + -2*x
 """
-    )
 
 
 @if_poek_available
@@ -613,29 +524,23 @@ def test_hs060():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 4
+    assert out.getvalue() == """Model Variables: 4
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[1] 2 -10 10 0
    1:  x[2] 2 -10 10 0
    2:  x[3] 2 -10 10 0
    3:  x[4] 2 -10 10 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( pow(x[1] + -1, 2) + pow(x[1] + -1*x[2], 2) + pow(x[2] + -1*x[3], 4) )
   Constraints
     0:  (x[1])*(1 + pow(x[2], 2)) + pow(x[3], 4) == 8.24264
 """
-    )
 
 
 @if_poek_available
@@ -648,9 +553,7 @@ def test_knapsack1():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 10
+    assert out.getvalue() == """Model Variables: 10
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0] nan 0 1 0
    1:  x[1] nan 0 1 0
@@ -663,20 +566,16 @@ def test_knapsack1():
    8:  x[8] nan 0 1 0
    9:  x[9] nan 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  max( (v[0])*(x[0]) + (v[1])*(x[1]) + (v[2])*(x[2]) + (v[3])*(x[3]) + (v[4])*(x[4]) + (v[5])*(x[5]) + (v[6])*(x[6]) + (v[7])*(x[7]) + (v[8])*(x[8]) + (v[9])*(x[9]) )
   Constraints
     0:  (w[0])*(x[0]) + (w[1])*(x[1]) + (w[2])*(x[2]) + (w[3])*(x[3]) + (w[4])*(x[4]) + (w[5])*(x[5]) + (w[6])*(x[6]) + (w[7])*(x[7]) + (w[8])*(x[8]) + (w[9])*(x[9]) <= 1
 """
-    )
 
 
 @if_poek_available
@@ -689,9 +588,7 @@ def test_knapsack2():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 10
+    assert out.getvalue() == """Model Variables: 10
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0] nan 0 1 0
    1:  x[1] nan 0 1 0
@@ -704,20 +601,16 @@ def test_knapsack2():
    8:  x[8] nan 0 1 0
    9:  x[9] nan 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  max( (v[0])*(x[0]) + (v[1])*(x[1]) + (v[2])*(x[2]) + (v[3])*(x[3]) + (v[4])*(x[4]) + (v[5])*(x[5]) + (v[6])*(x[6]) + (v[7])*(x[7]) + (v[8])*(x[8]) + (v[9])*(x[9]) )
   Constraints
     0:  (w[0])*(x[0]) + (w[1])*(x[1]) + (w[2])*(x[2]) + (w[3])*(x[3]) + (w[4])*(x[4]) + (w[5])*(x[5]) + (w[6])*(x[6]) + (w[7])*(x[7]) + (w[8])*(x[8]) + (w[9])*(x[9]) <= ((N)*(10))/(10)
 """
-    )
 
 
 @if_poek_available
@@ -731,9 +624,7 @@ def test_knapsack3():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 10
+    assert out.getvalue() == """Model Variables: 10
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0] nan 0 1 0
    1:  x[1] nan 0 1 0
@@ -746,20 +637,16 @@ def test_knapsack3():
    8:  x[8] nan 0 1 0
    9:  x[9] nan 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  max( (v[0])*(x[0]) + (v[1])*(x[1]) + (v[2])*(x[2]) + (v[3])*(x[3]) + (v[4])*(x[4]) + (v[5])*(x[5]) + (v[6])*(x[6]) + (v[7])*(x[7]) + (v[8])*(x[8]) + (v[9])*(x[9]) )
   Constraints
     0:  (w[0])*(x[0]) + (w[1])*(x[1]) + (w[2])*(x[2]) + (w[3])*(x[3]) + (w[4])*(x[4]) + (w[5])*(x[5]) + (w[6])*(x[6]) + (w[7])*(x[7]) + (w[8])*(x[8]) + (w[9])*(x[9]) <= ((N)*(10))/(10)
 """
-    )
 
 
 @if_poek_available
@@ -778,29 +665,23 @@ def test_knapsack4():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 4
+    assert out.getvalue() == """Model Variables: 4
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[1] nan 0 1 0
    1:  x[2] nan 0 1 0
    2:  x[3] nan 0 1 0
    3:  x[4] nan 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  max( (value[1])*(x[1]) + (value[2])*(x[2]) + (value[3])*(x[3]) + (value[4])*(x[4]) )
   Constraints
     0:  (weight[1])*(x[1]) + (weight[2])*(x[2]) + (weight[3])*(x[3]) + (weight[4])*(x[4]) <= capacity
 """
-    )
 
 
 @if_poek_available
@@ -813,9 +694,7 @@ def test_pmedian1():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 30
+    assert out.getvalue() == """Model Variables: 30
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0,0] 0 0 1 0
    1:  x[0,1] 0 0 1 0
@@ -848,14 +727,11 @@ def test_pmedian1():
    28:  y[3] 0 0 1 0
    29:  y[4] 0 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( (d[0,0])*(x[0,0]) + (d[0,1])*(x[0,1]) + (d[0,2])*(x[0,2]) + (d[0,3])*(x[0,3]) + (d[0,4])*(x[0,4]) + (d[1,0])*(x[1,0]) + (d[1,1])*(x[1,1]) + (d[1,2])*(x[1,2]) + (d[1,3])*(x[1,3]) + (d[1,4])*(x[1,4]) + (d[2,0])*(x[2,0]) + (d[2,1])*(x[2,1]) + (d[2,2])*(x[2,2]) + (d[2,3])*(x[2,3]) + (d[2,4])*(x[2,4]) + (d[3,0])*(x[3,0]) + (d[3,1])*(x[3,1]) + (d[3,2])*(x[3,2]) + (d[3,3])*(x[3,3]) + (d[3,4])*(x[3,4]) + (d[4,0])*(x[4,0]) + (d[4,1])*(x[4,1]) + (d[4,2])*(x[4,2]) + (d[4,3])*(x[4,3]) + (d[4,4])*(x[4,4]) )
   Constraints
@@ -891,7 +767,6 @@ def test_pmedian1():
     29:  x[4,4] + - (y[4]) <= 0
     30:  y[0] + y[1] + y[2] + y[3] + y[4] == 1
 """
-    )
 
 
 @if_poek_available
@@ -904,9 +779,7 @@ def test_pmedian2():
     # M.print_values()
     out = StringIO()
     M.print_values(ostream=out)
-    assert (
-        out.getvalue()
-        == """Model Variables: 30
+    assert out.getvalue() == """Model Variables: 30
    (<Index>: <Name> <Value> <LB> <UB> <Fixed>)
    0:  x[0,0] 0 0 1 0
    1:  x[0,1] 0 0 1 0
@@ -939,14 +812,11 @@ def test_pmedian2():
    28:  y[3] 0 0 1 0
    29:  y[4] 0 0 1 0
 """
-    )
 
     # M.print_equations()
     out = StringIO()
     M.print_equations(ostream=out)
-    assert (
-        out.getvalue()
-        == """MODEL
+    assert out.getvalue() == """MODEL
   Objectives
     0:  min( (2)*(x[0,0]) + (1.5)*(x[0,1]) + (1.33333)*(x[0,2]) + (1.25)*(x[0,3]) + (1.2)*(x[0,4]) + (1.5)*(x[1,0]) + (1.33333)*(x[1,1]) + (1.25)*(x[1,2]) + (1.2)*(x[1,3]) + (1.16667)*(x[1,4]) + (1.33333)*(x[2,0]) + (1.25)*(x[2,1]) + (1.2)*(x[2,2]) + (1.16667)*(x[2,3]) + (1.14286)*(x[2,4]) + (1.25)*(x[3,0]) + (1.2)*(x[3,1]) + (1.16667)*(x[3,2]) + (1.14286)*(x[3,3]) + (1.125)*(x[3,4]) + (1.2)*(x[4,0]) + (1.16667)*(x[4,1]) + (1.14286)*(x[4,2]) + (1.125)*(x[4,3]) + (1.11111)*(x[4,4]) )
   Constraints
@@ -982,4 +852,3 @@ def test_pmedian2():
     29:  x[4,4] + - (y[4]) <= 0
     30:  y[0] + y[1] + y[2] + y[3] + y[4] == 1
 """
-    )

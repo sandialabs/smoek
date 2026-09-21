@@ -91,9 +91,7 @@ class ExpressionToLatexStringWalker(BottomUpDepthFirstExpressionWalker[str]):
             self._stack.append(ret)
         elif isinstance(expr, SumExprNode):
             body = self._stack.pop()
-            ret = (
-                rf"\sum_{{{self.forall_object_to_latex_string(expr._forall)}}} ({body})"
-            )
+            ret = rf"\sum_{{{self.forall_object_to_latex_string(expr._forall)}}} ({body})"
             self._stack.append(ret)
         elif isinstance(expr, ProdExprNode):
             body = self._stack.pop()
@@ -124,9 +122,7 @@ def variable_to_latex_string(var):
     elif var._domain == Binary:
         dom_str = "\\{0, 1\\}"
     else:
-        raise NotImplementedError(
-            f"Domain {var._domain} not supported in variable_to_latex_string"
-        )
+        raise NotImplementedError(f"Domain {var._domain} not supported in variable_to_latex_string")
 
     if var._forall is None:
         return f"{var.name()} \\in {dom_str}"
@@ -155,9 +151,7 @@ def model_to_latex_string(model):
 
     lines.append("\\\\")
     lines.append(
-        "&&&"
-        + ",".join([f"{variable_to_latex_string(c)}" for c in model.variables])
-        + "&&&"
+        "&&&" + ",".join([f"{variable_to_latex_string(c)}" for c in model.variables]) + "&&&"
     )
 
     lines.append(f"\\end{{align}}")

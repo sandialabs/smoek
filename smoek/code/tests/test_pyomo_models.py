@@ -7,9 +7,7 @@ from smoek.code.pyomo import generate
 def test_small1():
     model = models.small1()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -28,15 +26,12 @@ def generate_small1(data):
 
     return M
 """
-    )
 
 
 def test_small2():
     model = models.small2()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -55,15 +50,12 @@ def generate_small2(data):
 
     return M
 """
-    )
 
 
 def test_small3():
     model = models.small3()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -82,15 +74,12 @@ def generate_small3(data):
 
     return M
 """
-    )
 
 
 def test_small4():
     model = models.small4()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -109,15 +98,12 @@ def generate_small4(data):
 
     return M
 """
-    )
 
 
 def test_small5():
     model = models.small5()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -162,15 +148,12 @@ def generate_small5(data):
 
     return M
 """
-    )
 
 
 def test_small6():
     model = models.small6()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -204,15 +187,12 @@ def generate_small6(data):
 
     return M
 """
-    )
 
 
 def test_testing1():
     model = models.testing1()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -254,15 +234,12 @@ def generate_testing1(data):
 
     return M
 """
-    )
 
 
 def test_testing2():
     model = models.testing2()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -282,16 +259,13 @@ def generate_testing2(data):
 
     return M
 """
-    )
 
 
 # TODO: smk.expression()
 def Xtest_testing3():
     model = models.testing3()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -302,15 +276,12 @@ def generate_testing3(data):
 
     return M
 """
-    )
 
 
 def test_testing4():
     model = models.testing4()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -335,15 +306,12 @@ def generate_testing4(data):
 
     return M
 """
-    )
 
 
 def test_testing5():
     model = models.testing5()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -358,15 +326,12 @@ def generate_testing5(data):
 
     return M
 """
-    )
 
 
 def test_testing6():
     model = models.testing6()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -385,15 +350,12 @@ def generate_testing6(data):
 
     return M
 """
-    )
 
 
 def test_testing7():
     model = models.testing7()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -432,15 +394,12 @@ def generate_testing7(data):
 
     return M
 """
-    )
 
 
 def test_simple1():
     model = models.simple1()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -463,7 +422,6 @@ def generate_simple1(data):
 
     return M
 """
-    )
 
 
 def test_hs060():
@@ -473,9 +431,7 @@ def test_hs060():
     # assert order == ["N", "x", "o", "c"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -494,7 +450,6 @@ def generate_hs060(data):
 
     return M
 """
-    )
 
 
 def test_knapsack1():
@@ -504,9 +459,7 @@ def test_knapsack1():
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -529,7 +482,6 @@ def generate_knapsack1(data):
 
     return M
 """
-    )
 
 
 def test_knapsack2():
@@ -539,9 +491,7 @@ def test_knapsack2():
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -566,7 +516,6 @@ def generate_knapsack2(data):
 
     return M
 """
-    )
 
 
 def test_knapsack3():
@@ -576,9 +525,7 @@ def test_knapsack3():
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model, data={"N": "int"}))
-    assert (
-        generate(model=model, data={"N"})
-        == """
+    assert generate(model=model, data={"N"}) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -603,16 +550,13 @@ def generate_knapsack3(data):
 
     return M
 """
-    )
 
 
 def test_knapsack4():
     model = models.knapsack4()
 
     # print(generate(model=model, data={"N": "int"}))
-    assert (
-        generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
-        == """
+    assert generate(model=model, data={"ITEMS", "capacity", "value", "weight"}) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -637,16 +581,13 @@ def generate_knapsack4(data):
 
     return M
 """
-    )
 
 
 def test_pmedian1():
     model = models.pmedian1()
 
     # print(generate(model=model, data={"N": "int"}))
-    assert (
-        generate(model=model, data={"ITEMS", "capacity", "value", "weight"})
-        == """
+    assert generate(model=model, data={"ITEMS", "capacity", "value", "weight"}) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -681,7 +622,6 @@ def generate_pmedian1(data):
 
     return M
 """
-    )
 
 
 def test_pmedian2():
@@ -689,9 +629,7 @@ def test_pmedian2():
     data = {"N": "int"}
 
     # print(generate(model=model, data=data))
-    assert (
-        generate(model=model, data=data)
-        == """
+    assert generate(model=model, data=data) == """
 import pyomo.environ as pyo
 
 def pow(a,b):
@@ -726,4 +664,3 @@ def generate_pmedian2(data):
 
     return M
 """
-    )

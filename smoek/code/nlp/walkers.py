@@ -151,19 +151,13 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
                 data_decls.append(f"std::vector<int> {component.name};")
-                data_init.append(
-                    f"int {component.name}_stop = {to_cpp(component.object._N)};"
-                )
+                data_init.append(f"int {component.name}_stop = {to_cpp(component.object._N)};")
                 data_init.append(
                     f"for (int i=0; i<{component.name}_stop; i++) {component.name}.push_back(i);"
                 )
-            elif isinstance(
-                component.object, smoek.core.model.set_components.SequenceSet
-            ):
+            elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
                 data_decls.append(f"std::vector<int> {component.name};")
-                data_init.append(
-                    f"int {component.name}_stop = {to_cpp(component.object._stop)};"
-                )
+                data_init.append(f"int {component.name}_stop = {to_cpp(component.object._stop)};")
                 data_init.append(
                     f"for (int i=1; i<={component.name}_stop; i++) {component.name}.push_back(i);"
                 )
@@ -171,9 +165,7 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
                 data_decls.append(f"std::vector<int int> {component.name};")
                 if component.name in data:
                     data_init.append(f'if (data.contains("{component.name}")) ')
-                    data_init.append(
-                        f'    data.get("{component.name}", {component.name});'
-                    )
+                    data_init.append(f'    data.get("{component.name}", {component.name});')
 
         elif component.type == "parameter":
             if component.object.is_indexed():
@@ -188,14 +180,10 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
             else:
                 data_decls.append(f"double {component.name};")
                 if component.object.value():
-                    data_init.append(
-                        f"{component.name} = {to_cpp(component.object.value())};"
-                    )
+                    data_init.append(f"{component.name} = {to_cpp(component.object.value())};")
             if component.name in data:
                 data_init.append(f'if (data.contains("{component.name}")) ')
-                data_init.append(
-                    f'    data.get("{component.name}", {component.name});\n'
-                )
+                data_init.append(f'    data.get("{component.name}", {component.name});\n')
 
         elif component.type == "data":
             if component.object.is_indexed():
@@ -218,9 +206,7 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
 
                 prefix = ""
                 for isp in component.object._index_set_pairs():
-                    data_init.append(
-                        prefix + f"for (auto& {isp.index.name()}: {isp.set.name()})"
-                    )
+                    data_init.append(prefix + f"for (auto& {isp.index.name()}: {isp.set.name()})")
                     prefix += "  "
                 data_init.append(prefix + "{")
                 if len(component.object._index_set_pairs()) == 1:
@@ -234,21 +220,15 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
                         + f'{component.name}[{{{",".join(isp.index.name() for isp in component.object._index_set_pairs())}}}] = 0;'
                     )
                 if component.object.lower():
-                    data_init.append(
-                        prefix + f"x_lower_[i_] = {to_cpp(component.object.lower())};"
-                    )
+                    data_init.append(prefix + f"x_lower_[i_] = {to_cpp(component.object.lower())};")
                 else:
                     data_init.append(prefix + f"x_lower_[i_] = -INFTY;")
                 if component.object.upper():
-                    data_init.append(
-                        prefix + f"x_upper_[i_] = {to_cpp(component.object.upper())};"
-                    )
+                    data_init.append(prefix + f"x_upper_[i_] = {to_cpp(component.object.upper())};")
                 else:
                     data_init.append(prefix + f"x_upper_[i_] = -INFTY;")
                 if component.object.value():
-                    data_init.append(
-                        prefix + f"x_init_[i_] = {to_cpp(component.object.value())};"
-                    )
+                    data_init.append(prefix + f"x_init_[i_] = {to_cpp(component.object.value())};")
                 else:
                     data_init.append(prefix + f"x_init_[i_] = 0.0;")
                 data_init.append(prefix + "i_++;")
@@ -279,21 +259,15 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
 
                 data_init.append(f"nv++; //{component.name}")
                 if component.object.lower():
-                    data_init.append(
-                        f"x_lower_[i_++] = {to_cpp(component.object.lower())};"
-                    )
+                    data_init.append(f"x_lower_[i_++] = {to_cpp(component.object.lower())};")
                 else:
                     data_init.append(f"x_lower_[i_++] = -INFTY;")
                 if component.object.upper():
-                    data_init.append(
-                        f"x_upper_[i_++] = {to_cpp(component.object.upper())};"
-                    )
+                    data_init.append(f"x_upper_[i_++] = {to_cpp(component.object.upper())};")
                 else:
                     data_init.append(f"x_upper_[i_++] = INFTY;")
                 if component.object.value():
-                    data_init.append(
-                        f"x_init_[i_++] = {to_cpp(component.object.value())};"
-                    )
+                    data_init.append(f"x_init_[i_++] = {to_cpp(component.object.value())};")
                 else:
                     data_init.append(f"x_init_[i_++] = 0.0;")
 
@@ -314,9 +288,7 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
                     data_decls.append(f"const Number objsense = 1.0;")
                 else:
                     data_decls.append(f"const Number objsense = -1.0;")
-                eval_f.append(
-                    f"*obj_value_ = objsense * ({to_cpp(component.object.expr())});"
-                )
+                eval_f.append(f"*obj_value_ = objsense * ({to_cpp(component.object.expr())});")
 
         elif component.type == "constraint":
             if component.object.is_indexed():
@@ -326,7 +298,9 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
                 for i, index_set in enumerate(index_sets):
                     index = indices[i]
                     tmp.append(f"Forall({index}).In({index_set})")
-                coek_str = f'auto {component.name} = coek::constraint("{component.name}", {".".join(tmp)})'
+                coek_str = (
+                    f'auto {component.name} = coek::constraint("{component.name}", {".".join(tmp)})'
+                )
                 coek_str = coek_str + f".expr({to_cpp(component.object.expr())})"
                 coek_str = coek_str + ";"
             else:

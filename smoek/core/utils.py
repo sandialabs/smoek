@@ -6,7 +6,6 @@ from smoek.core.expr.nodes import ExprNode
 import smoek.core.expr.functions
 import smoek.core.model.expressions
 
-
 native_types = {float, int}
 
 
@@ -294,9 +293,9 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
                 object=expr,
             )
 
-        elif isinstance(
-            expr, smoek.core.model.var_components.ScalarVariable
-        ) or isinstance(expr, smoek.core.model.var_components.IndexedVariable):
+        elif isinstance(expr, smoek.core.model.var_components.ScalarVariable) or isinstance(
+            expr, smoek.core.model.var_components.IndexedVariable
+        ):
             # Unindexed variable
             name = expr.name()
             if name in self._info:
