@@ -1,0 +1,12 @@
+coverage:
+  status:
+    patch: false  # Don't fail if patch coverage is lower
+    project:
+      default:
+        target: 80%  # Require 80% total coverage
+        threshold: 2%  # Allow 2% drop without failing
+
+comment:
+  layout: "header, diff, files"
+  behavior: default
+  require_changes: false
