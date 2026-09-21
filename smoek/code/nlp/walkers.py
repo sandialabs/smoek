@@ -128,7 +128,7 @@ def generate_ipopt(*, model=None, data=None, outfile=None):
 
     if data is None:
         data = {}
-    #components = []
+    # components = []
 
     info = collect_info(model)
     order = valid_order(info)
