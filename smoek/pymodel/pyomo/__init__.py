@@ -1,2 +1,2 @@
 # smoek.pymodel.pyomo
-from .walkers import generate
+from .walkers import generate, pyomo_available

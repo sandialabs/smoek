@@ -262,7 +262,7 @@ def to_pyomo_str(expr, decl={}):
     return SmoekToPyomoStringWalker().walk(expr, decl, "m_")
 
 
-def generate(*, model=None, data=None):
+def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
     """
     Generate a Pyomo model described by smoek.
     """
@@ -275,9 +275,16 @@ def generate(*, model=None, data=None):
     info = collect_info(model)
     order = valid_order(info)
 
-    M = pyo.ConcreteModel()
+    if pyomo_model is None:
+        M = pyo.ConcreteModel()
+    else:
+        M = pyomo_model
 
     for name in order:
+        if component_map and name in component_map:
+            setattr(M, name, component_map[name])
+            continue
+
         component = info[name]
         pyomo_str = None
 
