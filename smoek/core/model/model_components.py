@@ -40,6 +40,13 @@ def _smoek_model(cls, name=None, doc=""):
 
 class Model(object):
     def __init__(self, objective, constraints, variables, name=None, doc=""):
+        self._initialize(objective, constraints, variables, name, doc)
+
+    def _update_smoek_components(self):
+        objective, constraints, variables = _collect_components(self)
+        self._initialize(objective, constraints, variables, self.name, self.doc)
+
+    def _initialize(self, objective, constraints, variables, name=None, doc=""):
         # TODO - Use '_' variables for non-public Model data
         self.objective = objective
         self.constraints: List[Constraint] = constraints
