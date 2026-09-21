@@ -256,7 +256,7 @@ def generate(*, model=None, data=None, outfile=None, model_name=None, loops="com
                         index = indices[i]
                         coek_str = coek_str + f"{indent}for(auto {index}: coek::range({index_set}.size()))\n"
                         indent = indent + "  "
-                    coek_str = coek_str + f"{indent}{_name(component.name)}({",".join(indices)}) = {to_coek(component.object.expr())};"
+                    coek_str = coek_str + f"{indent}{_name(component.name)}({','.join(indices)}) = {to_coek(component.object.expr())};"
             else:
                 coek_str = f'auto {_name(component.name)} = coek::constraint("{_name(component.name)}").expr({to_coek(component.object.expr())});'
             components.append(coek_str)
