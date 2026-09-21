@@ -53,10 +53,10 @@ class SmoekToNLPWalker(BottomUpDepthFirstExpressionWalker[str]):
                 if isinstance(
                     arg, smoek.core.expr.nodes.BinaryExprNode
                 ) and expr._left.operation in [
-                    ExpressionType.add,
-                    ExpressionType.sub,
-                    ExpressionType.mul,
-                    ExpressionType.div,
+                    smoek.core.expr.nodes.ExpressionType.add,
+                    smoek.core.expr.nodes.ExpressionType.sub,
+                    smoek.core.expr.nodes.ExpressionType.mul,
+                    smoek.core.expr.nodes.ExpressionType.div,
                 ]:
                     ret = f"(-({arg}))"
                 else:
