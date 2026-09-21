@@ -634,10 +634,10 @@ def test_testing8():
         None :  None :    20 :  None : False : False :  Reals
     xx : Size=4, Index=A
         Key : Lower : Value : Upper : Fixed : Stale : Domain
-          0 :   5.0 :     5 :   5.0 : False : False :  Reals
-          1 :   5.0 :     5 :   5.0 : False : False :  Reals
-          2 :   5.0 :     5 :   5.0 : False : False :  Reals
-          3 :   5.0 :     5 :   5.0 : False : False :  Reals
+          0 :     5 :     5 :     5 : False : False :  Reals
+          1 :     5 :     5 :     5 : False : False :  Reals
+          2 :     5 :     5 :     5 : False : False :  Reals
+          3 :     5 :     5 :     5 : False : False :  Reals
     xxx : Size=20, Index=A*B
         Key    : Lower : Value : Upper : Fixed : Stale : Domain
         (0, 0) :  None :  None :  None : False :  True :  Reals
