@@ -63,10 +63,7 @@ class ForAllObject(object):
 
     def to_string(self):
         ret = "forall " + ", ".join(
-            [
-                f"{isp.index.to_string()} in {isp.set.name()}"
-                for isp in self._index_set_pairs
-            ]
+            [f"{isp.index.to_string()} in {isp.set.name()}" for isp in self._index_set_pairs]
         )
         return ret
 

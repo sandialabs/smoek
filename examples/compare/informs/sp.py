@@ -25,5 +25,3 @@ class sp1:
 
         c0 = smk.constraints().expr(6 * y1 + 10 * y2 <= 60 * x1)
         c1 = smk.constraints().expr(8 * y1 + 5 * y2 <= 80 * x2)
-
-

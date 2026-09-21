@@ -10,9 +10,7 @@ def test_small1():
     M = generate(model=model)
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 Var Declarations
+    assert out.getvalue() == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -32,7 +30,6 @@ def test_small1():
 
 4 Declarations: x y o c
 """
-    )
 
 
 def test_small2():
@@ -40,9 +37,7 @@ def test_small2():
     M = generate(model=model)
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 Var Declarations
+    assert out.getvalue() == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -62,7 +57,6 @@ def test_small2():
 
 4 Declarations: x y o c
 """
-    )
 
 
 def test_small3():
@@ -70,9 +64,7 @@ def test_small3():
     M = generate(model=model)
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 Var Declarations
+    assert out.getvalue() == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -92,7 +84,6 @@ def test_small3():
 
 4 Declarations: x y o c
 """
-    )
 
 
 def test_small4():
@@ -100,9 +91,7 @@ def test_small4():
     M = generate(model=model)
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 Var Declarations
+    assert out.getvalue() == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :   1.0 :  None : False : False :  Reals
@@ -122,7 +111,6 @@ def test_small4():
 
 4 Declarations: x y o c
 """
-    )
 
 
 def test_small5():
@@ -131,9 +119,7 @@ def test_small5():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 Param Declarations
+    assert out.getvalue() == """1 Param Declarations
     q : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     2
@@ -194,7 +180,6 @@ def test_small5():
 
 17 Declarations: x y v q o c[0] c[1] c[2] c[3] c[4] c[5] c[6] c[7] c[8] c[9] c[10] c[11]
 """
-    )
 
 
 def test_small6():
@@ -203,9 +188,7 @@ def test_small6():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """4 Var Declarations
+    assert out.getvalue() == """4 Var Declarations
     p : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :  None :     2 :  None :  True : False :  Reals
@@ -246,7 +229,6 @@ def test_small6():
 
 11 Declarations: x y v p o c[0] c[1] c[2] c[3] c[4] c[5]
 """
-    )
 
 
 def test_testing1():
@@ -255,9 +237,7 @@ def test_testing1():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 Param Declarations
+    assert out.getvalue() == """1 Param Declarations
     q : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     2
@@ -312,7 +292,6 @@ def test_testing1():
 
 15 Declarations: a b c d e q o C[0] C[1] C[2] C[3] C[4] C[5] C[6] C[7]
 """
-    )
 
 
 def test_testing2():
@@ -321,9 +300,7 @@ def test_testing2():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 Param Declarations
+    assert out.getvalue() == """1 Param Declarations
     q : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     2
@@ -343,7 +320,6 @@ def test_testing2():
 
 4 Declarations: a b q o
 """
-    )
 
 
 # TODO: smk.expression()
@@ -353,11 +329,8 @@ def XXtest_testing3():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """
+    assert out.getvalue() == """
 """
-    )
 
 
 def test_testing4():
@@ -366,9 +339,7 @@ def test_testing4():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """5 Var Declarations
+    assert out.getvalue() == """5 Var Declarations
     a : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :     0 :     0 :     1 : False : False : Integers
@@ -397,7 +368,6 @@ def test_testing4():
 
 7 Declarations: x y z a b o c
 """
-    )
 
 
 def test_testing5():
@@ -406,9 +376,7 @@ def test_testing5():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 Var Declarations
+    assert out.getvalue() == """1 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :     2 :  None :     2 : False :  True :  Reals
@@ -420,7 +388,6 @@ def test_testing5():
 
 2 Declarations: x o
 """
-    )
 
 
 def test_testing6():
@@ -429,9 +396,7 @@ def test_testing6():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 Param Declarations
+    assert out.getvalue() == """2 Param Declarations
     p : Size=1, Index=None, Domain=Reals, Default=None, Mutable=True
         Key  : Value
         None :     0
@@ -451,7 +416,6 @@ def test_testing6():
 
 4 Declarations: x p q o
 """
-    )
 
 
 def test_testing7():
@@ -460,9 +424,7 @@ def test_testing7():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 RangeSet Declarations
+    assert out.getvalue() == """2 RangeSet Declarations
     A : Dimen=1, Size=4, Bounds=(0, 3)
         Key  : Finite : Members
         None :   True :   [0:3]
@@ -576,7 +538,6 @@ def test_testing7():
 
 12 Declarations: A B p pp ppp x xx xxx o c cc ccc
 """
-    )
 
 
 def test_testing8():
@@ -585,9 +546,7 @@ def test_testing8():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 RangeSet Declarations
+    assert out.getvalue() == """2 RangeSet Declarations
     A : Dimen=1, Size=4, Bounds=(0, 3)
         Key  : Finite : Members
         None :   True :   [0:3]
@@ -686,7 +645,6 @@ def test_testing8():
 
 12 Declarations: A B ppp pp p x xx xxx o c cc ccc
 """
-    )
 
 
 def test_simple1():
@@ -695,9 +653,7 @@ def test_simple1():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 Var Declarations
+    assert out.getvalue() == """2 Var Declarations
     x : Size=1, Index=None
         Key  : Lower : Value : Upper : Fixed : Stale : Domain
         None :   0.0 :  None :   1.0 : False :  True :  Reals
@@ -723,7 +679,6 @@ def test_simple1():
 
 6 Declarations: x y o c1 c2 c3
 """
-    )
 
 
 def test_hs060():
@@ -732,9 +687,7 @@ def test_hs060():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 RangeSet Declarations
+    assert out.getvalue() == """1 RangeSet Declarations
     N : Dimen=1, Size=4, Bounds=(1, 4)
         Key  : Finite : Members
         None :   True :   [1:4]
@@ -759,7 +712,6 @@ def test_hs060():
 
 4 Declarations: N x o c
 """
-    )
 
 
 def test_knapsack1():
@@ -768,9 +720,7 @@ def test_knapsack1():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 RangeSet Declarations
+    assert out.getvalue() == """1 RangeSet Declarations
     INDEX : Dimen=1, Size=10, Bounds=(0, 9)
         Key  : Finite : Members
         None :   True :   [0:9]
@@ -827,7 +777,6 @@ def test_knapsack1():
 
 6 Declarations: INDEX w v x o c
 """
-    )
 
 
 def test_knapsack2():
@@ -836,9 +785,7 @@ def test_knapsack2():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 RangeSet Declarations
+    assert out.getvalue() == """1 RangeSet Declarations
     INDEX : Dimen=1, Size=10, Bounds=(0, 9)
         Key  : Finite : Members
         None :   True :   [0:9]
@@ -898,7 +845,6 @@ def test_knapsack2():
 
 7 Declarations: N INDEX w v x o c
 """
-    )
 
 
 def test_knapsack3():
@@ -908,9 +854,7 @@ def test_knapsack3():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 RangeSet Declarations
+    assert out.getvalue() == """1 RangeSet Declarations
     INDEX : Dimen=1, Size=10, Bounds=(0, 9)
         Key  : Finite : Members
         None :   True :   [0:9]
@@ -970,7 +914,6 @@ def test_knapsack3():
 
 7 Declarations: N INDEX w v x o c
 """
-    )
 
 
 def test_knapsack4():
@@ -985,9 +928,7 @@ def test_knapsack4():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """1 Set Declarations
+    assert out.getvalue() == """1 Set Declarations
     ITEMS : Size=1, Index=None, Ordered=Insertion
         Key  : Dimen : Domain : Size : Members
         None :     1 :    Any :    4 : {1, 2, 3, 4}
@@ -1029,7 +970,6 @@ def test_knapsack4():
 
 7 Declarations: ITEMS value weight capacity x o c
 """
-    )
 
 
 def test_pmedian1():
@@ -1039,9 +979,7 @@ def test_pmedian1():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 RangeSet Declarations
+    assert out.getvalue() == """2 RangeSet Declarations
     M : Dimen=1, Size=5, Bounds=(0, 4)
         Key  : Finite : Members
         None :   True :   [0:4]
@@ -1160,7 +1098,6 @@ def test_pmedian1():
 
 9 Declarations: N M d x y o single_x bound_y num_facilities
 """
-    )
 
 
 def test_pmedian2():
@@ -1170,9 +1107,7 @@ def test_pmedian2():
     # M.pprint()
     out = StringIO()
     M.pprint(ostream=out)
-    assert (
-        out.getvalue()
-        == """2 RangeSet Declarations
+    assert out.getvalue() == """2 RangeSet Declarations
     M : Dimen=1, Size=5, Bounds=(0, 4)
         Key  : Finite : Members
         None :   True :   [0:4]
@@ -1291,4 +1226,3 @@ def test_pmedian2():
 
 9 Declarations: N M d x y o single_x bound_y num_facilities
 """
-    )

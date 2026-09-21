@@ -45,7 +45,7 @@ if poek_available:
 
 
 def _name(name):
-    return name.replace('[','_').replace(']','_')
+    return name.replace("[", "_").replace("]", "_")
 
 
 class SmoekToPoekExprWalker(BottomUpDepthFirstExpressionWalker[str]):
@@ -309,9 +309,7 @@ def generate(*, model=None, data=None):
                     component.name,
                     pk.RangeSet(0, to_poek(component.object._N, model=M)),
                 )
-            elif isinstance(
-                component.object, smoek.core.model.set_components.SequenceSet
-            ):
+            elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
                 setattr(
                     M,
                     component.name,
@@ -325,9 +323,7 @@ def generate(*, model=None, data=None):
 
         elif component.type == "parameter" or component.type == "data":
             ctype = component.type
-            index_sets = [
-                getattr(M, iset.name()) for iset in component.object._index_sets()
-            ]
+            index_sets = [getattr(M, iset.name()) for iset in component.object._index_sets()]
             indices = [i.name() for i in component.object._indices()]
 
             kwargs = {}
@@ -339,13 +335,9 @@ def generate(*, model=None, data=None):
             # value
             if component.name in data:
                 kwargs["value"] = data[component.name]
-            elif isinstance(
-                component.object.value(), smoek.core.expr.nodes.NumberWrapper
-            ):
+            elif isinstance(component.object.value(), smoek.core.expr.nodes.NumberWrapper):
                 kwargs["value"] = component.object.value().value
-            elif isinstance(
-                component.object.value(), smoek.core.expr.nodes.DataWrapper
-            ):
+            elif isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
                 kwargs["value"] = component.object.value()._ref.key
                 kwargs["data_portal"] = M.dp_
             elif component.object.value():
@@ -356,10 +348,10 @@ def generate(*, model=None, data=None):
                     rule_str = f"def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.value())}"
                     args = [M]
                 # locals_ = {}
-                #print("HERE",rule_str)
+                # print("HERE",rule_str)
                 exec(rule_str, globals_, locals_)
                 kwargs["value"] = locals_[f"{_name(component.name)}_"](*args)
-                #print("HERE",kwargs['value'].to_list())
+                # print("HERE",kwargs['value'].to_list())
 
             if component.object.is_indexed():
                 if component.object.explicit:
@@ -381,7 +373,7 @@ def generate(*, model=None, data=None):
                         args = [tmp]
             else:
                 args = []
-            #print("HERE", component.name, args, kwargs)
+            # print("HERE", component.name, args, kwargs)
             if component.type == "parameter":
                 globals_[component.name] = param = pk.parameter(*args, **kwargs)
                 setattr(M, component.name, param)
@@ -392,9 +384,7 @@ def generate(*, model=None, data=None):
                 M._model.add_data(dat)
 
         elif component.type == "variable":
-            index_sets = [
-                getattr(M, iset.name()) for iset in component.object._index_sets()
-            ]
+            index_sets = [getattr(M, iset.name()) for iset in component.object._index_sets()]
             indices = [i.name() for i in component.object._indices()]
 
             if component.object.is_indexed() and component.object.explicit:
@@ -433,21 +423,19 @@ def generate(*, model=None, data=None):
                 kwargs["ub"] = locals_[f"{_name(component.name)}_upper_"](*args)
 
             # value
-            if isinstance(
-                component.object.value(), smoek.core.expr.nodes.NumberWrapper
-            ):
+            if isinstance(component.object.value(), smoek.core.expr.nodes.NumberWrapper):
                 kwargs["value"] = component.object.value().value
-            elif isinstance(
-                component.object.value(), smoek.core.expr.nodes.DataWrapper
-            ):
-                assert M.dp_.contains(component.object.value().value.key), f"Data '{component.object.value().value.key}' for {ctype} missing in file {M._data._filename}"
+            elif isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
+                assert M.dp_.contains(
+                    component.object.value().value.key
+                ), f"Data '{component.object.value().value.key}' for {ctype} missing in file {M._data._filename}"
                 kwargs["value"] = component.object.value().value.key
                 kwargs["data_portal"] = M.dp_
             elif component.object.value():
                 rule_str = f"def {_name(component.name)}_(m_{iparams}):\n    return {to_poek_str(component.object.value())}"
                 # locals_ = {}
                 # print(rule_str)
-                #print("X",rule_str)
+                # print("X",rule_str)
                 exec(rule_str, globals_, locals_)
                 kwargs["value"] = locals_[f"{_name(component.name)}_"](*args)
 
@@ -500,7 +488,7 @@ def generate(*, model=None, data=None):
                 # rule_str = f'def {_name(component.name)}_(m_):\n    e = {to_poek_str(component.object.expr())}\n    print(e.to_list())\n    return {to_poek_str(component.object.expr())}'
                 rule_str = f"def {_name(component.name)}_(m_):\n    return {to_poek_str(component.object.expr())}"
             # locals_ = {}
-            #print("HERE o",rule_str)
+            # print("HERE o",rule_str)
             exec(rule_str, globals_, locals_)
             # print(locals_[f"{_name(component.name)}_"](M).to_list())
             if component.object.sense():

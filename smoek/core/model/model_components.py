@@ -100,9 +100,7 @@ def _collect_components(obj):
             constraints.append(v)
         elif type(v) is list:
             for i, item in enumerate(v):
-                assert isinstance(
-                    item, Constraint
-                ), f"Unexpected list element {type(item)}"
+                assert isinstance(item, Constraint), f"Unexpected list element {type(item)}"
                 _set_name(item, f"{k}[{i}]")
                 constraints.append(item)
         elif isinstance(v, ScalarVariable) or isinstance(v, IndexedVariable):

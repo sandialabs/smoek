@@ -9,9 +9,7 @@ from smoek.core.data_apis import load_data_from_json, JsonDataPortal
 
 
 def test_get_DP_int_set():
-    dp = load_data_from_json(
-        packed_data={"A": {"set_type": "i", "data": [1, 2, 3]}}, schema="coek"
-    )
+    dp = load_data_from_json(packed_data={"A": {"set_type": "i", "data": [1, 2, 3]}}, schema="coek")
 
 
 def test_get_DP_double_set():
@@ -38,9 +36,7 @@ def test_get_DP_ituple_set():
 
 def test_get_DP_dtuple_set():
     dp = load_data_from_json(
-        packed_data={
-            "A": {"set_type": ["d", "d"], "data": [[0, 0], [1.2, 1], [2.3, 2]]}
-        },
+        packed_data={"A": {"set_type": ["d", "d"], "data": [[0, 0], [1.2, 1], [2.3, 2]]}},
         schema="coek",
     )
     assert dp["A"] == [(0.0, 0.0), (1.2, 1.0), (2.3, 2.0)]
@@ -48,9 +44,7 @@ def test_get_DP_dtuple_set():
 
 def test_get_DP_stuple_set():
     dp = load_data_from_json(
-        packed_data={
-            "A": {"set_type": ["s", "s"], "data": [["a", "a"], ["b", "b"], ["c", "c"]]}
-        },
+        packed_data={"A": {"set_type": ["s", "s"], "data": [["a", "a"], ["b", "b"], ["c", "c"]]}},
         schema="coek",
     )
     assert dp["A"] == [("a", "a"), ("b", "b"), ("c", "c")]
@@ -260,9 +254,7 @@ def test_get_DP_mixedtuple_set_mixedtuple():
 
 def test_get_DP_int_int_param():
     dp = load_data_from_json(
-        packed_data={
-            "A": {"key_type": "i", "param_type": "i", "data": [[0, 0], [1, 1], [2, 2]]}
-        },
+        packed_data={"A": {"key_type": "i", "param_type": "i", "data": [[0, 0], [1, 1], [2, 2]]}},
         schema="coek",
     )
     assert dp["A"] == {0: 0, 1: 1, 2: 2}

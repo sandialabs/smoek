@@ -298,9 +298,7 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
                     component.name,
                     pyo.RangeSet(0, to_pyomo(component.object._N, model=M)),
                 )
-            elif isinstance(
-                component.object, smoek.core.model.set_components.SequenceSet
-            ):
+            elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
                 setattr(
                     M,
                     component.name,
@@ -317,9 +315,7 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
                 setattr(M, component.name, pyo.Set(initialize=set_))
 
         elif component.type == "parameter" or component.type == "data":
-            index_sets = [
-                getattr(M, iset.name()) for iset in component.object._index_sets()
-            ]
+            index_sets = [getattr(M, iset.name()) for iset in component.object._index_sets()]
 
             kwargs = {}
             kwargs["mutable"] = component.type == "parameter"
@@ -327,13 +323,9 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
             # print("HERE", component.name, type(data), data)
             if component.name in data:
                 kwargs["initialize"] = data[component.name]
-            elif isinstance(
-                component.object.value(), smoek.core.expr.nodes.NumberWrapper
-            ):
+            elif isinstance(component.object.value(), smoek.core.expr.nodes.NumberWrapper):
                 kwargs["initialize"] = component.object.value().value
-            elif isinstance(
-                component.object.value(), smoek.core.expr.nodes.DataWrapper
-            ):
+            elif isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
                 kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
@@ -351,9 +343,7 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
                 setattr(M, component.name, pyo.Param(**kwargs))
 
         elif component.type == "variable":
-            index_sets = [
-                getattr(M, iset.name()) for iset in component.object._index_sets()
-            ]
+            index_sets = [getattr(M, iset.name()) for iset in component.object._index_sets()]
             indices = [i.name() for i in component.object._indices()]
 
             kwargs = {}
@@ -369,18 +359,16 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
                 if component.object.is_indexed():
                     rule_str = f'def {_name(component.name)}_bounds_(m_,{",".join(indices)}):\n    return {lower},{upper}'
                 else:
-                    rule_str = f"def {_name(component.name)}_bounds_(m_):\n    return {lower},{upper}"
+                    rule_str = (
+                        f"def {_name(component.name)}_bounds_(m_):\n    return {lower},{upper}"
+                    )
                 locals_ = {}
                 exec(rule_str, {"pyo": pyo}, locals_)
                 kwargs["bounds"] = locals_[f"{_name(component.name)}_bounds_"]
 
-            if isinstance(
-                component.object.value(), smoek.core.expr.nodes.NumberWrapper
-            ):
+            if isinstance(component.object.value(), smoek.core.expr.nodes.NumberWrapper):
                 kwargs["initialize"] = component.object.value().value
-            elif isinstance(
-                component.object.value(), smoek.core.expr.nodes.DataWrapper
-            ):
+            elif isinstance(component.object.value(), smoek.core.expr.nodes.DataWrapper):
                 kwargs["initialize"] = component.object.value().value
             elif component.object.value():
                 if component.object.is_indexed():
@@ -397,9 +385,7 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
             else:
                 setattr(M, component.name, pyo.Var(**kwargs))
                 if component.object.fixed():
-                    getattr(M, component.name).fix(
-                        to_pyomo(component.object.value(), model=M)
-                    )
+                    getattr(M, component.name).fix(to_pyomo(component.object.value(), model=M))
 
         elif component.type == "expression":
             # TODO
@@ -423,9 +409,7 @@ def generate(*, model=None, pyomo_model=None, data=None, component_map=None):
             )
 
         elif component.type == "constraint":
-            index_sets = [
-                getattr(M, iset.name()) for iset in component.object._index_sets()
-            ]
+            index_sets = [getattr(M, iset.name()) for iset in component.object._index_sets()]
             if component.object.is_indexed():
                 indices = [i.name() for i in component.object._indices()]
                 if len(index_sets) == 1:

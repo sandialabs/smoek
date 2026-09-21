@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools >= 64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smoek"
+version = "1.0.0"
+dependencies = [
+    "Pyomo>=6.0",
+    "munch",
+    "numpy>=1.20",
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+description = "A lightweight optimization modeling library for fast model transformation"
+requires-python = ">=3.11"
+license = {text = "BSD-3-Clause"}
+classifiers = [
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/sandialabs/smoek"
+Documentation = "https://smoek.readthedocs.io"
+Repository = "https://github.com/sandialabs/smoek"
+Issues = "https://github.com/sandialabs/smoek/issues"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+poek = ["poek"]
+coek = ["coek"]
+backends = ["poek", "coek"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black",
+    "flake8",
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["smoek*"]
+
+[tool.coverage.report]
+exclude_also = [
+    "if self.debug:",
+    "if debug:",
+    "raise AssertionError.*",
+    "raise NotImplementedError.*",
+    "@(abc.)?abstractmethod",
+    "pragma: no cover",
+    "pass",
+    "except Exception:",
+    "except ImportError:",
+    "if poek_available:",
+    "if not poek_available:",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312", "py313"]
+
+[tool.pytest.ini_options]
+testpaths = ["smoek"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

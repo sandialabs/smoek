@@ -247,9 +247,7 @@ def testing8():
         c = smk.constraint().expr(smk.sum(pp[i] * xx[i]).forall(i in A) == 0)
         cc = smk.constraint().expr(pp[i] * xx[i] == 0).forall(i in A)
         ccc = (
-            smk.constraint()
-            .expr(smk.sum(ppp[i, j] * xxx[i, j]).forall(i in A) == 0)
-            .forall(j in B)
+            smk.constraint().expr(smk.sum(ppp[i, j] * xxx[i, j]).forall(i in A) == 0).forall(j in B)
         )
 
     return testing8()
@@ -277,12 +275,8 @@ def hs060():
         N = smk.sequence(start=1, stop=4)
         x = smk.variable().index_set(N).value(2.0).bounds(-10, 10)
 
-        o = smk.objective().minimize(
-            (x[1] - 1) ** 2 + (x[1] - x[2]) ** 2 + (x[2] - x[3]) ** 4
-        )
-        c = smk.constraint().expr(
-            x[1] * (1 + x[2] ** 2) + x[3] ** 4 == 4 + 3 * smk.sqrt(2)
-        )
+        o = smk.objective().minimize((x[1] - 1) ** 2 + (x[1] - x[2]) ** 2 + (x[2] - x[3]) ** 4)
+        c = smk.constraint().expr(x[1] * (1 + x[2] ** 2) + x[3] ** 4 == 4 + 3 * smk.sqrt(2))
 
     return hs060()
 
@@ -339,9 +333,7 @@ def knapsack4():
 
         o = smk.objective().maximize(smk.sum(value[i] * x[i]).forall(i in ITEMS))
 
-        c = smk.constraint().expr(
-            smk.sum(weight[i] * x[i]).forall(i in ITEMS) <= capacity
-        )
+        c = smk.constraint().expr(smk.sum(weight[i] * x[i]).forall(i in ITEMS) <= capacity)
 
     return knapsack4()
 
@@ -361,21 +353,12 @@ def pmedian1(N_=10, P=1):
 
         d = smk.parameter().forall(n in N, m in M).value(1.0 + 1.0 / (n + m + 1))
 
-        x = (
-            smk.variable()
-            .index_set(N)
-            .index_set(M)
-            .bounds(0.0, 1.0)
-            .value(0.0)
-            .within(smk.Binary)
-        )
+        x = smk.variable().index_set(N).index_set(M).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
         y = smk.variable().index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
 
         o = smk.objective().minimize(smk.sum(d[n, m] * x[n, m]).forall(n in N, m in M))
 
-        single_x = (
-            smk.constraint().expr(smk.sum(x[n, m]).forall(n in N) == 1).forall(m in M)
-        )
+        single_x = smk.constraint().expr(smk.sum(x[n, m]).forall(n in N) == 1).forall(m in M)
 
         bound_y = smk.constraint().expr(x[n, m] - y[n] <= 0).forall(n in N, m in M)
 
@@ -400,21 +383,12 @@ def pmedian2(N_=10, P=1):
 
         d = smk.data().forall(n in N, m in M).value(1.0 + 1.0 / (n + m + 1))
 
-        x = (
-            smk.variable()
-            .index_set(N)
-            .index_set(M)
-            .bounds(0.0, 1.0)
-            .value(0.0)
-            .within(smk.Binary)
-        )
+        x = smk.variable().index_set(N).index_set(M).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
         y = smk.variable().index_set(N).bounds(0.0, 1.0).value(0.0).within(smk.Binary)
 
         o = smk.objective().minimize(smk.sum(d[n, m] * x[n, m]).forall(n in N, m in M))
 
-        single_x = (
-            smk.constraint().expr(smk.sum(x[n, m]).forall(n in N) == 1).forall(m in M)
-        )
+        single_x = smk.constraint().expr(smk.sum(x[n, m]).forall(n in N) == 1).forall(m in M)
 
         bound_y = smk.constraint().expr(x[n, m] - y[n] <= 0).forall(n in N, m in M)
 
@@ -428,7 +402,9 @@ def pmedian2(N_=10, P=1):
 # Taken from Introduction to Stochastic Programing.
 #   https://link.springer.com/book/10.1007/978-1-4614-0237-4
 def sp1():
-    @smk.stochastic_model
+
+    # @smk.stochastic_model
+
     class sp1:
 
         @smk.model
@@ -453,7 +429,7 @@ def sp1():
 
             o = smk.objective().minimize(q1 * y1 + q2 * y2)
 
-            c0 = smk.constraints().expr(6 * y1 + 10 * y2 <= 60 * x1)
-            c1 = smk.constraints().expr(8 * y1 + 5 * y2 <= 80 * x2)
+            # c0 = smk.constraints().expr(6 * y1 + 10 * y2 <= 60 * stage1.x1)
+            # c1 = smk.constraints().expr(8 * y1 + 5 * y2 <= 80 * stage1.x2)
 
     return sp1()

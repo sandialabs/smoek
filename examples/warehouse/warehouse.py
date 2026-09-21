@@ -19,9 +19,9 @@ o = smk.objective(
     expr=smk.smoek_sum(d[w, c] * x[w, c]).forall(w, In=W).forall(c, In=C),
 )
 
-c = smk.constraint(
-    name="demand_met", expr=(smk.smoek_sum(x[w, c]).forall(w, In=W) == 1)
-).forall(c, In=C)
+c = smk.constraint(name="demand_met", expr=(smk.smoek_sum(x[w, c]).forall(w, In=W) == 1)).forall(
+    c, In=C
+)
 
 l = LatexWriter()
 l.write_model("./tex/warehouse.tex", o, c, x, W, C)

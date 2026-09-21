@@ -1,5 +1,6 @@
 import smoek as smk
 
+
 @smk.model
 class knapsack:
 
@@ -17,17 +18,18 @@ class knapsack:
 
     o = smk.objective("o").maximize(smk.sum(value[i] * x[i]).forall(i, In=ITEMS))
 
-    c = smk.constraint("c").expr(
-        smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity
-    )
+    c = smk.constraint("c").expr(smk.sum(weight[i] * x[i]).forall(i, In=ITEMS) <= capacity)
 
 
 from smoek.io.tex import LatexWriter
+
 writer = LatexWriter()
 writer.write_model(knapsack(), "knapsack.tex")
 
 from smoek.code.pyomo import generate
+
 generate(model=knapsack(), outfile="knapsack_pyomo.py")
 
 from smoek.code.coek import generate
+
 generate(model=knapsack(), outfile="knapsack_coek.cpp")

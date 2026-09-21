@@ -7,9 +7,7 @@ from smoek.code.coek import generate
 def test_small1():
     model = models.small1()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -33,15 +31,12 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_small2():
     model = models.small2()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -65,15 +60,12 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_small3():
     model = models.small3()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -97,15 +89,12 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_small4():
     model = models.small4()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -129,15 +118,12 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_small5():
     model = models.small5()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -200,15 +186,12 @@ model.add(c_11_);
 return model;
 }
 """
-    )
 
 
 def test_small6():
     model = models.small6()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -253,15 +236,12 @@ model.add(c_5_);
 return model;
 }
 """
-    )
 
 
 def test_testing1():
     model = models.testing1()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -318,15 +298,12 @@ model.add(C_7_);
 return model;
 }
 """
-    )
 
 
 def test_testing2():
     model = models.testing2()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -350,27 +327,21 @@ model.add(o);
 return model;
 }
 """
-    )
 
 
 # TODO: smk.expression()
 def Xtest_testing3():
     model = models.testing3()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 foo
 """
-    )
 
 
 def test_testing4():
     model = models.testing4()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -403,15 +374,12 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_testing5():
     model = models.testing5()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -429,15 +397,12 @@ model.add(o);
 return model;
 }
 """
-    )
 
 
 def test_testing6():
     model = models.testing6()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -461,15 +426,12 @@ model.add(o);
 return model;
 }
 """
-    )
 
 
 def test_testing7():
     model = models.testing7()
 
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -519,7 +481,6 @@ model.add(ccc);
 return model;
 }
 """
-    )
 
 
 def test_simple1():
@@ -529,9 +490,7 @@ def test_simple1():
     # assert order == ["x", "y", "o", "c1", "c2", "c3"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -561,7 +520,6 @@ model.add(c3);
 return model;
 }
 """
-    )
 
 
 def test_hs060():
@@ -571,9 +529,7 @@ def test_hs060():
     # assert order == ["N", "x", "o", "c"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -596,7 +552,6 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_knapsack1():
@@ -606,9 +561,7 @@ def test_knapsack1():
     # assert order == ["i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -639,7 +592,6 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_knapsack2():
@@ -649,9 +601,7 @@ def test_knapsack2():
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -685,7 +635,6 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_knapsack3():
@@ -695,9 +644,7 @@ def test_knapsack3():
     # assert order == ["N", "i", "INDEX", "w", "v", "x", "o", "c"]
 
     # print(generate(model=model, data={"N": "int"}))
-    assert (
-        generate(model=model, data={"N": "int"})
-        == """
+    assert generate(model=model, data={"N": "int"}) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -736,7 +683,6 @@ model.add(c);
 return model;
 }
 """
-    )
 
 
 def test_knapsack4():
@@ -817,9 +763,7 @@ def test_pmedian1():
     model = models.pmedian1()
 
     # print(generate(model=model))
-    assert (
-        generate(model=model)
-        == """
+    assert generate(model=model) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -860,16 +804,13 @@ model.add(num_facilities);
 return model;
 }
 """
-    )
 
 
 def test_pmedian1_simple():
     model = models.pmedian1()
 
     # print(generate(model=model, loops="simple"))
-    assert (
-        generate(model=model, loops="simple")
-        == """
+    assert generate(model=model, loops="simple") == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -915,7 +856,6 @@ model.add(num_facilities);
 return model;
 }
 """
-    )
 
 
 def test_pmedian2():
@@ -923,9 +863,7 @@ def test_pmedian2():
     data = {"d": "std::map<std::tuple<int,int>,double>"}
 
     # print(generate(model=model, data=data))
-    assert (
-        generate(model=model, data=data)
-        == """
+    assert generate(model=model, data=data) == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -971,7 +909,6 @@ model.add(num_facilities);
 return model;
 }
 """
-    )
 
 
 def test_pmedian2_simple():
@@ -979,9 +916,7 @@ def test_pmedian2_simple():
     data = {"d": "std::map<std::tuple<int,int>,double>"}
 
     # print(generate(model=model, data=data, loops="simple"))
-    assert (
-        generate(model=model, data=data, loops="simple")
-        == """
+    assert generate(model=model, data=data, loops="simple") == """
 #include <coek/coek.hpp>
 #include <coek/util/DataPortal.hpp>
 
@@ -1032,4 +967,3 @@ model.add(num_facilities);
 return model;
 }
 """
-    )

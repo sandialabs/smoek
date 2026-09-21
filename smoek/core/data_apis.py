@@ -182,8 +182,7 @@ class JSONDataPortal_Coek(JSONDataPortalBase):
                         #
                         if slen > 0:
                             value = [
-                                tuple(coerce(stype[i], sval[i]) for i in range(slen))
-                                for sval in v
+                                tuple(coerce(stype[i], sval[i]) for i in range(slen)) for sval in v
                             ]
                         else:
                             value = [coerce(stype, sval) for sval in v]
@@ -306,9 +305,7 @@ class JSONDataPortal_Coek(JSONDataPortalBase):
             # Set data
             #
             if type(data[0]) is tuple:
-                return dict(
-                    set_type=infer_types(data[0]), data=[list(value) for value in data]
-                )
+                return dict(set_type=infer_types(data[0]), data=[list(value) for value in data])
             else:
                 return dict(set_type=infer_types(data[0]), data=data)
 
@@ -333,8 +330,8 @@ def JsonDataPortal(
 
     if schema == "coek":
         return JSONDataPortal_Coek(packed_data, filename=filename, lazyload=lazyload)
-    elif schema == "pyomo":
-        return JSONDataPortal_Pyomo(packed_data, filename=filename, lazyload=lazyload)
+    # elif schema == "pyomo":
+    #    return JSONDataPortal_Pyomo(packed_data, filename=filename, lazyload=lazyload)
 
     raise ValueError("Unexpected JSON schema: " + schema)
 

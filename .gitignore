@@ -158,3 +158,37 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Additional modern patterns
+
+# macOS
+.DS_Store
+
+# UV package manager
+#uv.lock
+
+# PDM package manager (additional)
+.pdm-python
+.pdm-build/
+
+# Ruff linter cache
+.ruff_cache/
+
+# PyPI configuration
+.pypirc
+
+# VS Code
+.vscode/
+
+# Coverage lcov format
+lcov.info
+
+# Documentation build
+doc/_build/
+doc/_static/
+doc/_templates/
+
+# Sphinx (additional paths)
+docs/_build/
+docs/_static/
+docs/_templates/

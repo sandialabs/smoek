@@ -163,9 +163,7 @@ def generate(*, model=None, data=None, outfile=None):
         elif component.type == "index_set":
             if isinstance(component.object, smoek.core.model.set_components.RangeSet):
                 pyomo_str = f"    M.{_name(component.name)} = pyo.RangeSet(0, {to_pyomo(component.object._N)})"
-            elif isinstance(
-                component.object, smoek.core.model.set_components.SequenceSet
-            ):
+            elif isinstance(component.object, smoek.core.model.set_components.SequenceSet):
                 pyomo_str = f"    M.{_name(component.name)} = pyo.RangeSet({to_pyomo(component.object._start)}, {to_pyomo(component.object._stop)}+1)"
             else:
                 pyomo_str = f'    M.{_name(component.name)} = pyo.Set(initialize=data["{_name(component.name)}"])'
@@ -193,9 +191,7 @@ def generate(*, model=None, data=None, outfile=None):
                     initial_value = f", initialize={to_pyomo(component.object.value())}"
 
             if component.object.is_indexed():
-                index_sets = [
-                    "M." + iset.name() for iset in component.object._index_sets()
-                ]
+                index_sets = ["M." + iset.name() for iset in component.object._index_sets()]
                 indices = [i.name() for i in component.object._indices()]
                 if initial_value_fn:
                     pyomo_str = f'    def {_name(component.name)}_(m_,{",".join(indices)}):\n        return {to_pyomo(component.object.value(), model="m_")}\n'
@@ -234,9 +230,7 @@ def generate(*, model=None, data=None, outfile=None):
                 varargs.append(f"initialize={to_pyomo(component.object.value())}")
 
             if component.object.is_indexed():
-                index_sets = [
-                    "M." + iset.name() for iset in component.object._index_sets()
-                ]
+                index_sets = ["M." + iset.name() for iset in component.object._index_sets()]
                 if len(varargs) > 0:
                     varargs = ", " + ", ".join(varargs)
                 else:
@@ -244,7 +238,9 @@ def generate(*, model=None, data=None, outfile=None):
                 if len(index_sets) == 1:
                     pyomo_str = f"    M.{_name(component.name)} = pyo.Var({index_sets[0]}{varargs})"
                 else:
-                    pyomo_str = f'    M.{_name(component.name)} = pyo.Var({", ".join(index_sets)}{varargs})'
+                    pyomo_str = (
+                        f'    M.{_name(component.name)} = pyo.Var({", ".join(index_sets)}{varargs})'
+                    )
             else:
                 varargs = ", ".join(varargs)
                 pyomo_str = f"    M.{_name(component.name)} = pyo.Var({varargs})"
@@ -271,9 +267,7 @@ def generate(*, model=None, data=None, outfile=None):
 
         elif component.type == "constraint":
             if component.object.is_indexed():
-                index_sets = [
-                    "M." + iset.name() for iset in component.object._index_sets()
-                ]
+                index_sets = ["M." + iset.name() for iset in component.object._index_sets()]
                 indices = [i.name() for i in component.object._indices()]
                 conargs = ""
                 if len(index_sets) == 1:
