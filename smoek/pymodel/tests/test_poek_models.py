@@ -1,10 +1,12 @@
-from io import StringIO
 import pytest
+from io import StringIO
 import smoek as smk
 from smoek.core.tests import models
-from smoek.pymodel.poek import generate
+from smoek.pymodel.poek import generate, poek_available
 
+if_poek_available=pytest.mark.skipif(not poek_available, reason="Poek not installed")
 
+@if_poek_available
 def test_small1():
     model = models.small1()
     m = generate(model=model)
@@ -37,6 +39,7 @@ def test_small1():
     )
 
 
+@if_poek_available
 def test_small2():
     model = models.small2()
     m = generate(model=model)
@@ -69,6 +72,7 @@ def test_small2():
     )
 
 
+@if_poek_available
 def test_small3():
     model = models.small3()
     m = generate(model=model)
@@ -101,6 +105,7 @@ def test_small3():
     )
 
 
+@if_poek_available
 def test_small4():
     model = models.small4()
     m = generate(model=model)
@@ -133,6 +138,7 @@ def test_small4():
     )
 
 
+@if_poek_available
 def test_small5():
     model = models.small5()
     m = generate(model=model)
@@ -177,6 +183,7 @@ def test_small5():
     )
 
 
+@if_poek_available
 def test_small6():
     model = models.small6()
     m = generate(model=model)
@@ -216,6 +223,7 @@ def test_small6():
     )
 
 
+@if_poek_available
 def test_testing1():
     model = models.testing1()
     m = generate(model=model)
@@ -258,6 +266,7 @@ def test_testing1():
     )
 
 
+@if_poek_available
 def test_testing2():
     model = models.testing2()
     m = generate(model=model)
@@ -290,6 +299,7 @@ def test_testing2():
 
 
 # TODO: smk.expression()
+@if_poek_available
 def XXtest_testing3():
     model = models.testing3()
     m = generate(model=model)
@@ -315,6 +325,7 @@ def XXtest_testing3():
     )
 
 
+@if_poek_available
 def test_testing4():
     model = models.testing4()
     m = generate(model=model)
@@ -350,6 +361,7 @@ def test_testing4():
     )
 
 
+@if_poek_available
 def test_testing5():
     model = models.testing5()
     m = generate(model=model)
@@ -380,6 +392,7 @@ def test_testing5():
     )
 
 
+@if_poek_available
 def test_testing6():
     model = models.testing6()
     m = generate(model=model)
@@ -410,6 +423,7 @@ def test_testing6():
     )
 
 
+@if_poek_available
 def test_testing7():
     model = models.testing7()
     m = generate(model=model)
@@ -489,6 +503,7 @@ def test_testing7():
     )
 
 
+@if_poek_available
 def test_testing8():
     model = models.testing8()
     m = generate(model=model)
@@ -553,6 +568,7 @@ def test_testing8():
     )
 
 
+@if_poek_available
 def test_simple1():
     model = models.simple1()
     m = generate(model=model)
@@ -587,6 +603,7 @@ def test_simple1():
     )
 
 
+@if_poek_available
 def test_hs060():
     model = models.hs060()
     m = generate(model=model)
@@ -621,6 +638,7 @@ def test_hs060():
     )
 
 
+@if_poek_available
 def test_knapsack1():
     model = models.knapsack1()
     m = generate(model=model)
@@ -661,6 +679,7 @@ def test_knapsack1():
     )
 
 
+@if_poek_available
 def test_knapsack2():
     model = models.knapsack2()
     m = generate(model=model)
@@ -701,6 +720,7 @@ def test_knapsack2():
     )
 
 
+@if_poek_available
 def test_knapsack3():
     model = models.knapsack3()
     data = {"N": 1}
@@ -742,6 +762,7 @@ def test_knapsack3():
     )
 
 
+@if_poek_available
 def test_knapsack4():
     model = models.knapsack4()
     data = {
@@ -782,6 +803,7 @@ def test_knapsack4():
     )
 
 
+@if_poek_available
 def test_pmedian1():
     model = models.pmedian1(5)
     m = generate(model=model)
@@ -872,6 +894,7 @@ def test_pmedian1():
     )
 
 
+@if_poek_available
 def test_pmedian2():
     model = models.pmedian2(5)
     m = generate(model=model)
