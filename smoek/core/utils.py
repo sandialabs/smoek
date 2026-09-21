@@ -328,18 +328,22 @@ def collect_expr_leaves(expr, info_dict=None):
 
 
 def collect_info(model):
-    info = collect_expr_leaves(model.objective)
-    for c in model.constraints:
-        info = collect_expr_leaves(c.expr(), info)
+    if model.objective:
+        info = collect_expr_leaves(model.objective)
+        for c in model.constraints:
+            info = collect_expr_leaves(c.expr(), info)
 
-    o = model.objective
-    info[o.name()] = Munch(
-        name=o.name(),
-        id=o._id,
-        dependencies=o._dependencies(),
-        type="objective",
-        object=o,
-    )
+        o = model.objective
+        info[o.name()] = Munch(
+            name=o.name(),
+            id=o._id,
+            dependencies=o._dependencies(),
+            type="objective",
+            object=o,
+        )
+    else:
+        info = {}
+
     for c in model.constraints:
         info[c.name()] = Munch(
             name=c.name(),
