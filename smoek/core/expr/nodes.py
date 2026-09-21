@@ -117,17 +117,17 @@ class ExprNode(object):
         return BinaryExprNode(left, self, ExpressionType.div)
 
     def __le__(self, right):
-        return BinaryExprNode(
+        return BinaryLogicalExprNode(
             self, _wrap_expression_if_needed(right), ExpressionType.leq
         )
 
     def __ge__(self, right):
-        return BinaryExprNode(
+        return BinaryLogicalExprNode(
             self, _wrap_expression_if_needed(right), ExpressionType.geq
         )
 
     def __eq__(self, right):
-        return BinaryExprNode(
+        return BinaryLogicalExprNode(
             self, _wrap_expression_if_needed(right), ExpressionType.eq
         )
 
@@ -207,6 +207,11 @@ class BinaryExprNode(ExprNode):
 
     def args(self):
         return (self.left, self.right)
+
+
+class BinaryLogicalExprNode(BinaryExprNode):
+    def __init__(self, left, right, operation):
+        super().__init__(left, right, operation)
 
 
 class UnaryExprNode(ExprNode):
