@@ -429,7 +429,7 @@ def sp1():
 
             o = smk.objective().minimize(q1 * y1 + q2 * y2)
 
-            c0 = smk.constraints().expr(6 * y1 + 10 * y2 <= 60 * stage1.x1)
-            c1 = smk.constraints().expr(8 * y1 + 5 * y2 <= 80 * stage1.x2)
+            #c0 = smk.constraints().expr(6 * y1 + 10 * y2 <= 60 * stage1.x1)
+            #c1 = smk.constraints().expr(8 * y1 + 5 * y2 <= 80 * stage1.x2)
 
     return sp1()
