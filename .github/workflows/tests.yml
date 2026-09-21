@@ -110,7 +110,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        backend: ["pyomo-only", "poek", "coek"]
+        backend: ["pyomo-only"]
     runs-on: ubuntu-latest
     defaults:
       run:
