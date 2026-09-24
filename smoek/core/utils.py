@@ -94,6 +94,8 @@ class BottomUpDepthFirstExpressionWalker(Generic[T]):
             self._visit(expr, *kwargs)
         elif isinstance(expr, smoek.core.expr.nodes.ExprLeaf):
             self._visit(expr, *kwargs)
+        elif isinstance(expr, smoek.core.model.set_components.Set):
+            self._visit(expr, *kwargs)
         else:
             raise NotImplementedError(
                 f"Expression node {expr} of type {type(expr)} not supported in BottomUpDepthFirstExpressionWalker"
@@ -242,6 +244,11 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
         self._walk(expr)
         return self._info
 
+    def _add_info(self, *, name, id, dependencies, type, object):
+        self._info[name] = Munch(
+            name=name, id=id, dependencies=dependencies, type=type, object=object
+        )
+
     def _visit(self, expr):
         if isinstance(expr, smoek.core.expr.nodes.ComponentIndicesNode):
             # Indexed component
@@ -250,21 +257,18 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
 
             self._visit(expr._component)
             for indexset in expr._component._index_sets():
-                self._info[indexset.name()] = Munch(
+                self._add_info(
                     name=indexset.name(),
                     id=indexset._id,
                     dependencies=indexset._dependencies(),
                     type="index_set",
                     object=indexset,
                 )
+
             for index in expr.indices:
                 if isinstance(index, smoek.core.model.components.Index):
-                    self._info[index.name()] = Munch(
-                        name=index.name(),
-                        id=index._id,
-                        dependencies=[],
-                        type="index",
-                        object=index,
+                    self._add_info(
+                        name=index.name(), id=index._id, dependencies=[], type="index", object=index
                     )
 
         elif isinstance(expr, smoek.core.model.data_components.Parameter):
@@ -272,7 +276,8 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
             name = expr.name()
             if name in self._info:
                 return
-            self._info[name] = Munch(
+
+            self._add_info(
                 name=name,
                 id=expr._id,
                 dependencies=expr._dependencies(),
@@ -285,7 +290,8 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
             name = expr.name()
             if name in self._info:
                 return
-            self._info[name] = Munch(
+
+            self._add_info(
                 name=name,
                 id=expr._id,
                 dependencies=expr._dependencies(),
@@ -300,7 +306,8 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
             name = expr.name()
             if name in self._info:
                 return
-            self._info[name] = Munch(
+
+            self._add_info(
                 name=name,
                 id=expr._id,
                 dependencies=expr._dependencies(),
@@ -313,11 +320,25 @@ class CollectLeafInfo(BottomUpDepthFirstExpressionWalker[List]):
             name = expr.name()
             if name in self._info:
                 return
-            self._info[name] = Munch(
+
+            self._add_info(
                 name=name,
                 id=expr._id,
                 dependencies=expr._dependencies(),
                 type="expression",
+                object=expr,
+            )
+
+        elif isinstance(expr, smoek.core.model.set_components.Set):
+            name = expr.name()
+            if name in self._info:
+                return
+
+            self._add_info(
+                name=name,
+                id=expr._id,
+                dependencies=expr._dependencies(),
+                type="index_set",
                 object=expr,
             )
 
@@ -329,8 +350,8 @@ def collect_expr_leaves(expr, info_dict=None):
 def collect_info(model):
     if model.objective:
         info = collect_expr_leaves(model.objective)
-        for c in model.constraints:
-            info = collect_expr_leaves(c.expr(), info)
+        for iset in model.objective._index_sets():
+            info = collect_expr_leaves(iset, info)
 
         o = model.objective
         info[o.name()] = Munch(
@@ -342,6 +363,11 @@ def collect_info(model):
         )
     else:
         info = {}
+
+    for c in model.constraints:
+        info = collect_expr_leaves(c.expr(), info)
+        for iset in c._index_sets():
+            info = collect_expr_leaves(iset, info)
 
     for c in model.constraints:
         info[c.name()] = Munch(
