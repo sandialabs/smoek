@@ -42,6 +42,12 @@ class Model(object):
     def __init__(self, objective, constraints, variables, name=None, doc=""):
         self._initialize(objective, constraints, variables, name, doc)
 
+    def add_components(self, **kwargs):
+        for name, component in kwargs.items():
+            component.name(name)
+            setattr(self, name, component)
+        self._update_smoek_components()
+
     def _update_smoek_components(self):
         objective, constraints, variables = _collect_components(self)
         self._initialize(objective, constraints, variables, self.name, self.doc)
